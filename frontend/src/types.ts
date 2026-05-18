@@ -71,6 +71,7 @@ export interface CVSchema {
   themeColor?: string;
   fontFamily?: string;
   layoutDensity?: 'compact' | 'normal' | 'comfortable';
+  pageLayout?: 'single' | 'multi';
 }
 
 export interface CVResponse {

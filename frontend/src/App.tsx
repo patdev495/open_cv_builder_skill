@@ -1025,6 +1025,29 @@ function App() {
                     </select>
                   </div>
 
+                  {/* Page Layout Selector */}
+                  <div className="sm:col-span-3">
+                    <label className="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2">
+                      {language === 'vi' ? '📄 Số trang (Page Layout)' : '📄 Page Layout'}
+                    </label>
+                    <div className="flex gap-2">
+                      {([['single', language === 'vi' ? '1 Trang (Cố định)' : '1 Page (Fixed)'], ['multi', language === 'vi' ? 'Đa trang (Tự do)' : 'Multi-page (Free)']]) .map(([val, label]) => (
+                        <button
+                          key={val}
+                          type="button"
+                          onClick={() => setCvData({ ...cvData, pageLayout: val as 'single' | 'multi' })}
+                          className={`flex-1 py-2 px-3 text-xs font-bold rounded-xl border transition-all cursor-pointer ${
+                            (cvData.pageLayout || 'single') === val
+                              ? 'bg-purple-600 border-purple-500 text-white shadow-lg shadow-purple-900/30'
+                              : 'bg-slate-950/60 border-slate-800 text-slate-400 hover:border-slate-600'
+                          }`}
+                        >
+                          {label}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+
                 </div>
 
                 {/* Actions Grid */}
@@ -1844,7 +1867,11 @@ function App() {
                 Using deep Tailwind vector printer styles.
                 ==========================================================
             */}
-            <div className={`w-[210mm] min-h-[297mm] bg-white text-slate-800 ${activeDensity.paperPadding} shadow-2xl flex flex-col relative overflow-hidden print:overflow-visible transition-all duration-300 print:shadow-none print:p-0 print:w-full print:min-h-0 print:bg-white print:text-black ${activeFont} ${
+            <div className={`w-[210mm] bg-white text-slate-800 ${activeDensity.paperPadding} shadow-2xl flex flex-col relative transition-all duration-300 print:shadow-none print:p-0 print:w-full print:bg-white print:text-black ${activeFont} ${
+              (cvData.pageLayout || 'single') === 'single'
+                ? 'min-h-[297mm] max-h-[297mm] overflow-hidden print:overflow-visible print:max-h-none print:min-h-0'
+                : 'min-h-[297mm] overflow-visible'
+            } ${
               template === 'modern' ? `border-t-[6px] ${activeColor.border}` : ''
             }`}>
               <style>{`@media print { @page { margin: ${activeDensity.printMargin}; } }`}</style>
@@ -1852,6 +1879,20 @@ function App() {
               {/* ========================================================
                   TEMPLATE 1: MODERN MINIMALIST (Default Modern)
                  ======================================================== */}
+              {/* Page break indicator — only shown in multi-page mode, hidden on print */}
+              {(cvData.pageLayout || 'single') === 'multi' && (
+                <div
+                  className="print:hidden absolute left-0 right-0 pointer-events-none"
+                  style={{ top: '297mm', zIndex: 10 }}
+                >
+                  <div className="relative flex items-center">
+                    <div className="flex-1 border-t-2 border-dashed border-rose-400/60" />
+                    <span className="mx-3 text-[10px] font-bold text-rose-400/80 whitespace-nowrap bg-white px-1">— Page 2 —</span>
+                    <div className="flex-1 border-t-2 border-dashed border-rose-400/60" />
+                  </div>
+                </div>
+              )}
+
               {template === 'modern' && (
                 <div className="flex flex-col flex-1 gap-6 text-sm">
                   {/* Top section / Contact block */}
@@ -1970,7 +2011,7 @@ function App() {
                             {t('experienceUpper')}
                           </h3>
                           {cvData.experience.map((exp) => (
-                            <div key={exp.id} className="flex flex-col gap-1">
+                            <div key={exp.id} className="flex flex-col gap-1 break-inside-avoid">
                               <div className="flex justify-between items-start text-xs">
                                 <div>
                                   <span className="font-extrabold text-slate-900">{exp.company}</span>
@@ -1995,7 +2036,7 @@ function App() {
                             {t('projectsUpper')}
                           </h3>
                           {cvData.projects.map((proj) => (
-                            <div key={proj.id} className="flex flex-col gap-1">
+                            <div key={proj.id} className="flex flex-col gap-1 break-inside-avoid">
                               <div className="flex justify-between items-center text-xs">
                                 <div>
                                   <span className="font-extrabold text-slate-900">{proj.name}</span>
@@ -2029,7 +2070,7 @@ function App() {
                             {t('educationUpper')}
                           </h3>
                           {cvData.education.map((edu) => (
-                            <div key={edu.id} className="flex flex-col gap-0.5 text-xs">
+                            <div key={edu.id} className="flex flex-col gap-0.5 text-xs break-inside-avoid">
                               <div className="flex justify-between items-start">
                                 <span className="font-extrabold text-slate-900">{edu.institution}</span>
                                 <span className="text-[10px] font-mono font-bold text-slate-400 print:text-slate-850">{edu.startDate} - {edu.endDate || 'Hiện tại'}</span>
