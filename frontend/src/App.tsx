@@ -1,14 +1,20 @@
 import React, { useState } from 'react';
 import { 
-  FileText, Save, Edit3, Eye, Printer, Lock, Globe, Plus, Trash2, 
-  Sparkles, User, Briefcase, GraduationCap, FolderGit2, 
-  Wrench, Award, Languages, Loader2, AlertCircle, CheckCircle2,
-  Camera, Layers, ArrowUp, ArrowDown
+  FileText, Save, Edit3, Eye, Printer, Lock, Globe, Plus, Trash2, Sparkles, Loader2, AlertCircle, CheckCircle2,
+  User, Briefcase, GraduationCap, FolderGit2, Wrench, Award, Layers
 } from 'lucide-react';
 import type { ExperienceItem, EducationItem, ProjectItem, SkillGroup, CertificateItem, LanguageItem } from './types';
 import { processAvatar } from './services/avatarProcessor';
 import { COLOR_MAP, FONT_MAP, DENSITY_MAP } from './constants';
 import { useCVEditor } from './hooks/useCVEditor';
+import { PersonalInfoForm } from './editor/PersonalInfoForm';
+import { SummaryForm } from './editor/SummaryForm';
+import { ExperienceForm } from './editor/ExperienceForm';
+import { EducationForm } from './editor/EducationForm';
+import { ProjectsForm } from './editor/ProjectsForm';
+import { SkillsForm } from './editor/SkillsForm';
+import { ExtraForm } from './editor/ExtraForm';
+import { LayoutForm } from './editor/LayoutForm';
 
 // ==========================================
 // 2. React main App component
@@ -534,818 +540,100 @@ function App() {
 
               {/* Tab Editor Contents */}
               <div className="flex-1 p-6 overflow-y-auto max-h-[500px]">
-                
-                {/* 1. PERSONAL INFO TAB */}
+                {/* PersonalInfoForm */}
                 {activeTab === 'personal' && (
-                  <div className="flex flex-col gap-4">
-                    <h3 className="text-sm font-bold text-slate-300 mb-2">{t('personalInfo')}</h3>
-                    
-                    {/* Premium Avatar Uploader */}
-                    <div className="flex items-center gap-4 mb-2 pb-4 border-b border-slate-800/80">
-                      <div className="relative group w-20 h-20 rounded-full overflow-hidden border-2 border-slate-700 hover:border-purple-500 transition-all cursor-pointer bg-slate-950 flex items-center justify-center">
-                        {cvData.personalInfo.avatar ? (
-                          <img src={cvData.personalInfo.avatar} alt="Avatar" className="w-full h-full object-cover" />
-                        ) : (
-                          <User className="h-8 w-8 text-slate-500 group-hover:text-slate-300 transition-colors" />
-                        )}
-                        <label className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 flex flex-col items-center justify-center gap-1 text-[10px] text-white font-semibold transition-opacity cursor-pointer">
-                          <Camera className="h-4 w-4" />
-                          <span>{t('uploadPhoto')}</span>
-                          <input
-                            type="file"
-                            accept="image/*"
-                            onChange={handleAvatarUpload}
-                            className="hidden"
-                          />
-                        </label>
-                      </div>
-                      <div className="flex flex-col gap-1">
-                        <span className="text-xs font-semibold text-slate-300">{t('avatarPhoto')}</span>
-                        <span className="text-[10px] text-slate-500">JPG, PNG, WEBP. Tối đa 150KB (tự động nén)</span>
-                        {cvData.personalInfo.avatar && (
-                          <button
-                            type="button"
-                            onClick={handleAvatarDelete}
-                            className="mt-1 self-start text-xs text-rose-400 hover:text-rose-300 font-bold transition-colors cursor-pointer"
-                          >
-                            {t('deletePhoto')}
-                          </button>
-                        )}
-                      </div>
-                    </div>
-
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                      <div>
-                        <label className="block text-xs font-semibold text-slate-400 mb-1">{t('fullName')}</label>
-                        <input
-                          type="text"
-                          value={cvData.personalInfo.fullName}
-                          onChange={(e) => setCvData({
-                            ...cvData,
-                            personalInfo: { ...cvData.personalInfo, fullName: e.target.value }
-                          })}
-                          placeholder="Nguyễn Văn A"
-                          className="w-full bg-slate-950/60 border border-slate-800 focus:border-purple-500 rounded-xl px-3 py-2 text-sm text-slate-200 focus:outline-none"
-                        />
-                      </div>
-                      <div>
-                        <label className="block text-xs font-semibold text-slate-400 mb-1">{t('jobTitle')}</label>
-                        <input
-                          type="text"
-                          value={cvData.personalInfo.title || ""}
-                          onChange={(e) => setCvData({
-                            ...cvData,
-                            personalInfo: { ...cvData.personalInfo, title: e.target.value }
-                          })}
-                          placeholder="Senior Full Stack Engineer"
-                          className="w-full bg-slate-950/60 border border-slate-800 focus:border-purple-500 rounded-xl px-3 py-2 text-sm text-slate-200 focus:outline-none"
-                        />
-                      </div>
-                      <div>
-                        <label className="block text-xs font-semibold text-slate-400 mb-1">Email</label>
-                        <input
-                          type="email"
-                          value={cvData.personalInfo.email}
-                          onChange={(e) => setCvData({
-                            ...cvData,
-                            personalInfo: { ...cvData.personalInfo, email: e.target.value }
-                          })}
-                          placeholder="a@gmail.com"
-                          className="w-full bg-slate-950/60 border border-slate-800 focus:border-purple-500 rounded-xl px-3 py-2 text-sm text-slate-200 focus:outline-none"
-                        />
-                      </div>
-                      <div>
-                        <label className="block text-xs font-semibold text-slate-400 mb-1">{t('phone')}</label>
-                        <input
-                          type="text"
-                          value={cvData.personalInfo.phone || ""}
-                          onChange={(e) => setCvData({
-                            ...cvData,
-                            personalInfo: { ...cvData.personalInfo, phone: e.target.value }
-                          })}
-                          placeholder="0987654321"
-                          className="w-full bg-slate-950/60 border border-slate-800 focus:border-purple-500 rounded-xl px-3 py-2 text-sm text-slate-200 focus:outline-none"
-                        />
-                      </div>
-                      <div>
-                        <label className="block text-xs font-semibold text-slate-400 mb-1">{t('location')}</label>
-                        <input
-                          type="text"
-                          value={cvData.personalInfo.location || ""}
-                          onChange={(e) => setCvData({
-                            ...cvData,
-                            personalInfo: { ...cvData.personalInfo, location: e.target.value }
-                          })}
-                          placeholder="Hà Nội, Việt Nam"
-                          className="w-full bg-slate-950/60 border border-slate-800 focus:border-purple-500 rounded-xl px-3 py-2 text-sm text-slate-200 focus:outline-none"
-                        />
-                      </div>
-                      <div>
-                        <label className="block text-xs font-semibold text-slate-400 mb-1">{t('website')}</label>
-                        <input
-                          type="text"
-                          value={cvData.personalInfo.website || ""}
-                          onChange={(e) => setCvData({
-                            ...cvData,
-                            personalInfo: { ...cvData.personalInfo, website: e.target.value }
-                          })}
-                          placeholder="https://vana.dev"
-                          className="w-full bg-slate-950/60 border border-slate-800 focus:border-purple-500 rounded-xl px-3 py-2 text-sm text-slate-200 focus:outline-none"
-                        />
-                      </div>
-                      <div>
-                        <label className="block text-xs font-semibold text-slate-400 mb-1">GitHub URL</label>
-                        <input
-                          type="text"
-                          value={cvData.personalInfo.github || ""}
-                          onChange={(e) => setCvData({
-                            ...cvData,
-                            personalInfo: { ...cvData.personalInfo, github: e.target.value }
-                          })}
-                          placeholder="https://github.com/Nguyenvana"
-                          className="w-full bg-slate-950/60 border border-slate-800 focus:border-purple-500 rounded-xl px-3 py-2 text-sm text-slate-200 focus:outline-none"
-                        />
-                      </div>
-                      <div>
-                        <label className="block text-xs font-semibold text-slate-400 mb-1">LinkedIn URL</label>
-                        <input
-                          type="text"
-                          value={cvData.personalInfo.linkedin || ""}
-                          onChange={(e) => setCvData({
-                            ...cvData,
-                            personalInfo: { ...cvData.personalInfo, linkedin: e.target.value }
-                          })}
-                          placeholder="https://linkedin.com/in/Nguyenvana"
-                          className="w-full bg-slate-950/60 border border-slate-800 focus:border-purple-500 rounded-xl px-3 py-2 text-sm text-slate-200 focus:outline-none"
-                        />
-                      </div>
-                    </div>
-                  </div>
+                  <PersonalInfoForm
+                    cvData={cvData}
+                    setCvData={setCvData}
+                    t={t}
+                    language={language}
+                  handleAvatarUpload={handleAvatarUpload}
+                  handleAvatarDelete={handleAvatarDelete}
+                  />
                 )}
 
-                {/* 2. SUMMARY TAB */}
+                {/* SummaryForm */}
                 {activeTab === 'summary' && (
-                  <div className="flex flex-col gap-4">
-                    <h3 className="text-sm font-bold text-slate-300 mb-1">{t('summaryTitle')}</h3>
-                    <p className="text-xs text-slate-400 mb-2 leading-relaxed">
-                      {t('summaryDesc')}
-                    </p>
-                    <textarea
-                      value={cvData.summary || ""}
-                      onChange={(e) => setCvData({ ...cvData, summary: e.target.value })}
-                      placeholder={t('summaryPlaceholder')}
-                      rows={6}
-                      className="w-full bg-slate-950/60 border border-slate-800 focus:border-purple-500 rounded-xl px-3 py-2 text-sm text-slate-200 focus:outline-none font-sans leading-relaxed resize-y"
-                    />
-                  </div>
+                  <SummaryForm
+                    cvData={cvData}
+                    setCvData={setCvData}
+                    t={t}
+                    language={language}
+                  />
                 )}
 
-                {/* 3. EXPERIENCE TAB */}
+                {/* ExperienceForm */}
                 {activeTab === 'experience' && (
-                  <div className="flex flex-col gap-6">
-                    <div className="flex justify-between items-center">
-                      <h3 className="text-sm font-bold text-slate-300">{t('experienceTitle')}</h3>
-                      <button
-                        type="button"
-                        onClick={addExperience}
-                        className="text-xs font-bold text-purple-400 hover:text-purple-300 flex items-center gap-1 cursor-pointer bg-slate-800/80 hover:bg-slate-700/80 px-2.5 py-1.5 rounded-xl border border-slate-700/50"
-                      >
-                        <Plus className="h-3.5 w-3.5" /> {t('addExperience')}
-                      </button>
-                    </div>
-
-                    {cvData.experience.length === 0 ? (
-                      <p className="text-xs text-slate-500 italic text-center py-6">{t('emptyExperience')}</p>
-                    ) : (
-                      cvData.experience.map((exp, index) => (
-                        <div key={exp.id} className="bg-slate-950/40 p-4 rounded-xl border border-slate-800/80 flex flex-col gap-3 relative">
-                          <button
-                            type="button"
-                            onClick={() => removeExperience(exp.id)}
-                            className="absolute top-4 right-4 text-slate-500 hover:text-rose-400 p-1.5 hover:bg-slate-900 rounded-lg cursor-pointer transition-colors"
-                            title="Xóa công việc"
-                          >
-                            <Trash2 className="h-4 w-4" />
-                          </button>
-                          <span className="absolute top-4 left-4 bg-slate-800 text-slate-400 text-[10px] font-mono font-bold px-2 py-0.5 rounded">#{index + 1}</span>
-
-                          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mt-4">
-                            <div>
-                              <label className="block text-[10px] font-bold uppercase tracking-wider text-slate-550 mb-1">{t('companyLabel')}</label>
-                              <input
-                                type="text"
-                                value={exp.company}
-                                onChange={(e) => {
-                                  const list = [...cvData.experience];
-                                  list[index].company = e.target.value;
-                                  setCvData({ ...cvData, experience: list });
-                                }}
-                                placeholder={t('companyPlaceholder')}
-                                className="w-full bg-slate-950/60 border border-slate-850 focus:border-purple-500 rounded-lg px-2 py-1.5 text-xs text-slate-200 focus:outline-none"
-                              />
-                            </div>
-                            <div>
-                              <label className="block text-[10px] font-bold uppercase tracking-wider text-slate-550 mb-1">{t('positionLabel')}</label>
-                              <input
-                                type="text"
-                                value={exp.position}
-                                onChange={(e) => {
-                                  const list = [...cvData.experience];
-                                  list[index].position = e.target.value;
-                                  setCvData({ ...cvData, experience: list });
-                                }}
-                                placeholder={t('positionPlaceholder')}
-                                className="w-full bg-slate-950/60 border border-slate-850 focus:border-purple-500 rounded-lg px-2 py-1.5 text-xs text-slate-200 focus:outline-none"
-                              />
-                            </div>
-                            <div>
-                              <label className="block text-[10px] font-bold uppercase tracking-wider text-slate-550 mb-1">{t('startDateLabel')}</label>
-                              <input
-                                type="text"
-                                value={exp.startDate}
-                                onChange={(e) => {
-                                  const list = [...cvData.experience];
-                                  list[index].startDate = e.target.value;
-                                  setCvData({ ...cvData, experience: list });
-                                }}
-                                placeholder={t('datePlaceholder')}
-                                className="w-full bg-slate-950/60 border border-slate-850 focus:border-purple-500 rounded-lg px-2 py-1.5 text-xs text-slate-200 focus:outline-none"
-                              />
-                            </div>
-                            <div>
-                              <label className="block text-[10px] font-bold uppercase tracking-wider text-slate-550 mb-1">{t('endDateLabel')}</label>
-                              <input
-                                type="text"
-                                value={exp.endDate || ""}
-                                onChange={(e) => {
-                                  const list = [...cvData.experience];
-                                  list[index].endDate = e.target.value;
-                                  setCvData({ ...cvData, experience: list });
-                                }}
-                                placeholder={t('datePlaceholder')}
-                                className="w-full bg-slate-950/60 border border-slate-850 focus:border-purple-500 rounded-lg px-2 py-1.5 text-xs text-slate-200 focus:outline-none"
-                              />
-                            </div>
-                          </div>
-                          <div>
-                            <label className="block text-[10px] font-bold uppercase tracking-wider text-slate-550 mb-1">{t('descLabel')}</label>
-                            <textarea
-                              value={exp.description}
-                              onChange={(e) => {
-                                const list = [...cvData.experience];
-                                list[index].description = e.target.value;
-                                setCvData({ ...cvData, experience: list });
-                              }}
-                              placeholder="- Quản lý dự án...\n- Tối ưu hóa API..."
-                              rows={3}
-                              className="w-full bg-slate-950/60 border border-slate-850 focus:border-purple-500 rounded-lg px-2 py-1.5 text-xs text-slate-200 focus:outline-none font-sans leading-relaxed resize-y"
-                            />
-                          </div>
-                        </div>
-                      ))
-                    )}
-                  </div>
+                  <ExperienceForm
+                    cvData={cvData}
+                    setCvData={setCvData}
+                    t={t}
+                    language={language}
+                  addExperience={addExperience}
+                  removeExperience={removeExperience}
+                  />
                 )}
 
-                {/* 4. EDUCATION TAB */}
+                {/* EducationForm */}
                 {activeTab === 'education' && (
-                  <div className="flex flex-col gap-6">
-                    <div className="flex justify-between items-center">
-                      <h3 className="text-sm font-bold text-slate-300">Quá trình {t('educationTitle')}</h3>
-                      <button
-                        type="button"
-                        onClick={addEducation}
-                        className="text-xs font-bold text-purple-400 hover:text-purple-300 flex items-center gap-1 cursor-pointer bg-slate-800/80 hover:bg-slate-700/80 px-2.5 py-1.5 rounded-xl border border-slate-700/50"
-                      >
-                        <Plus className="h-3.5 w-3.5" /> Thêm học vị
-                      </button>
-                    </div>
-
-                    {cvData.education.length === 0 ? (
-                      <p className="text-xs text-slate-500 italic text-center py-6">{t('emptyEducation')}</p>
-                    ) : (
-                      cvData.education.map((edu, index) => (
-                        <div key={edu.id} className="bg-slate-950/40 p-4 rounded-xl border border-slate-800/80 flex flex-col gap-3 relative">
-                          <button
-                            type="button"
-                            onClick={() => removeEducation(edu.id)}
-                            className="absolute top-4 right-4 text-slate-500 hover:text-rose-400 p-1.5 hover:bg-slate-900 rounded-lg cursor-pointer transition-colors"
-                          >
-                            <Trash2 className="h-4 w-4" />
-                          </button>
-                          <span className="absolute top-4 left-4 bg-slate-800 text-slate-400 text-[10px] font-mono font-bold px-2 py-0.5 rounded">#{index + 1}</span>
-
-                          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mt-4">
-                            <div>
-                              <label className="block text-[10px] font-bold uppercase tracking-wider text-slate-550 mb-1">Tên Trường / Viện</label>
-                              <input
-                                type="text"
-                                value={edu.institution}
-                                onChange={(e) => {
-                                  const list = [...cvData.education];
-                                  list[index].institution = e.target.value;
-                                  setCvData({ ...cvData, education: list });
-                                }}
-                                placeholder={t('schoolPlaceholder')}
-                                className="w-full bg-slate-950/60 border border-slate-850 focus:border-purple-500 rounded-lg px-2 py-1.5 text-xs text-slate-200 focus:outline-none"
-                              />
-                            </div>
-                            <div>
-                              <label className="block text-[10px] font-bold uppercase tracking-wider text-slate-550 mb-1">{t('degreeLabel')}</label>
-                              <input
-                                type="text"
-                                value={edu.degree}
-                                onChange={(e) => {
-                                  const list = [...cvData.education];
-                                  list[index].degree = e.target.value;
-                                  setCvData({ ...cvData, education: list });
-                                }}
-                                placeholder="Cử nhân Công nghệ thông tin"
-                                className="w-full bg-slate-950/60 border border-slate-850 focus:border-purple-500 rounded-lg px-2 py-1.5 text-xs text-slate-200 focus:outline-none"
-                              />
-                            </div>
-                            <div>
-                              <label className="block text-[10px] font-bold uppercase tracking-wider text-slate-550 mb-1">{t('startDateLabel')}</label>
-                              <input
-                                type="text"
-                                value={edu.startDate}
-                                onChange={(e) => {
-                                  const list = [...cvData.education];
-                                  list[index].startDate = e.target.value;
-                                  setCvData({ ...cvData, education: list });
-                                }}
-                                placeholder="2016-09"
-                                className="w-full bg-slate-950/60 border border-slate-850 focus:border-purple-500 rounded-lg px-2 py-1.5 text-xs text-slate-200 focus:outline-none"
-                              />
-                            </div>
-                            <div>
-                              <label className="block text-[10px] font-bold uppercase tracking-wider text-slate-550 mb-1">{t('endDateLabel')}</label>
-                              <input
-                                type="text"
-                                value={edu.endDate || ""}
-                                onChange={(e) => {
-                                  const list = [...cvData.education];
-                                  list[index].endDate = e.target.value;
-                                  setCvData({ ...cvData, education: list });
-                                }}
-                                placeholder="2021-06"
-                                className="w-full bg-slate-950/60 border border-slate-850 focus:border-purple-500 rounded-lg px-2 py-1.5 text-xs text-slate-200 focus:outline-none"
-                              />
-                            </div>
-                          </div>
-                          <div>
-                            <label className="block text-[10px] font-bold uppercase tracking-wider text-slate-550 mb-1">Mô tả thành tựu / Điểm số (Tùy chọn)</label>
-                            <input
-                              type="text"
-                              value={edu.description || ""}
-                              onChange={(e) => {
-                                const list = [...cvData.education];
-                                list[index].description = e.target.value;
-                                setCvData({ ...cvData, education: list });
-                              }}
-                              placeholder="Tốt nghiệp loại Giỏi, GPA 3.6"
-                              className="w-full bg-slate-950/60 border border-slate-850 focus:border-purple-500 rounded-lg px-2 py-1.5 text-xs text-slate-200 focus:outline-none"
-                            />
-                          </div>
-                        </div>
-                      ))
-                    )}
-                  </div>
+                  <EducationForm
+                    cvData={cvData}
+                    setCvData={setCvData}
+                    t={t}
+                    language={language}
+                  addEducation={addEducation}
+                  removeEducation={removeEducation}
+                  />
                 )}
 
-                {/* 5. PROJECTS TAB */}
+                {/* ProjectsForm */}
                 {activeTab === 'projects' && (
-                  <div className="flex flex-col gap-6">
-                    <div className="flex justify-between items-center">
-                      <h3 className="text-sm font-bold text-slate-300">Dự án Thực tế</h3>
-                      <button
-                        type="button"
-                        onClick={addProject}
-                        className="text-xs font-bold text-purple-400 hover:text-purple-300 flex items-center gap-1 cursor-pointer bg-slate-800/80 hover:bg-slate-700/80 px-2.5 py-1.5 rounded-xl border border-slate-700/50"
-                      >
-                        <Plus className="h-3.5 w-3.5" /> {t('addProject')}
-                      </button>
-                    </div>
-
-                    {cvData.projects.length === 0 ? (
-                      <p className="text-xs text-slate-500 italic text-center py-6">Chưa có thông tin dự án cá nhân.</p>
-                    ) : (
-                      cvData.projects.map((proj, index) => (
-                        <div key={proj.id} className="bg-slate-950/40 p-4 rounded-xl border border-slate-800/80 flex flex-col gap-3 relative">
-                          <button
-                            type="button"
-                            onClick={() => removeProject(proj.id)}
-                            className="absolute top-4 right-4 text-slate-500 hover:text-rose-400 p-1.5 hover:bg-slate-900 rounded-lg cursor-pointer transition-colors"
-                          >
-                            <Trash2 className="h-4 w-4" />
-                          </button>
-                          <span className="absolute top-4 left-4 bg-slate-800 text-slate-400 text-[10px] font-mono font-bold px-2 py-0.5 rounded">#{index + 1}</span>
-
-                          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mt-4">
-                            <div>
-                              <label className="block text-[10px] font-bold uppercase tracking-wider text-slate-550 mb-1">{t('projectNameLabel')}</label>
-                              <input
-                                type="text"
-                                value={proj.name}
-                                onChange={(e) => {
-                                  const list = [...cvData.projects];
-                                  list[index].name = e.target.value;
-                                  setCvData({ ...cvData, projects: list });
-                                }}
-                                placeholder="Hệ thống AI CV"
-                                className="w-full bg-slate-950/60 border border-slate-850 focus:border-purple-500 rounded-lg px-2 py-1.5 text-xs text-slate-200 focus:outline-none"
-                              />
-                            </div>
-                            <div>
-                              <label className="block text-[10px] font-bold uppercase tracking-wider text-slate-550 mb-1">Vai trò của bạn</label>
-                              <input
-                                type="text"
-                                value={proj.role}
-                                onChange={(e) => {
-                                  const list = [...cvData.projects];
-                                  list[index].role = e.target.value;
-                                  setCvData({ ...cvData, projects: list });
-                                }}
-                                placeholder="Kỹ sư chính / Leader"
-                                className="w-full bg-slate-950/60 border border-slate-850 focus:border-purple-500 rounded-lg px-2 py-1.5 text-xs text-slate-200 focus:outline-none"
-                              />
-                            </div>
-                            <div>
-                              <label className="block text-[10px] font-bold uppercase tracking-wider text-slate-550 mb-1">Thời gian / Năm</label>
-                              <input
-                                type="text"
-                                value={proj.startDate}
-                                onChange={(e) => {
-                                  const list = [...cvData.projects];
-                                  list[index].startDate = e.target.value;
-                                  setCvData({ ...cvData, projects: list });
-                                }}
-                                placeholder="2024"
-                                className="w-full bg-slate-950/60 border border-slate-850 focus:border-purple-500 rounded-lg px-2 py-1.5 text-xs text-slate-200 focus:outline-none"
-                              />
-                            </div>
-                            <div>
-                              <label className="block text-[10px] font-bold uppercase tracking-wider text-slate-550 mb-1">URL Dự án (GitHub / Live Link)</label>
-                              <input
-                                type="text"
-                                value={proj.url || ""}
-                                onChange={(e) => {
-                                  const list = [...cvData.projects];
-                                  list[index].url = e.target.value;
-                                  setCvData({ ...cvData, projects: list });
-                                }}
-                                placeholder="https://github.com/project"
-                                className="w-full bg-slate-950/60 border border-slate-850 focus:border-purple-500 rounded-lg px-2 py-1.5 text-xs text-slate-200 focus:outline-none"
-                              />
-                            </div>
-                          </div>
-
-                          <div>
-                            <label className="block text-[10px] font-bold uppercase tracking-wider text-slate-550 mb-1">Công nghệ sử dụng (Cách nhau bằng dấu phẩy)</label>
-                            <input
-                              type="text"
-                              value={proj.technologies.join(", ")}
-                              onChange={(e) => {
-                                const list = [...cvData.projects];
-                                list[index].technologies = e.target.value.split(",").map(t => t.trim());
-                                setCvData({ ...cvData, projects: list });
-                              }}
-                              placeholder="React, TypeScript, Tailwind, FastAPI"
-                              className="w-full bg-slate-950/60 border border-slate-850 focus:border-purple-500 rounded-lg px-2 py-1.5 text-xs text-slate-200 focus:outline-none"
-                            />
-                          </div>
-
-                          <div>
-                            <label className="block text-[10px] font-bold uppercase tracking-wider text-slate-550 mb-1">Mô tả chi tiết dự án</label>
-                            <textarea
-                              value={proj.description}
-                              onChange={(e) => {
-                                const list = [...cvData.projects];
-                                list[index].description = e.target.value;
-                                setCvData({ ...cvData, projects: list });
-                              }}
-                              placeholder="Mô tả các tính năng cốt lõi và kết quả dự án..."
-                              rows={2}
-                              className="w-full bg-slate-950/60 border border-slate-850 focus:border-purple-500 rounded-lg px-2 py-1.5 text-xs text-slate-200 focus:outline-none font-sans leading-relaxed resize-y"
-                            />
-                          </div>
-                        </div>
-                      ))
-                    )}
-                  </div>
+                  <ProjectsForm
+                    cvData={cvData}
+                    setCvData={setCvData}
+                    t={t}
+                    language={language}
+                  addProject={addProject}
+                  removeProject={removeProject}
+                  />
                 )}
 
-                {/* 6. SKILLS TAB */}
+                {/* SkillsForm */}
                 {activeTab === 'skills' && (
-                  <div className="flex flex-col gap-6">
-                    <div className="flex justify-between items-center">
-                      <h3 className="text-sm font-bold text-slate-300">Phân nhóm Kỹ năng</h3>
-                      <button
-                        type="button"
-                        onClick={addSkill}
-                        className="text-xs font-bold text-purple-400 hover:text-purple-300 flex items-center gap-1 cursor-pointer bg-slate-800/80 hover:bg-slate-700/80 px-2.5 py-1.5 rounded-xl border border-slate-700/50"
-                      >
-                        <Plus className="h-3.5 w-3.5" /> Thêm nhóm
-                      </button>
-                    </div>
-
-                    {cvData.skills.length === 0 ? (
-                      <p className="text-xs text-slate-500 italic text-center py-6">{t('emptySkills')}</p>
-                    ) : (
-                      cvData.skills.map((grp, index) => (
-                        <div key={grp.id} className="bg-slate-950/40 p-4 rounded-xl border border-slate-800/80 flex flex-col gap-3 relative">
-                          <button
-                            type="button"
-                            onClick={() => removeSkill(grp.id)}
-                            className="absolute top-4 right-4 text-slate-500 hover:text-rose-400 p-1.5 hover:bg-slate-900 rounded-lg cursor-pointer transition-colors"
-                          >
-                            <Trash2 className="h-4 w-4" />
-                          </button>
-                          <span className="absolute top-4 left-4 bg-slate-800 text-slate-400 text-[10px] font-mono font-bold px-2 py-0.5 rounded">#{index + 1}</span>
-
-                          <div className="grid grid-cols-1 gap-3 mt-4">
-                            <div>
-                              <label className="block text-[10px] font-bold uppercase tracking-wider text-slate-550 mb-1">Tên Nhóm (Category)</label>
-                              <input
-                                type="text"
-                                value={grp.category}
-                                onChange={(e) => {
-                                  const list = [...cvData.skills];
-                                  list[index].category = e.target.value;
-                                  setCvData({ ...cvData, skills: list });
-                                }}
-                                placeholder="Ví dụ: Frontend, Backend, Cloud..."
-                                className="w-full bg-slate-950/60 border border-slate-850 focus:border-purple-500 rounded-lg px-2 py-1.5 text-xs text-slate-200 focus:outline-none"
-                              />
-                            </div>
-                            <div>
-                              <label className="block text-[10px] font-bold uppercase tracking-wider text-slate-550 mb-1">Các kỹ năng (Phân tách bằng dấu phẩy)</label>
-                              <input
-                                type="text"
-                                value={grp.skills.join(", ")}
-                                onChange={(e) => {
-                                  const list = [...cvData.skills];
-                                  list[index].skills = e.target.value.split(",").map(s => s.trim());
-                                  setCvData({ ...cvData, skills: list });
-                                }}
-                                placeholder="React, Next.js, HTML, CSS"
-                                className="w-full bg-slate-950/60 border border-slate-850 focus:border-purple-500 rounded-lg px-2 py-1.5 text-xs text-slate-200 focus:outline-none"
-                              />
-                            </div>
-                          </div>
-                        </div>
-                      ))
-                    )}
-                  </div>
+                  <SkillsForm
+                    cvData={cvData}
+                    setCvData={setCvData}
+                    t={t}
+                    language={language}
+                  addSkill={addSkill}
+                  removeSkill={removeSkill}
+                  />
                 )}
 
-                {/* 7. EXTRA (LANGUAGES, CERTIFICATES) TAB */}
+                {/* ExtraForm */}
                 {activeTab === 'extra' && (
-                  <div className="flex flex-col gap-8">
-                    
-                    {/* A. Certificates */}
-                    <div className="flex flex-col gap-4">
-                      <div className="flex justify-between items-center border-b border-slate-800 pb-2">
-                        <h3 className="text-sm font-bold text-slate-300 flex items-center gap-2">
-                          <Award className="h-4 w-4 text-purple-400" />
-                          {t('certTitle')}
-                        </h3>
-                        <button
-                          type="button"
-                          onClick={addCertificate}
-                          className="text-[10px] font-bold text-purple-400 hover:text-purple-300 flex items-center gap-0.5 cursor-pointer bg-slate-800/80 px-2 py-1 rounded-lg border border-slate-700/50"
-                        >
-                          <Plus className="h-3 w-3" /> {t('addCert')}
-                        </button>
-                      </div>
-
-                      {cvData.certificates.length === 0 ? (
-                        <p className="text-xs text-slate-550 italic text-center py-2">{t('emptyCert')}</p>
-                      ) : (
-                        cvData.certificates.map((cert, index) => (
-                          <div key={cert.id} className="bg-slate-950/40 p-3 rounded-lg border border-slate-850 flex flex-col gap-2 relative">
-                            <button
-                              type="button"
-                              onClick={() => removeCertificate(cert.id)}
-                              className="absolute top-3 right-3 text-slate-500 hover:text-rose-450 p-1 hover:bg-slate-900 rounded cursor-pointer"
-                            >
-                              <Trash2 className="h-3.5 w-3.5" />
-                            </button>
-                            
-                            <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 mt-2">
-                              <div>
-                                <label className="block text-[9px] font-bold uppercase text-slate-500 mb-0.5">{t('certNameLabel')}</label>
-                                <input
-                                  type="text"
-                                  value={cert.name}
-                                  onChange={(e) => {
-                                    const list = [...cvData.certificates];
-                                    list[index].name = e.target.value;
-                                    setCvData({ ...cvData, certificates: list });
-                                  }}
-                                  placeholder="AWS Solutions Architect"
-                                  className="w-full bg-slate-950/60 border border-slate-850 focus:border-purple-500 rounded px-2 py-1 text-xs text-slate-200 focus:outline-none"
-                                />
-                              </div>
-                              <div>
-                                <label className="block text-[9px] font-bold uppercase text-slate-500 mb-0.5">{t('issuerLabel')}</label>
-                                <input
-                                  type="text"
-                                  value={cert.issuer}
-                                  onChange={(e) => {
-                                    const list = [...cvData.certificates];
-                                    list[index].issuer = e.target.value;
-                                    setCvData({ ...cvData, certificates: list });
-                                  }}
-                                  placeholder="Amazon Web Services"
-                                  className="w-full bg-slate-950/60 border border-slate-850 focus:border-purple-500 rounded px-2 py-1 text-xs text-slate-200 focus:outline-none"
-                                />
-                              </div>
-                              <div>
-                                <label className="block text-[9px] font-bold uppercase text-slate-500 mb-0.5">{t('dateLabel')}</label>
-                                <input
-                                  type="text"
-                                  value={cert.date}
-                                  onChange={(e) => {
-                                    const list = [...cvData.certificates];
-                                    list[index].date = e.target.value;
-                                    setCvData({ ...cvData, certificates: list });
-                                  }}
-                                  placeholder="2023"
-                                  className="w-full bg-slate-950/60 border border-slate-850 focus:border-purple-500 rounded px-2 py-1 text-xs text-slate-200 focus:outline-none"
-                                />
-                              </div>
-                            </div>
-                          </div>
-                        ))
-                      )}
-                    </div>
-
-                    {/* B. Languages */}
-                    <div className="flex flex-col gap-4">
-                      <div className="flex justify-between items-center border-b border-slate-800 pb-2">
-                        <h3 className="text-sm font-bold text-slate-300 flex items-center gap-2">
-                          <Languages className="h-4 w-4 text-purple-400" />
-                          {t('langTitle')}
-                        </h3>
-                        <button
-                          type="button"
-                          onClick={addLanguage}
-                          className="text-[10px] font-bold text-purple-400 hover:text-purple-300 flex items-center gap-0.5 cursor-pointer bg-slate-800/80 px-2 py-1 rounded-lg border border-slate-700/50"
-                        >
-                          <Plus className="h-3 w-3" /> {t('addLang')}
-                        </button>
-                      </div>
-
-                      {cvData.languages.length === 0 ? (
-                        <p className="text-xs text-slate-550 italic text-center py-2">{t('emptyLang')}</p>
-                      ) : (
-                        cvData.languages.map((lang, index) => (
-                          <div key={lang.id} className="bg-slate-950/40 p-3 rounded-lg border border-slate-850 flex flex-col gap-2 relative">
-                            <button
-                              type="button"
-                              onClick={() => removeLanguage(lang.id)}
-                              className="absolute top-3 right-3 text-slate-500 hover:text-rose-450 p-1 hover:bg-slate-900 rounded cursor-pointer"
-                            >
-                              <Trash2 className="h-3.5 w-3.5" />
-                            </button>
-                            
-                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mt-2">
-                              <div>
-                                <label className="block text-[9px] font-bold uppercase text-slate-500 mb-0.5">Tên {t('langTitle')}</label>
-                                <input
-                                  type="text"
-                                  value={lang.name}
-                                  onChange={(e) => {
-                                    const list = [...cvData.languages];
-                                    list[index].name = e.target.value;
-                                    setCvData({ ...cvData, languages: list });
-                                  }}
-                                  placeholder={t('langPlaceholder')}
-                                  className="w-full bg-slate-950/60 border border-slate-850 focus:border-purple-500 rounded px-2 py-1 text-xs text-slate-200 focus:outline-none"
-                                />
-                              </div>
-                              <div>
-                                <label className="block text-[9px] font-bold uppercase text-slate-500 mb-0.5">{t('langLevelLabel')}</label>
-                                <input
-                                  type="text"
-                                  value={lang.level}
-                                  onChange={(e) => {
-                                    const list = [...cvData.languages];
-                                    list[index].level = e.target.value;
-                                    setCvData({ ...cvData, languages: list });
-                                  }}
-                                  placeholder={t('langLevelPlaceholder')}
-                                  className="w-full bg-slate-950/60 border border-slate-850 focus:border-purple-500 rounded px-2 py-1 text-xs text-slate-200 focus:outline-none"
-                                />
-                              </div>
-                            </div>
-                          </div>
-                        ))
-                      )}
-                    </div>
-
-                  </div>
+                  <ExtraForm
+                    cvData={cvData}
+                    setCvData={setCvData}
+                    t={t}
+                    language={language}
+                  addCertificate={addCertificate}
+                  removeCertificate={removeCertificate}
+                  addLanguage={addLanguage}
+                  removeLanguage={removeLanguage}
+                  />
                 )}
 
+                {/* LayoutForm */}
                 {activeTab === 'layout' && (
-                  <div className="flex flex-col gap-6">
-                    <div className="border-b border-slate-800 pb-2">
-                      <h3 className="text-sm font-bold text-slate-300 flex items-center gap-2">
-                        <Layers className="h-4 w-4 text-purple-400" />
-                        {language === 'vi' ? 'Sắp xếp Thứ tự các Khối (Sections)' : 'Adjust Section Layout Order'}
-                      </h3>
-                      <p className="text-xs text-slate-500 mt-1 leading-relaxed">
-                        {language === 'vi' 
-                          ? 'Sử dụng các nút mũi tên Lên/Xuống bên phải mỗi khối để thay đổi thứ tự hiển thị của khối đó trên CV của bạn. Bố cục CV sẽ tự động cập nhật ngay lập tức!'
-                          : 'Use the Up/Down arrow buttons to adjust the vertical order of sections on your CV. The CV template will update dynamically!'}
-                      </p>
-                    </div>
-
-                    <div className="flex flex-col gap-2.5">
-                      {(() => {
-                        const order = cvData.sectionOrder || ['summary', 'experience', 'projects', 'education', 'skills', 'certificates', 'languages'];
-                        
-                        const SECTION_META = {
-                          summary: { nameVi: 'Tóm tắt (Summary)', nameEn: 'Summary', icon: User },
-                          experience: { nameVi: 'Kinh nghiệm làm việc', nameEn: 'Work Experience', icon: Briefcase },
-                          projects: { nameVi: 'Dự án tiêu biểu', nameEn: 'Key Projects', icon: FolderGit2 },
-                          education: { nameVi: 'Học vấn', nameEn: 'Education', icon: GraduationCap },
-                          skills: { nameVi: 'Kỹ năng chuyên môn', nameEn: 'Professional Skills', icon: Wrench },
-                          certificates: { nameVi: 'Chứng chỉ', nameEn: 'Certificates', icon: Award },
-                          languages: { nameVi: 'Ngoại ngữ', nameEn: 'Languages', icon: Languages }
-                        };
-
-                        return order.map((sec, idx) => {
-                          const meta = SECTION_META[sec as keyof typeof SECTION_META];
-                          if (!meta) return null;
-                          const IconComp = meta.icon;
-
-                          return (
-                            <div 
-                              key={sec} 
-                              className="bg-slate-950/40 px-4 py-3.5 rounded-xl border border-slate-850 hover:border-slate-800 transition-all flex items-center justify-between"
-                            >
-                              <div className="flex items-center gap-3">
-                                <div className="bg-slate-900 p-2 rounded-lg border border-slate-800 text-purple-400">
-                                  <IconComp className="h-4 w-4" />
-                                </div>
-                                <span className="text-xs font-bold text-slate-200">
-                                  {language === 'vi' ? meta.nameVi : meta.nameEn}
-                                </span>
-                              </div>
-
-                              <div className="flex items-center gap-1.5">
-                                <button
-                                  type="button"
-                                  onClick={() => {
-                                    const currentOrder = [...order];
-                                    if (idx > 0) {
-                                      const temp = currentOrder[idx];
-                                      currentOrder[idx] = currentOrder[idx - 1];
-                                      currentOrder[idx - 1] = temp;
-                                      setCvData({ ...cvData, sectionOrder: currentOrder });
-                                    }
-                                  }}
-                                  disabled={idx === 0}
-                                  className={`p-1.5 rounded-lg border transition-all cursor-pointer ${
-                                    idx === 0 
-                                      ? 'text-slate-600 border-slate-850 bg-slate-900/10 cursor-not-allowed' 
-                                      : 'text-slate-400 border-slate-800 hover:text-slate-200 hover:bg-slate-800 bg-slate-900/40'
-                                  }`}
-                                  title={language === 'vi' ? 'Di chuyển lên' : 'Move up'}
-                                >
-                                  <ArrowUp className="h-3.5 w-3.5" />
-                                </button>
-                                <button
-                                  type="button"
-                                  onClick={() => {
-                                    const currentOrder = [...order];
-                                    if (idx < currentOrder.length - 1) {
-                                      const temp = currentOrder[idx];
-                                      currentOrder[idx] = currentOrder[idx + 1];
-                                      currentOrder[idx + 1] = temp;
-                                      setCvData({ ...cvData, sectionOrder: currentOrder });
-                                    }
-                                  }}
-                                  disabled={idx === order.length - 1}
-                                  className={`p-1.5 rounded-lg border transition-all cursor-pointer ${
-                                    idx === order.length - 1
-                                      ? 'text-slate-600 border-slate-850 bg-slate-900/10 cursor-not-allowed' 
-                                      : 'text-slate-400 border-slate-800 hover:text-slate-200 hover:bg-slate-800 bg-slate-900/40'
-                                  }`}
-                                  title={language === 'vi' ? 'Di chuyển xuống' : 'Move down'}
-                                >
-                                  <ArrowDown className="h-3.5 w-3.5" />
-                                </button>
-                              </div>
-                            </div>
-                          );
-                        });
-                      })()}
-                    </div>
-                  </div>
+                  <LayoutForm
+                    cvData={cvData}
+                    setCvData={setCvData}
+                    t={t}
+                    language={language}
+                  />
                 )}
+
 
               </div>
             </div>
