@@ -6,6 +6,7 @@ import { useTranslation } from '../i18n/useTranslation';
 import { TRANSLATIONS } from '../i18n/translations';
 import { processAvatar } from '../services/avatarProcessor';
 import { cvDataReducer, type CVAction } from './cvDataReducer';
+import { usePasscodeVerify } from './usePasscodeVerify';
 
 export type EditorStatus = 'loading' | 'editing' | 'view-only';
 
@@ -91,10 +92,13 @@ export function useCVEditor(): CVEditorState {
   };
 
   // --- Auth ---
-  const [passcode, setPasscode] = useState<string>('');
-  const [showVerifyModal, setShowVerifyModal] = useState<boolean>(false);
-  const [verifyPasscodeVal, setVerifyPasscodeVal] = useState<string>('');
-  const [verifyError, setVerifyError] = useState<string>('');
+  const {
+    passcode, setPasscode,
+    showVerifyModal, setShowVerifyModal,
+    verifyPasscodeVal, setVerifyPasscodeVal,
+    verifyError, setVerifyError,
+    handleUnlockVerify: rawHandleUnlockVerify
+  } = usePasscodeVerify();
 
   // --- UI ---
   const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -187,27 +191,8 @@ export function useCVEditor(): CVEditorState {
   };
 
   // --- Passcode Verify ---
-  const handleUnlockVerify = async () => {
-    if (!verifyPasscodeVal.trim()) { setVerifyError(t('errorPasscodeRequired')); return; }
-    setIsLoading(true);
-    setVerifyError('');
-    try {
-      const isValid = await api.verifyPasscode(slug, verifyPasscodeVal);
-      if (isValid) {
-        setPasscode(verifyPasscodeVal);
-        setIsEditMode(true);
-        setShowVerifyModal(false);
-        setVerifyPasscodeVal('');
-        setStatusMessage({ type: 'success', text: t('successAuth') });
-      } else {
-        setVerifyError(t('errorAuthIncorrect'));
-      }
-    } catch (err: any) {
-      setVerifyError(err.message || t('errorAuthFailed'));
-    } finally {
-      setIsLoading(false);
-    }
-  };
+  const handleUnlockVerify = () =>
+    rawHandleUnlockVerify(slug, t, setIsLoading, setIsEditMode, setStatusMessage);
 
   // --- Avatar ---
   const handleAvatarUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
