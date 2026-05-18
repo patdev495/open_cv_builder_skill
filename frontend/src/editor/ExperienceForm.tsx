@@ -1,18 +1,8 @@
-import React from 'react';
 import { Plus, Trash2 } from 'lucide-react';
-import type { CVSchema } from '../types';
-import { TRANSLATIONS } from '../constants';
+import { useCVEditorContext } from '../context/CVEditorContext';
 
-export interface ExperienceFormProps {
-  cvData: CVSchema;
-  setCvData: React.Dispatch<React.SetStateAction<CVSchema>>;
-  t: (key: keyof typeof TRANSLATIONS.vi) => string;
-  language: 'vi' | 'en';
-  addExperience: () => void;
-  removeExperience: (id: string) => void;
-}
-
-export function ExperienceForm({ cvData, setCvData, t, language: _language, addExperience, removeExperience }: ExperienceFormProps) {
+export function ExperienceForm() {
+  const { cvData, dispatch, t, addExperience, removeExperience } = useCVEditorContext();
   return (
                   <div className="flex flex-col gap-6">
                     <div className="flex justify-between items-center">
@@ -47,11 +37,7 @@ export function ExperienceForm({ cvData, setCvData, t, language: _language, addE
                               <input
                                 type="text"
                                 value={exp.company}
-                                onChange={(e) => {
-                                  const list = [...cvData.experience];
-                                  list[index].company = e.target.value;
-                                  setCvData({ ...cvData, experience: list });
-                                }}
+                                onChange={(e) => dispatch({ type: 'UPDATE_EXPERIENCE', id: exp.id, payload: { company: e.target.value } })}
                                 placeholder={t('companyPlaceholder')}
                                 className="w-full bg-slate-950/60 border border-slate-850 focus:border-purple-500 rounded-lg px-2 py-1.5 text-xs text-slate-200 focus:outline-none"
                               />
@@ -61,11 +47,7 @@ export function ExperienceForm({ cvData, setCvData, t, language: _language, addE
                               <input
                                 type="text"
                                 value={exp.position}
-                                onChange={(e) => {
-                                  const list = [...cvData.experience];
-                                  list[index].position = e.target.value;
-                                  setCvData({ ...cvData, experience: list });
-                                }}
+                                onChange={(e) => dispatch({ type: 'UPDATE_EXPERIENCE', id: exp.id, payload: { position: e.target.value } })}
                                 placeholder={t('positionPlaceholder')}
                                 className="w-full bg-slate-950/60 border border-slate-850 focus:border-purple-500 rounded-lg px-2 py-1.5 text-xs text-slate-200 focus:outline-none"
                               />
@@ -75,11 +57,7 @@ export function ExperienceForm({ cvData, setCvData, t, language: _language, addE
                               <input
                                 type="text"
                                 value={exp.startDate}
-                                onChange={(e) => {
-                                  const list = [...cvData.experience];
-                                  list[index].startDate = e.target.value;
-                                  setCvData({ ...cvData, experience: list });
-                                }}
+                                onChange={(e) => dispatch({ type: 'UPDATE_EXPERIENCE', id: exp.id, payload: { startDate: e.target.value } })}
                                 placeholder={t('datePlaceholder')}
                                 className="w-full bg-slate-950/60 border border-slate-850 focus:border-purple-500 rounded-lg px-2 py-1.5 text-xs text-slate-200 focus:outline-none"
                               />
@@ -89,11 +67,7 @@ export function ExperienceForm({ cvData, setCvData, t, language: _language, addE
                               <input
                                 type="text"
                                 value={exp.endDate || ""}
-                                onChange={(e) => {
-                                  const list = [...cvData.experience];
-                                  list[index].endDate = e.target.value;
-                                  setCvData({ ...cvData, experience: list });
-                                }}
+                                onChange={(e) => dispatch({ type: 'UPDATE_EXPERIENCE', id: exp.id, payload: { endDate: e.target.value } })}
                                 placeholder={t('datePlaceholder')}
                                 className="w-full bg-slate-950/60 border border-slate-850 focus:border-purple-500 rounded-lg px-2 py-1.5 text-xs text-slate-200 focus:outline-none"
                               />
@@ -103,11 +77,7 @@ export function ExperienceForm({ cvData, setCvData, t, language: _language, addE
                             <label className="block text-[10px] font-bold uppercase tracking-wider text-slate-550 mb-1">{t('descLabel')}</label>
                             <textarea
                               value={exp.description}
-                              onChange={(e) => {
-                                const list = [...cvData.experience];
-                                list[index].description = e.target.value;
-                                setCvData({ ...cvData, experience: list });
-                              }}
+                              onChange={(e) => dispatch({ type: 'UPDATE_EXPERIENCE', id: exp.id, payload: { description: e.target.value } })}
                               placeholder="- Quản lý dự án...\n- Tối ưu hóa API..."
                               rows={3}
                               className="w-full bg-slate-950/60 border border-slate-850 focus:border-purple-500 rounded-lg px-2 py-1.5 text-xs text-slate-200 focus:outline-none font-sans leading-relaxed resize-y"

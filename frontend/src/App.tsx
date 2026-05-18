@@ -1,12 +1,11 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { 
   FileText, Save, Edit3, Eye, Printer, Lock, Globe, Plus, Trash2, Sparkles, Loader2, AlertCircle, CheckCircle2,
   User, Briefcase, GraduationCap, FolderGit2, Wrench, Award, Layers
 } from 'lucide-react';
-import type { ExperienceItem, EducationItem, ProjectItem, SkillGroup, CertificateItem, LanguageItem } from './types';
-import { processAvatar } from './services/avatarProcessor';
 import { COLOR_MAP, FONT_MAP, DENSITY_MAP } from './constants';
 import { useCVEditor } from './hooks/useCVEditor';
+import { CVEditorContext } from './context/CVEditorContext';
 import { PersonalInfoForm } from './editor/PersonalInfoForm';
 import { SummaryForm } from './editor/SummaryForm';
 import { ExperienceForm } from './editor/ExperienceForm';
@@ -15,15 +14,17 @@ import { ProjectsForm } from './editor/ProjectsForm';
 import { SkillsForm } from './editor/SkillsForm';
 import { ExtraForm } from './editor/ExtraForm';
 import { LayoutForm } from './editor/LayoutForm';
+import TemplateRenderer from './templates/TemplateRenderer';
 
 // ==========================================
 // 2. React main App component
 // ==========================================
 function App() {
+  const editorState = useCVEditor();
   const {
     slug,
     inputSlug, setInputSlug,
-    cvData, setCvData,
+    cvData, dispatch,
     template, handleTemplateChange,
     passcode, setPasscode,
     showVerifyModal, setShowVerifyModal,
@@ -37,127 +38,20 @@ function App() {
     t,
     handleSave,
     handleUnlockVerify,
-  } = useCVEditor();
+    handleClearAll,
+  } = editorState;
 
   const [activeTab, setActiveTab] = useState<string>("personal");
 
+  const triggerPrint = () => window.print();
 
-
-  const handleAvatarUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (!file) return;
-
-    try {
-      const compressedBase64 = await processAvatar(file);
-      setCvData((prev) => ({
-        ...prev,
-        personalInfo: {
-          ...prev.personalInfo,
-          avatar: compressedBase64
-        }
-      }));
-    } catch (err) {
-      console.error("Avatar processing failed:", err);
-      // Fallback or error state could be handled here
-    }
-  };
-
-  const handleAvatarDelete = () => {
-    setCvData((prev) => ({
-      ...prev,
-      personalInfo: {
-        ...prev.personalInfo,
-        avatar: undefined
-      }
-    }));
-  };
-
-  const handleClearAll = () => {
-    if (!window.confirm(t('confirmClear'))) return;
-
-    setCvData({
-      personalInfo: {
-        fullName: "",
-        title: "",
-        email: "",
-        phone: "",
-        location: "",
-        website: "",
-        github: "",
-        linkedin: "",
-        avatar: undefined
-      },
-      summary: "",
-      experience: [],
-      education: [],
-      projects: [],
-      skills: [],
-      certificates: [],
-      languages: [],
-      themeColor: cvData.themeColor || "indigo",
-      fontFamily: cvData.fontFamily || "sans"
-    });
-  };
-
-  // Dynamic lists append handlers
-  const addExperience = () => {
-    const item: ExperienceItem = { id: `exp-${Date.now()}`, company: "", position: "", startDate: "", description: "" };
-    setCvData({ ...cvData, experience: [...cvData.experience, item] });
-  };
-  const removeExperience = (id: string) => {
-    setCvData({ ...cvData, experience: cvData.experience.filter(x => x.id !== id) });
-  };
-
-  const addEducation = () => {
-    const item: EducationItem = { id: `edu-${Date.now()}`, institution: "", degree: "", startDate: "" };
-    setCvData({ ...cvData, education: [...cvData.education, item] });
-  };
-  const removeEducation = (id: string) => {
-    setCvData({ ...cvData, education: cvData.education.filter(x => x.id !== id) });
-  };
-
-  const addProject = () => {
-    const item: ProjectItem = { id: `proj-${Date.now()}`, name: "", role: "", startDate: "", description: "", technologies: [] };
-    setCvData({ ...cvData, projects: [...cvData.projects, item] });
-  };
-  const removeProject = (id: string) => {
-    setCvData({ ...cvData, projects: cvData.projects.filter(x => x.id !== id) });
-  };
-
-  const addSkill = () => {
-    const item: SkillGroup = { id: `skill-${Date.now()}`, category: "", skills: [] };
-    setCvData({ ...cvData, skills: [...cvData.skills, item] });
-  };
-  const removeSkill = (id: string) => {
-    setCvData({ ...cvData, skills: cvData.skills.filter(x => x.id !== id) });
-  };
-
-  const addCertificate = () => {
-    const item: CertificateItem = { id: `cert-${Date.now()}`, name: "", issuer: "", date: "" };
-    setCvData({ ...cvData, certificates: [...cvData.certificates, item] });
-  };
-  const removeCertificate = (id: string) => {
-    setCvData({ ...cvData, certificates: cvData.certificates.filter(x => x.id !== id) });
-  };
-
-  const addLanguage = () => {
-    const item: LanguageItem = { id: `lang-${Date.now()}`, name: "", level: "" };
-    setCvData({ ...cvData, languages: [...cvData.languages, item] });
-  };
-  const removeLanguage = (id: string) => {
-    setCvData({ ...cvData, languages: cvData.languages.filter(x => x.id !== id) });
-  };
-
-  // Trigger browser print dialog (perfect client-side vector A4 export)
-  const triggerPrint = () => {
-    window.print();
-  };
 
   const activeColor = COLOR_MAP[(cvData.themeColor || 'indigo') as keyof typeof COLOR_MAP] || COLOR_MAP.indigo;
   const activeFont = FONT_MAP[(cvData.fontFamily || 'sans') as keyof typeof FONT_MAP] || FONT_MAP.sans;
   const activeDensity = DENSITY_MAP[(cvData.layoutDensity || 'normal') as keyof typeof DENSITY_MAP] || DENSITY_MAP.normal;
 
   return (
+    <CVEditorContext.Provider value={editorState}>
     <div className="min-h-screen bg-slate-950 text-slate-100 flex flex-col font-sans antialiased selection:bg-purple-600 selection:text-white">
       
       {/* ==========================================
@@ -400,7 +294,7 @@ function App() {
                         <button
                           key={c.id}
                           type="button"
-                          onClick={() => setCvData({ ...cvData, themeColor: c.id })}
+                          onClick={() => dispatch({ type: 'SET_THEME_COLOR', payload: c.id })}
                           className={`w-6 h-6 rounded-full cursor-pointer transition-all border-2 flex items-center justify-center hover:scale-110 active:scale-95 ${
                             (cvData.themeColor || 'indigo') === c.id
                               ? 'border-white ring-2 ring-purple-500/50'
@@ -419,7 +313,7 @@ function App() {
                     </label>
                     <select
                       value={cvData.layoutDensity || 'normal'}
-                      onChange={(e) => setCvData({ ...cvData, layoutDensity: e.target.value as any })}
+                      onChange={(e) => dispatch({ type: 'SET_LAYOUT_DENSITY', payload: e.target.value as 'compact' | 'normal' | 'comfortable' })}
                       className="w-full bg-slate-950/60 border border-slate-800 focus:border-purple-500 rounded-xl px-3 py-1.5 text-xs text-slate-200 focus:outline-none transition-colors"
                     >
                       <option value="compact">{language === 'vi' ? 'Nhỏ (Gọn gàng)' : 'Compact'}</option>
@@ -435,7 +329,7 @@ function App() {
                     </label>
                     <select
                       value={cvData.fontFamily || 'inter'}
-                      onChange={(e) => setCvData({ ...cvData, fontFamily: e.target.value })}
+                      onChange={(e) => dispatch({ type: 'SET_FONT_FAMILY', payload: e.target.value })}
                       className="w-full bg-slate-950/60 border border-slate-800 focus:border-purple-500 rounded-xl px-3 py-1.5 text-xs text-slate-200 focus:outline-none transition-colors"
                     >
                       <optgroup label="Modern Sans">
@@ -463,7 +357,7 @@ function App() {
                         <button
                           key={val}
                           type="button"
-                          onClick={() => setCvData({ ...cvData, pageLayout: val as 'single' | 'multi' })}
+                          onClick={() => dispatch({ type: 'SET_PAGE_LAYOUT', payload: val as 'single' | 'multi' })}
                           className={`flex-1 py-2 px-3 text-xs font-bold rounded-xl border transition-all cursor-pointer ${
                             (cvData.pageLayout || 'single') === val
                               ? 'bg-purple-600 border-purple-500 text-white shadow-lg shadow-purple-900/30'
@@ -542,96 +436,42 @@ function App() {
               <div className="flex-1 p-6 overflow-y-auto max-h-[500px]">
                 {/* PersonalInfoForm */}
                 {activeTab === 'personal' && (
-                  <PersonalInfoForm
-                    cvData={cvData}
-                    setCvData={setCvData}
-                    t={t}
-                    language={language}
-                  handleAvatarUpload={handleAvatarUpload}
-                  handleAvatarDelete={handleAvatarDelete}
-                  />
+                  <PersonalInfoForm />
                 )}
 
                 {/* SummaryForm */}
                 {activeTab === 'summary' && (
-                  <SummaryForm
-                    cvData={cvData}
-                    setCvData={setCvData}
-                    t={t}
-                    language={language}
-                  />
+                  <SummaryForm />
                 )}
 
                 {/* ExperienceForm */}
                 {activeTab === 'experience' && (
-                  <ExperienceForm
-                    cvData={cvData}
-                    setCvData={setCvData}
-                    t={t}
-                    language={language}
-                  addExperience={addExperience}
-                  removeExperience={removeExperience}
-                  />
+                  <ExperienceForm />
                 )}
 
                 {/* EducationForm */}
                 {activeTab === 'education' && (
-                  <EducationForm
-                    cvData={cvData}
-                    setCvData={setCvData}
-                    t={t}
-                    language={language}
-                  addEducation={addEducation}
-                  removeEducation={removeEducation}
-                  />
+                  <EducationForm />
                 )}
 
                 {/* ProjectsForm */}
                 {activeTab === 'projects' && (
-                  <ProjectsForm
-                    cvData={cvData}
-                    setCvData={setCvData}
-                    t={t}
-                    language={language}
-                  addProject={addProject}
-                  removeProject={removeProject}
-                  />
+                  <ProjectsForm />
                 )}
 
                 {/* SkillsForm */}
                 {activeTab === 'skills' && (
-                  <SkillsForm
-                    cvData={cvData}
-                    setCvData={setCvData}
-                    t={t}
-                    language={language}
-                  addSkill={addSkill}
-                  removeSkill={removeSkill}
-                  />
+                  <SkillsForm />
                 )}
 
                 {/* ExtraForm */}
                 {activeTab === 'extra' && (
-                  <ExtraForm
-                    cvData={cvData}
-                    setCvData={setCvData}
-                    t={t}
-                    language={language}
-                  addCertificate={addCertificate}
-                  removeCertificate={removeCertificate}
-                  addLanguage={addLanguage}
-                  removeLanguage={removeLanguage}
-                  />
+                  <ExtraForm />
                 )}
 
                 {/* LayoutForm */}
                 {activeTab === 'layout' && (
-                  <LayoutForm
-                    cvData={cvData}
-                    setCvData={setCvData}
-                    t={t}
-                    language={language}
-                  />
+                  <LayoutForm />
                 )}
 
 
@@ -775,8 +615,8 @@ function App() {
       )}
 
     </div>
+    </CVEditorContext.Provider>
   );
 }
 
-export default App;import TemplateRenderer from './templates/TemplateRenderer';
-
+export default App;

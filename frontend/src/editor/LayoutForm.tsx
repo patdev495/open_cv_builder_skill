@@ -1,16 +1,8 @@
-import React from 'react';
 import { User, Briefcase, GraduationCap, FolderGit2, Wrench, Award, Languages, Layers, ArrowUp, ArrowDown } from 'lucide-react';
-import type { CVSchema } from '../types';
-import { TRANSLATIONS } from '../constants';
+import { useCVEditorContext } from '../context/CVEditorContext';
 
-export interface LayoutFormProps {
-  cvData: CVSchema;
-  setCvData: React.Dispatch<React.SetStateAction<CVSchema>>;
-  t: (key: keyof typeof TRANSLATIONS.vi) => string;
-  language: 'vi' | 'en';
-}
-
-export function LayoutForm({ cvData, setCvData, t: _t, language }: LayoutFormProps) {
+export function LayoutForm() {
+  const { cvData, dispatch, language } = useCVEditorContext();
   return (
                   <div className="flex flex-col gap-6">
                     <div className="border-b border-slate-800 pb-2">
@@ -67,7 +59,7 @@ export function LayoutForm({ cvData, setCvData, t: _t, language }: LayoutFormPro
                                       const temp = currentOrder[idx];
                                       currentOrder[idx] = currentOrder[idx - 1];
                                       currentOrder[idx - 1] = temp;
-                                      setCvData({ ...cvData, sectionOrder: currentOrder });
+                                      dispatch({ type: 'SET_SECTION_ORDER', payload: currentOrder });
                                     }
                                   }}
                                   disabled={idx === 0}
@@ -88,7 +80,7 @@ export function LayoutForm({ cvData, setCvData, t: _t, language }: LayoutFormPro
                                       const temp = currentOrder[idx];
                                       currentOrder[idx] = currentOrder[idx + 1];
                                       currentOrder[idx + 1] = temp;
-                                      setCvData({ ...cvData, sectionOrder: currentOrder });
+                                      dispatch({ type: 'SET_SECTION_ORDER', payload: currentOrder });
                                     }
                                   }}
                                   disabled={idx === order.length - 1}

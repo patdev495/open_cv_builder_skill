@@ -1,7 +1,9 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useReducer } from 'react';
 import type { CVSchema } from '../types';
 import * as api from '../services/api';
 import { DEFAULT_CV, TRANSLATIONS } from '../constants';
+import { processAvatar } from '../services/avatarProcessor';
+import { cvDataReducer, type CVAction } from './cvDataReducer';
 
 export type EditorStatus = 'loading' | 'editing' | 'view-only';
 
@@ -11,9 +13,9 @@ export interface CVEditorState {
   inputSlug: string;
   setInputSlug: (v: string) => void;
 
-  // CV data
+  // CV data (read-only — mutations go through dispatch)
   cvData: CVSchema;
-  setCvData: React.Dispatch<React.SetStateAction<CVSchema>>;
+  dispatch: React.Dispatch<CVAction>;
   template: string;
   setTemplate: (t: string) => void;
   handleTemplateChange: (tempId: string) => void;
@@ -41,9 +43,28 @@ export interface CVEditorState {
   setLanguage: (lang: 'vi' | 'en') => void;
   t: (key: keyof typeof TRANSLATIONS.vi) => string;
 
-  // Actions
+  // CV save / auth actions
   handleSave: (e: React.FormEvent) => Promise<void>;
   handleUnlockVerify: () => Promise<void>;
+
+  // Avatar actions
+  handleAvatarUpload: (e: React.ChangeEvent<HTMLInputElement>) => Promise<void>;
+  handleAvatarDelete: () => void;
+  handleClearAll: () => void;
+
+  // List mutations (convenience wrappers over dispatch)
+  addExperience: () => void;
+  removeExperience: (id: string) => void;
+  addEducation: () => void;
+  removeEducation: (id: string) => void;
+  addProject: () => void;
+  removeProject: (id: string) => void;
+  addSkill: () => void;
+  removeSkill: (id: string) => void;
+  addCertificate: () => void;
+  removeCertificate: (id: string) => void;
+  addLanguage: () => void;
+  removeLanguage: (id: string) => void;
 }
 
 export function useCVEditor(): CVEditorState {
@@ -58,29 +79,24 @@ export function useCVEditor(): CVEditorState {
     setLanguageState(lang);
   };
 
-  const t = (key: keyof typeof TRANSLATIONS.vi): string => {
-    return TRANSLATIONS[language][key] || TRANSLATIONS.vi[key];
-  };
+  const t = (key: keyof typeof TRANSLATIONS.vi): string =>
+    TRANSLATIONS[language][key] || TRANSLATIONS.vi[key];
 
   // --- Routing ---
   const [slug, setSlug] = useState<string>('');
   const [inputSlug, setInputSlug] = useState<string>('');
 
-  // --- CV Data & Template ---
-  const [cvData, setCvData] = useState<CVSchema>(DEFAULT_CV);
+  // --- CV Data via Reducer ---
+  const [cvData, dispatch] = useReducer(cvDataReducer, DEFAULT_CV);
   const [template, setTemplate] = useState<string>('modern');
 
   const handleTemplateChange = (tempId: string) => {
     setTemplate(tempId);
-    // Smart default typography mapped to template
     const fontMap: Record<string, string> = {
-      modern: 'inter',
-      classic: 'lora',
-      creative: 'fira',
-      executive: 'outfit',
-      minimal: 'playfair',
+      modern: 'inter', classic: 'lora', creative: 'fira',
+      executive: 'outfit', minimal: 'playfair',
     };
-    setCvData(prev => ({ ...prev, fontFamily: fontMap[tempId] || 'inter' }));
+    dispatch({ type: 'SET_FONT_FAMILY', payload: fontMap[tempId] || 'inter' });
   };
 
   // --- Auth ---
@@ -102,31 +118,29 @@ export function useCVEditor(): CVEditorState {
       : 'CV Builder Pro';
   }, [cvData?.personalInfo?.fullName]);
 
-  // --- Fetch CV on load (Custom Client-side Routing) ---
+  // --- Fetch CV on load ---
   const loadCVFromServer = async (targetSlug: string) => {
     setIsLoading(true);
     setStatusMessage(null);
     try {
       const data = await api.fetchCV(targetSlug);
-      // Re-hydrate array items with temporary client-side IDs
       const hydratedData: CVSchema = {
         ...data.cv_data,
-        experience: data.cv_data.experience?.map((x: any, i: number) => ({ ...x, id: x.id || `exp-${i}-${Date.now()}` })) || [],
-        education: data.cv_data.education?.map((x: any, i: number) => ({ ...x, id: x.id || `edu-${i}-${Date.now()}` })) || [],
-        projects: data.cv_data.projects?.map((x: any, i: number) => ({ ...x, id: x.id || `proj-${i}-${Date.now()}` })) || [],
-        skills: data.cv_data.skills?.map((x: any, i: number) => ({ ...x, id: x.id || `skill-${i}-${Date.now()}` })) || [],
+        experience:   data.cv_data.experience?.map((x: any, i: number) => ({ ...x, id: x.id || `exp-${i}-${Date.now()}` })) || [],
+        education:    data.cv_data.education?.map((x: any, i: number) => ({ ...x, id: x.id || `edu-${i}-${Date.now()}` })) || [],
+        projects:     data.cv_data.projects?.map((x: any, i: number) => ({ ...x, id: x.id || `proj-${i}-${Date.now()}` })) || [],
+        skills:       data.cv_data.skills?.map((x: any, i: number) => ({ ...x, id: x.id || `skill-${i}-${Date.now()}` })) || [],
         certificates: data.cv_data.certificates?.map((x: any, i: number) => ({ ...x, id: x.id || `cert-${i}-${Date.now()}` })) || [],
-        languages: data.cv_data.languages?.map((x: any, i: number) => ({ ...x, id: x.id || `lang-${i}-${Date.now()}` })) || [],
+        languages:    data.cv_data.languages?.map((x: any, i: number) => ({ ...x, id: x.id || `lang-${i}-${Date.now()}` })) || [],
       };
-      setCvData(hydratedData);
+      dispatch({ type: 'LOAD_CV', payload: hydratedData });
       setTemplate(data.template || 'modern');
       setIsEditMode(false);
       setIsViewOnly(true);
     } catch {
-      // Slug does not exist yet — available for creation
       setIsEditMode(true);
       setIsViewOnly(false);
-      setCvData(DEFAULT_CV);
+      dispatch({ type: 'LOAD_CV', payload: DEFAULT_CV });
       setStatusMessage({ type: 'success', text: `/${targetSlug} ${t('notExistYet')}` });
     } finally {
       setIsLoading(false);
@@ -149,23 +163,16 @@ export function useCVEditor(): CVEditorState {
   // --- Save (Create or Update) ---
   const handleSave = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!inputSlug.trim()) {
-      setStatusMessage({ type: 'error', text: t('errorNoSlug') });
-      return;
-    }
-    if (!passcode.trim()) {
-      setStatusMessage({ type: 'error', text: t('errorNoPasscode') });
-      return;
-    }
+    if (!inputSlug.trim()) { setStatusMessage({ type: 'error', text: t('errorNoSlug') }); return; }
+    if (!passcode.trim())  { setStatusMessage({ type: 'error', text: t('errorNoPasscode') }); return; }
 
     setIsLoading(true);
     setStatusMessage(null);
     const targetSlug = inputSlug.trim().toLowerCase();
-
     const cleanedCvData: CVSchema = {
       ...cvData,
       projects: cvData.projects.map(p => ({ ...p, technologies: p.technologies.filter(Boolean) })),
-      skills: cvData.skills.map(s => ({ ...s, skills: s.skills.filter(Boolean) })),
+      skills:   cvData.skills.map(s => ({ ...s, skills: s.skills.filter(Boolean) })),
     };
 
     try {
@@ -180,7 +187,7 @@ export function useCVEditor(): CVEditorState {
         window.history.pushState({}, '', `/${targetSlug}`);
         setStatusMessage({ type: 'success', text: `${t('successPublish')}${targetSlug}` });
       }
-      setCvData(cleanedCvData);
+      dispatch({ type: 'LOAD_CV', payload: cleanedCvData });
     } catch (err: any) {
       setStatusMessage({ type: 'error', text: err.message || 'Lỗi khi lưu trữ CV.' });
     } finally {
@@ -188,13 +195,9 @@ export function useCVEditor(): CVEditorState {
     }
   };
 
-  // --- Verify Passcode ---
+  // --- Passcode Verify ---
   const handleUnlockVerify = async () => {
-    if (!verifyPasscodeVal.trim()) {
-      setVerifyError(t('errorPasscodeRequired'));
-      return;
-    }
-
+    if (!verifyPasscodeVal.trim()) { setVerifyError(t('errorPasscodeRequired')); return; }
     setIsLoading(true);
     setVerifyError('');
     try {
@@ -215,33 +218,56 @@ export function useCVEditor(): CVEditorState {
     }
   };
 
+  // --- Avatar ---
+  const handleAvatarUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    try {
+      const base64 = await processAvatar(file);
+      dispatch({ type: 'SET_AVATAR', payload: base64 });
+    } catch (err) {
+      console.error('Avatar processing failed:', err);
+    }
+  };
+
+  const handleAvatarDelete = () => dispatch({ type: 'DELETE_AVATAR' });
+
+  const handleClearAll = () => {
+    if (!window.confirm(t('confirmClear'))) return;
+    dispatch({ type: 'CLEAR_ALL', preserveSettings: { themeColor: cvData.themeColor, fontFamily: cvData.fontFamily } });
+  };
+
+  // --- List convenience wrappers ---
+  const addExperience    = () => dispatch({ type: 'ADD_EXPERIENCE' });
+  const removeExperience = (id: string) => dispatch({ type: 'REMOVE_EXPERIENCE', id });
+  const addEducation     = () => dispatch({ type: 'ADD_EDUCATION' });
+  const removeEducation  = (id: string) => dispatch({ type: 'REMOVE_EDUCATION', id });
+  const addProject       = () => dispatch({ type: 'ADD_PROJECT' });
+  const removeProject    = (id: string) => dispatch({ type: 'REMOVE_PROJECT', id });
+  const addSkill         = () => dispatch({ type: 'ADD_SKILL_GROUP' });
+  const removeSkill      = (id: string) => dispatch({ type: 'REMOVE_SKILL_GROUP', id });
+  const addCertificate   = () => dispatch({ type: 'ADD_CERTIFICATE' });
+  const removeCertificate = (id: string) => dispatch({ type: 'REMOVE_CERTIFICATE', id });
+  const addLanguage      = () => dispatch({ type: 'ADD_LANGUAGE' });
+  const removeLanguage   = (id: string) => dispatch({ type: 'REMOVE_LANGUAGE', id });
+
   return {
-    slug,
-    inputSlug,
-    setInputSlug,
-    cvData,
-    setCvData,
-    template,
-    setTemplate,
-    handleTemplateChange,
-    passcode,
-    setPasscode,
-    showVerifyModal,
-    setShowVerifyModal,
-    verifyPasscodeVal,
-    setVerifyPasscodeVal,
-    verifyError,
-    setVerifyError,
-    isLoading,
-    statusMessage,
-    setStatusMessage,
-    isEditMode,
-    setIsEditMode,
-    isViewOnly,
-    language,
-    setLanguage,
-    t,
-    handleSave,
-    handleUnlockVerify,
+    slug, inputSlug, setInputSlug,
+    cvData, dispatch, template, setTemplate, handleTemplateChange,
+    passcode, setPasscode,
+    showVerifyModal, setShowVerifyModal,
+    verifyPasscodeVal, setVerifyPasscodeVal,
+    verifyError, setVerifyError,
+    isLoading, statusMessage, setStatusMessage,
+    isEditMode, setIsEditMode, isViewOnly,
+    language, setLanguage, t,
+    handleSave, handleUnlockVerify,
+    handleAvatarUpload, handleAvatarDelete, handleClearAll,
+    addExperience, removeExperience,
+    addEducation, removeEducation,
+    addProject, removeProject,
+    addSkill, removeSkill,
+    addCertificate, removeCertificate,
+    addLanguage, removeLanguage,
   };
 }

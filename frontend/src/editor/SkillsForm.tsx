@@ -1,18 +1,8 @@
-import React from 'react';
 import { Plus, Trash2 } from 'lucide-react';
-import type { CVSchema } from '../types';
-import { TRANSLATIONS } from '../constants';
+import { useCVEditorContext } from '../context/CVEditorContext';
 
-export interface SkillsFormProps {
-  cvData: CVSchema;
-  setCvData: React.Dispatch<React.SetStateAction<CVSchema>>;
-  t: (key: keyof typeof TRANSLATIONS.vi) => string;
-  language: 'vi' | 'en';
-  addSkill: () => void;
-  removeSkill: (id: string) => void;
-}
-
-export function SkillsForm({ cvData, setCvData, t, language: _language, addSkill, removeSkill }: SkillsFormProps) {
+export function SkillsForm() {
+  const { cvData, dispatch, t, addSkill, removeSkill } = useCVEditorContext();
   return (
                   <div className="flex flex-col gap-6">
                     <div className="flex justify-between items-center">
@@ -46,11 +36,7 @@ export function SkillsForm({ cvData, setCvData, t, language: _language, addSkill
                               <input
                                 type="text"
                                 value={grp.category}
-                                onChange={(e) => {
-                                  const list = [...cvData.skills];
-                                  list[index].category = e.target.value;
-                                  setCvData({ ...cvData, skills: list });
-                                }}
+                                onChange={(e) => dispatch({ type: 'UPDATE_SKILL_GROUP', id: grp.id, payload: { category: e.target.value } })}
                                 placeholder="Ví dụ: Frontend, Backend, Cloud..."
                                 className="w-full bg-slate-950/60 border border-slate-850 focus:border-purple-500 rounded-lg px-2 py-1.5 text-xs text-slate-200 focus:outline-none"
                               />
@@ -60,11 +46,7 @@ export function SkillsForm({ cvData, setCvData, t, language: _language, addSkill
                               <input
                                 type="text"
                                 value={grp.skills.join(", ")}
-                                onChange={(e) => {
-                                  const list = [...cvData.skills];
-                                  list[index].skills = e.target.value.split(",").map(s => s.trim());
-                                  setCvData({ ...cvData, skills: list });
-                                }}
+                                onChange={(e) => dispatch({ type: 'UPDATE_SKILL_GROUP', id: grp.id, payload: { skills: e.target.value.split(',').map((s: string) => s.trim()) } })}
                                 placeholder="React, Next.js, HTML, CSS"
                                 className="w-full bg-slate-950/60 border border-slate-850 focus:border-purple-500 rounded-lg px-2 py-1.5 text-xs text-slate-200 focus:outline-none"
                               />

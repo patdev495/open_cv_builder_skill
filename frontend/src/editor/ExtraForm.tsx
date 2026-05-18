@@ -1,20 +1,8 @@
-import React from 'react';
 import { Award, Languages, Plus, Trash2 } from 'lucide-react';
-import type { CVSchema } from '../types';
-import { TRANSLATIONS } from '../constants';
+import { useCVEditorContext } from '../context/CVEditorContext';
 
-export interface ExtraFormProps {
-  cvData: CVSchema;
-  setCvData: React.Dispatch<React.SetStateAction<CVSchema>>;
-  t: (key: keyof typeof TRANSLATIONS.vi) => string;
-  language: 'vi' | 'en';
-  addCertificate: () => void;
-  removeCertificate: (id: string) => void;
-  addLanguage: () => void;
-  removeLanguage: (id: string) => void;
-}
-
-export function ExtraForm({ cvData, setCvData, t, language: _language, addCertificate, removeCertificate, addLanguage, removeLanguage }: ExtraFormProps) {
+export function ExtraForm() {
+  const { cvData, dispatch, t, addCertificate, removeCertificate, addLanguage, removeLanguage } = useCVEditorContext();
   return (
                   <div className="flex flex-col gap-8">
                     
@@ -37,7 +25,7 @@ export function ExtraForm({ cvData, setCvData, t, language: _language, addCertif
                       {cvData.certificates.length === 0 ? (
                         <p className="text-xs text-slate-550 italic text-center py-2">{t('emptyCert')}</p>
                       ) : (
-                        cvData.certificates.map((cert, index) => (
+                        cvData.certificates.map((cert) => (
                           <div key={cert.id} className="bg-slate-950/40 p-3 rounded-lg border border-slate-850 flex flex-col gap-2 relative">
                             <button
                               type="button"
@@ -53,11 +41,7 @@ export function ExtraForm({ cvData, setCvData, t, language: _language, addCertif
                                 <input
                                   type="text"
                                   value={cert.name}
-                                  onChange={(e) => {
-                                    const list = [...cvData.certificates];
-                                    list[index].name = e.target.value;
-                                    setCvData({ ...cvData, certificates: list });
-                                  }}
+                                  onChange={(e) => dispatch({ type: 'UPDATE_CERTIFICATE', id: cert.id, payload: { name: e.target.value } })}
                                   placeholder="AWS Solutions Architect"
                                   className="w-full bg-slate-950/60 border border-slate-850 focus:border-purple-500 rounded px-2 py-1 text-xs text-slate-200 focus:outline-none"
                                 />
@@ -67,11 +51,7 @@ export function ExtraForm({ cvData, setCvData, t, language: _language, addCertif
                                 <input
                                   type="text"
                                   value={cert.issuer}
-                                  onChange={(e) => {
-                                    const list = [...cvData.certificates];
-                                    list[index].issuer = e.target.value;
-                                    setCvData({ ...cvData, certificates: list });
-                                  }}
+                                  onChange={(e) => dispatch({ type: 'UPDATE_CERTIFICATE', id: cert.id, payload: { issuer: e.target.value } })}
                                   placeholder="Amazon Web Services"
                                   className="w-full bg-slate-950/60 border border-slate-850 focus:border-purple-500 rounded px-2 py-1 text-xs text-slate-200 focus:outline-none"
                                 />
@@ -81,11 +61,7 @@ export function ExtraForm({ cvData, setCvData, t, language: _language, addCertif
                                 <input
                                   type="text"
                                   value={cert.date}
-                                  onChange={(e) => {
-                                    const list = [...cvData.certificates];
-                                    list[index].date = e.target.value;
-                                    setCvData({ ...cvData, certificates: list });
-                                  }}
+                                  onChange={(e) => dispatch({ type: 'UPDATE_CERTIFICATE', id: cert.id, payload: { date: e.target.value } })}
                                   placeholder="2023"
                                   className="w-full bg-slate-950/60 border border-slate-850 focus:border-purple-500 rounded px-2 py-1 text-xs text-slate-200 focus:outline-none"
                                 />
@@ -115,7 +91,7 @@ export function ExtraForm({ cvData, setCvData, t, language: _language, addCertif
                       {cvData.languages.length === 0 ? (
                         <p className="text-xs text-slate-550 italic text-center py-2">{t('emptyLang')}</p>
                       ) : (
-                        cvData.languages.map((lang, index) => (
+                        cvData.languages.map((lang) => (
                           <div key={lang.id} className="bg-slate-950/40 p-3 rounded-lg border border-slate-850 flex flex-col gap-2 relative">
                             <button
                               type="button"
@@ -131,11 +107,7 @@ export function ExtraForm({ cvData, setCvData, t, language: _language, addCertif
                                 <input
                                   type="text"
                                   value={lang.name}
-                                  onChange={(e) => {
-                                    const list = [...cvData.languages];
-                                    list[index].name = e.target.value;
-                                    setCvData({ ...cvData, languages: list });
-                                  }}
+                                  onChange={(e) => dispatch({ type: 'UPDATE_LANGUAGE', id: lang.id, payload: { name: e.target.value } })}
                                   placeholder={t('langPlaceholder')}
                                   className="w-full bg-slate-950/60 border border-slate-850 focus:border-purple-500 rounded px-2 py-1 text-xs text-slate-200 focus:outline-none"
                                 />
@@ -145,11 +117,7 @@ export function ExtraForm({ cvData, setCvData, t, language: _language, addCertif
                                 <input
                                   type="text"
                                   value={lang.level}
-                                  onChange={(e) => {
-                                    const list = [...cvData.languages];
-                                    list[index].level = e.target.value;
-                                    setCvData({ ...cvData, languages: list });
-                                  }}
+                                  onChange={(e) => dispatch({ type: 'UPDATE_LANGUAGE', id: lang.id, payload: { level: e.target.value } })}
                                   placeholder={t('langLevelPlaceholder')}
                                   className="w-full bg-slate-950/60 border border-slate-850 focus:border-purple-500 rounded px-2 py-1 text-xs text-slate-200 focus:outline-none"
                                 />

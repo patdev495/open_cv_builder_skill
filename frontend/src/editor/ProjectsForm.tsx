@@ -1,18 +1,8 @@
-import React from 'react';
 import { Plus, Trash2 } from 'lucide-react';
-import type { CVSchema } from '../types';
-import { TRANSLATIONS } from '../constants';
+import { useCVEditorContext } from '../context/CVEditorContext';
 
-export interface ProjectsFormProps {
-  cvData: CVSchema;
-  setCvData: React.Dispatch<React.SetStateAction<CVSchema>>;
-  t: (key: keyof typeof TRANSLATIONS.vi) => string;
-  language: 'vi' | 'en';
-  addProject: () => void;
-  removeProject: (id: string) => void;
-}
-
-export function ProjectsForm({ cvData, setCvData, t, language: _language, addProject, removeProject }: ProjectsFormProps) {
+export function ProjectsForm() {
+  const { cvData, dispatch, t, addProject, removeProject } = useCVEditorContext();
   return (
                   <div className="flex flex-col gap-6">
                     <div className="flex justify-between items-center">
@@ -46,11 +36,7 @@ export function ProjectsForm({ cvData, setCvData, t, language: _language, addPro
                               <input
                                 type="text"
                                 value={proj.name}
-                                onChange={(e) => {
-                                  const list = [...cvData.projects];
-                                  list[index].name = e.target.value;
-                                  setCvData({ ...cvData, projects: list });
-                                }}
+                                onChange={(e) => dispatch({ type: 'UPDATE_PROJECT', id: proj.id, payload: { name: e.target.value } })}
                                 placeholder="Hệ thống AI CV"
                                 className="w-full bg-slate-950/60 border border-slate-850 focus:border-purple-500 rounded-lg px-2 py-1.5 text-xs text-slate-200 focus:outline-none"
                               />
@@ -60,11 +46,7 @@ export function ProjectsForm({ cvData, setCvData, t, language: _language, addPro
                               <input
                                 type="text"
                                 value={proj.role}
-                                onChange={(e) => {
-                                  const list = [...cvData.projects];
-                                  list[index].role = e.target.value;
-                                  setCvData({ ...cvData, projects: list });
-                                }}
+                                onChange={(e) => dispatch({ type: 'UPDATE_PROJECT', id: proj.id, payload: { role: e.target.value } })}
                                 placeholder="Kỹ sư chính / Leader"
                                 className="w-full bg-slate-950/60 border border-slate-850 focus:border-purple-500 rounded-lg px-2 py-1.5 text-xs text-slate-200 focus:outline-none"
                               />
@@ -74,11 +56,7 @@ export function ProjectsForm({ cvData, setCvData, t, language: _language, addPro
                               <input
                                 type="text"
                                 value={proj.startDate}
-                                onChange={(e) => {
-                                  const list = [...cvData.projects];
-                                  list[index].startDate = e.target.value;
-                                  setCvData({ ...cvData, projects: list });
-                                }}
+                                onChange={(e) => dispatch({ type: 'UPDATE_PROJECT', id: proj.id, payload: { startDate: e.target.value } })}
                                 placeholder="2024"
                                 className="w-full bg-slate-950/60 border border-slate-850 focus:border-purple-500 rounded-lg px-2 py-1.5 text-xs text-slate-200 focus:outline-none"
                               />
@@ -88,11 +66,7 @@ export function ProjectsForm({ cvData, setCvData, t, language: _language, addPro
                               <input
                                 type="text"
                                 value={proj.url || ""}
-                                onChange={(e) => {
-                                  const list = [...cvData.projects];
-                                  list[index].url = e.target.value;
-                                  setCvData({ ...cvData, projects: list });
-                                }}
+                                onChange={(e) => dispatch({ type: 'UPDATE_PROJECT', id: proj.id, payload: { url: e.target.value } })}
                                 placeholder="https://github.com/project"
                                 className="w-full bg-slate-950/60 border border-slate-850 focus:border-purple-500 rounded-lg px-2 py-1.5 text-xs text-slate-200 focus:outline-none"
                               />
@@ -104,11 +78,7 @@ export function ProjectsForm({ cvData, setCvData, t, language: _language, addPro
                             <input
                               type="text"
                               value={proj.technologies.join(", ")}
-                              onChange={(e) => {
-                                const list = [...cvData.projects];
-                                list[index].technologies = e.target.value.split(",").map(t => t.trim());
-                                setCvData({ ...cvData, projects: list });
-                              }}
+                              onChange={(e) => dispatch({ type: 'UPDATE_PROJECT', id: proj.id, payload: { technologies: e.target.value.split(',').map((s: string) => s.trim()) } })}
                               placeholder="React, TypeScript, Tailwind, FastAPI"
                               className="w-full bg-slate-950/60 border border-slate-850 focus:border-purple-500 rounded-lg px-2 py-1.5 text-xs text-slate-200 focus:outline-none"
                             />
@@ -118,11 +88,7 @@ export function ProjectsForm({ cvData, setCvData, t, language: _language, addPro
                             <label className="block text-[10px] font-bold uppercase tracking-wider text-slate-550 mb-1">Mô tả chi tiết dự án</label>
                             <textarea
                               value={proj.description}
-                              onChange={(e) => {
-                                const list = [...cvData.projects];
-                                list[index].description = e.target.value;
-                                setCvData({ ...cvData, projects: list });
-                              }}
+                              onChange={(e) => dispatch({ type: 'UPDATE_PROJECT', id: proj.id, payload: { description: e.target.value } })}
                               placeholder="Mô tả các tính năng cốt lõi và kết quả dự án..."
                               rows={2}
                               className="w-full bg-slate-950/60 border border-slate-850 focus:border-purple-500 rounded-lg px-2 py-1.5 text-xs text-slate-200 focus:outline-none font-sans leading-relaxed resize-y"

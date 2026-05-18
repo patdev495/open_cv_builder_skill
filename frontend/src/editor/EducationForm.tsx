@@ -1,18 +1,8 @@
-import React from 'react';
 import { Plus, Trash2 } from 'lucide-react';
-import type { CVSchema } from '../types';
-import { TRANSLATIONS } from '../constants';
+import { useCVEditorContext } from '../context/CVEditorContext';
 
-export interface EducationFormProps {
-  cvData: CVSchema;
-  setCvData: React.Dispatch<React.SetStateAction<CVSchema>>;
-  t: (key: keyof typeof TRANSLATIONS.vi) => string;
-  language: 'vi' | 'en';
-  addEducation: () => void;
-  removeEducation: (id: string) => void;
-}
-
-export function EducationForm({ cvData, setCvData, t, language: _language, addEducation, removeEducation }: EducationFormProps) {
+export function EducationForm() {
+  const { cvData, dispatch, t, addEducation, removeEducation } = useCVEditorContext();
   return (
                   <div className="flex flex-col gap-6">
                     <div className="flex justify-between items-center">
@@ -46,11 +36,7 @@ export function EducationForm({ cvData, setCvData, t, language: _language, addEd
                               <input
                                 type="text"
                                 value={edu.institution}
-                                onChange={(e) => {
-                                  const list = [...cvData.education];
-                                  list[index].institution = e.target.value;
-                                  setCvData({ ...cvData, education: list });
-                                }}
+                                onChange={(e) => dispatch({ type: 'UPDATE_EDUCATION', id: edu.id, payload: { institution: e.target.value } })}
                                 placeholder={t('schoolPlaceholder')}
                                 className="w-full bg-slate-950/60 border border-slate-850 focus:border-purple-500 rounded-lg px-2 py-1.5 text-xs text-slate-200 focus:outline-none"
                               />
@@ -60,11 +46,7 @@ export function EducationForm({ cvData, setCvData, t, language: _language, addEd
                               <input
                                 type="text"
                                 value={edu.degree}
-                                onChange={(e) => {
-                                  const list = [...cvData.education];
-                                  list[index].degree = e.target.value;
-                                  setCvData({ ...cvData, education: list });
-                                }}
+                                onChange={(e) => dispatch({ type: 'UPDATE_EDUCATION', id: edu.id, payload: { degree: e.target.value } })}
                                 placeholder="Cử nhân Công nghệ thông tin"
                                 className="w-full bg-slate-950/60 border border-slate-850 focus:border-purple-500 rounded-lg px-2 py-1.5 text-xs text-slate-200 focus:outline-none"
                               />
@@ -74,11 +56,7 @@ export function EducationForm({ cvData, setCvData, t, language: _language, addEd
                               <input
                                 type="text"
                                 value={edu.startDate}
-                                onChange={(e) => {
-                                  const list = [...cvData.education];
-                                  list[index].startDate = e.target.value;
-                                  setCvData({ ...cvData, education: list });
-                                }}
+                                onChange={(e) => dispatch({ type: 'UPDATE_EDUCATION', id: edu.id, payload: { startDate: e.target.value } })}
                                 placeholder="2016-09"
                                 className="w-full bg-slate-950/60 border border-slate-850 focus:border-purple-500 rounded-lg px-2 py-1.5 text-xs text-slate-200 focus:outline-none"
                               />
@@ -88,11 +66,7 @@ export function EducationForm({ cvData, setCvData, t, language: _language, addEd
                               <input
                                 type="text"
                                 value={edu.endDate || ""}
-                                onChange={(e) => {
-                                  const list = [...cvData.education];
-                                  list[index].endDate = e.target.value;
-                                  setCvData({ ...cvData, education: list });
-                                }}
+                                onChange={(e) => dispatch({ type: 'UPDATE_EDUCATION', id: edu.id, payload: { endDate: e.target.value } })}
                                 placeholder="2021-06"
                                 className="w-full bg-slate-950/60 border border-slate-850 focus:border-purple-500 rounded-lg px-2 py-1.5 text-xs text-slate-200 focus:outline-none"
                               />
@@ -103,11 +77,7 @@ export function EducationForm({ cvData, setCvData, t, language: _language, addEd
                             <input
                               type="text"
                               value={edu.description || ""}
-                              onChange={(e) => {
-                                const list = [...cvData.education];
-                                list[index].description = e.target.value;
-                                setCvData({ ...cvData, education: list });
-                              }}
+                              onChange={(e) => dispatch({ type: 'UPDATE_EDUCATION', id: edu.id, payload: { description: e.target.value } })}
                               placeholder="Tốt nghiệp loại Giỏi, GPA 3.6"
                               className="w-full bg-slate-950/60 border border-slate-850 focus:border-purple-500 rounded-lg px-2 py-1.5 text-xs text-slate-200 focus:outline-none"
                             />

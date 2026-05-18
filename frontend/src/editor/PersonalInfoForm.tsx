@@ -1,18 +1,8 @@
-import React from 'react';
 import { User, Camera } from 'lucide-react';
-import type { CVSchema } from '../types';
-import { TRANSLATIONS } from '../constants';
+import { useCVEditorContext } from '../context/CVEditorContext';
 
-export interface PersonalInfoFormProps {
-  cvData: CVSchema;
-  setCvData: React.Dispatch<React.SetStateAction<CVSchema>>;
-  t: (key: keyof typeof TRANSLATIONS.vi) => string;
-  language: 'vi' | 'en';
-  handleAvatarUpload: (e: React.ChangeEvent<HTMLInputElement>) => void;
-  handleAvatarDelete: () => void;
-}
-
-export function PersonalInfoForm({ cvData, setCvData, t, language: _language, handleAvatarUpload, handleAvatarDelete }: PersonalInfoFormProps) {
+export function PersonalInfoForm() {
+  const { cvData, dispatch, t, handleAvatarUpload, handleAvatarDelete } = useCVEditorContext();
   return (
                   <div className="flex flex-col gap-4">
                     <h3 className="text-sm font-bold text-slate-300 mb-2">{t('personalInfo')}</h3>
@@ -57,10 +47,7 @@ export function PersonalInfoForm({ cvData, setCvData, t, language: _language, ha
                         <input
                           type="text"
                           value={cvData.personalInfo.fullName}
-                          onChange={(e) => setCvData({
-                            ...cvData,
-                            personalInfo: { ...cvData.personalInfo, fullName: e.target.value }
-                          })}
+                          onChange={(e) => dispatch({ type: 'UPDATE_PERSONAL_INFO', payload: { fullName: e.target.value } })}
                           placeholder="Nguyễn Văn A"
                           className="w-full bg-slate-950/60 border border-slate-800 focus:border-purple-500 rounded-xl px-3 py-2 text-sm text-slate-200 focus:outline-none"
                         />
@@ -70,10 +57,7 @@ export function PersonalInfoForm({ cvData, setCvData, t, language: _language, ha
                         <input
                           type="text"
                           value={cvData.personalInfo.title || ""}
-                          onChange={(e) => setCvData({
-                            ...cvData,
-                            personalInfo: { ...cvData.personalInfo, title: e.target.value }
-                          })}
+                          onChange={(e) => dispatch({ type: 'UPDATE_PERSONAL_INFO', payload: { title: e.target.value } })}
                           placeholder="Senior Full Stack Engineer"
                           className="w-full bg-slate-950/60 border border-slate-800 focus:border-purple-500 rounded-xl px-3 py-2 text-sm text-slate-200 focus:outline-none"
                         />
@@ -83,10 +67,7 @@ export function PersonalInfoForm({ cvData, setCvData, t, language: _language, ha
                         <input
                           type="email"
                           value={cvData.personalInfo.email}
-                          onChange={(e) => setCvData({
-                            ...cvData,
-                            personalInfo: { ...cvData.personalInfo, email: e.target.value }
-                          })}
+                          onChange={(e) => dispatch({ type: 'UPDATE_PERSONAL_INFO', payload: { email: e.target.value } })}
                           placeholder="a@gmail.com"
                           className="w-full bg-slate-950/60 border border-slate-800 focus:border-purple-500 rounded-xl px-3 py-2 text-sm text-slate-200 focus:outline-none"
                         />
@@ -96,10 +77,7 @@ export function PersonalInfoForm({ cvData, setCvData, t, language: _language, ha
                         <input
                           type="text"
                           value={cvData.personalInfo.phone || ""}
-                          onChange={(e) => setCvData({
-                            ...cvData,
-                            personalInfo: { ...cvData.personalInfo, phone: e.target.value }
-                          })}
+                          onChange={(e) => dispatch({ type: 'UPDATE_PERSONAL_INFO', payload: { phone: e.target.value } })}
                           placeholder="0987654321"
                           className="w-full bg-slate-950/60 border border-slate-800 focus:border-purple-500 rounded-xl px-3 py-2 text-sm text-slate-200 focus:outline-none"
                         />
@@ -109,10 +87,7 @@ export function PersonalInfoForm({ cvData, setCvData, t, language: _language, ha
                         <input
                           type="text"
                           value={cvData.personalInfo.location || ""}
-                          onChange={(e) => setCvData({
-                            ...cvData,
-                            personalInfo: { ...cvData.personalInfo, location: e.target.value }
-                          })}
+                          onChange={(e) => dispatch({ type: 'UPDATE_PERSONAL_INFO', payload: { location: e.target.value } })}
                           placeholder="Hà Nội, Việt Nam"
                           className="w-full bg-slate-950/60 border border-slate-800 focus:border-purple-500 rounded-xl px-3 py-2 text-sm text-slate-200 focus:outline-none"
                         />
@@ -122,10 +97,7 @@ export function PersonalInfoForm({ cvData, setCvData, t, language: _language, ha
                         <input
                           type="text"
                           value={cvData.personalInfo.website || ""}
-                          onChange={(e) => setCvData({
-                            ...cvData,
-                            personalInfo: { ...cvData.personalInfo, website: e.target.value }
-                          })}
+                          onChange={(e) => dispatch({ type: 'UPDATE_PERSONAL_INFO', payload: { website: e.target.value } })}
                           placeholder="https://vana.dev"
                           className="w-full bg-slate-950/60 border border-slate-800 focus:border-purple-500 rounded-xl px-3 py-2 text-sm text-slate-200 focus:outline-none"
                         />
@@ -135,10 +107,7 @@ export function PersonalInfoForm({ cvData, setCvData, t, language: _language, ha
                         <input
                           type="text"
                           value={cvData.personalInfo.github || ""}
-                          onChange={(e) => setCvData({
-                            ...cvData,
-                            personalInfo: { ...cvData.personalInfo, github: e.target.value }
-                          })}
+                          onChange={(e) => dispatch({ type: 'UPDATE_PERSONAL_INFO', payload: { github: e.target.value } })}
                           placeholder="https://github.com/Nguyenvana"
                           className="w-full bg-slate-950/60 border border-slate-800 focus:border-purple-500 rounded-xl px-3 py-2 text-sm text-slate-200 focus:outline-none"
                         />
@@ -148,10 +117,7 @@ export function PersonalInfoForm({ cvData, setCvData, t, language: _language, ha
                         <input
                           type="text"
                           value={cvData.personalInfo.linkedin || ""}
-                          onChange={(e) => setCvData({
-                            ...cvData,
-                            personalInfo: { ...cvData.personalInfo, linkedin: e.target.value }
-                          })}
+                          onChange={(e) => dispatch({ type: 'UPDATE_PERSONAL_INFO', payload: { linkedin: e.target.value } })}
                           placeholder="https://linkedin.com/in/Nguyenvana"
                           className="w-full bg-slate-950/60 border border-slate-800 focus:border-purple-500 rounded-xl px-3 py-2 text-sm text-slate-200 focus:outline-none"
                         />
