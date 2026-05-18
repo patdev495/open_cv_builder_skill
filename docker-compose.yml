@@ -1,0 +1,31 @@
+services:
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: cv-builder-backend
+    restart: always
+    environment:
+      - DATABASE_URL=sqlite:////var/lib/cv-builder/cv_builder.db
+    volumes:
+      # Mount host path for SQLite database persistence
+      - /var/lib/cv-builder:/var/lib/cv-builder
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+      args:
+        - VITE_API_BASE_URL=/api
+    container_name: cv-builder-frontend
+    restart: always
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      # Map Let's Encrypt SSL certificates from VPS host (For HTTPS)
+      - /etc/letsencrypt:/etc/letsencrypt:ro
+      # Map host certbot Webroot folder for automatic renewals
+      - /var/www/certbot:/var/www/certbot:ro
+    depends_on:
+      - backend

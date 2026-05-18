@@ -1,8 +1,9 @@
 from sqlmodel import SQLModel, create_engine, Session
 from typing import Generator
 
-sqlite_file_name = "cv_builder.db"
-sqlite_url = f"sqlite:///{sqlite_file_name}"
+import os
+
+sqlite_url = os.getenv("DATABASE_URL", "sqlite:///cv_builder.db")
 
 # connect_args={"check_same_thread": False} is required for SQLite with FastAPI thread pooling
 connect_args = {"check_same_thread": False}

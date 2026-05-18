@@ -1,6 +1,6 @@
 import type { CVSchema, CVResponse } from '../types';
 
-const API_BASE_URL = 'http://localhost:8000/api';
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8000/api';
 
 export async function fetchCV(slug: string): Promise<CVResponse> {
   const response = await fetch(`${API_BASE_URL}/cvs/${slug}`);
