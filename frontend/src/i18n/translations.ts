@@ -115,7 +115,10 @@ export const TRANSLATIONS = {
     printTipTitle: "💡 Mẹo in PDF hoàn hảo:",
     printTipStep1: "1. Chọn \"Cài đặt khác\" (More settings)",
     printTipStep2: "2. Tích chọn \"Đồ họa nền\" (Background graphics)",
-    printTipStep3: "3. Bỏ chọn \"Tiêu đề và chân trang\""
+    printTipStep3: "3. Bỏ chọn \"Tiêu đề và chân trang\"",
+    unlockModalTitle: "Mở khóa quyền Chỉnh sửa",
+    unlockModalDesc: "Bạn đang yêu cầu quyền chỉnh sửa CV này. Vui lòng nhập mật mã (Passcode) đã thiết lập để tiếp tục.",
+    verifyPasscodeLabel: "Mật mã chỉnh sửa"
   },
   en: {
     title: "CV BUILDER PRO",
@@ -233,6 +236,9 @@ export const TRANSLATIONS = {
     printTipTitle: "💡 Perfect PDF Print Tip:",
     printTipStep1: "1. Click \"More settings\" in print dialog",
     printTipStep2: "2. Check \"Background graphics\" checkbox",
-    printTipStep3: "3. Uncheck \"Headers and footers\" checkbox"
+    printTipStep3: "3. Uncheck \"Headers and footers\" checkbox",
+    unlockModalTitle: "Unlock Editing Permissions",
+    unlockModalDesc: "You are requesting editing access for this CV. Please enter the passcode to continue.",
+    verifyPasscodeLabel: "Editing Passcode"
   }
 };

@@ -561,10 +561,10 @@ function App() {
           <div className="bg-slate-900 border border-slate-800 p-6 rounded-2xl w-full max-w-md shadow-2xl relative">
             <h3 className="text-lg font-bold text-slate-200 flex items-center gap-2 mb-2">
               <Lock className="h-5 w-5 text-purple-500" />
-              Mở khóa quyền Chỉnh sửa
+              {t('unlockModalTitle')}
             </h3>
             <p className="text-xs text-slate-400 mb-4 leading-relaxed">
-              Bạn đang yêu cầu quyền chỉnh sửa CV này. Vui lòng nhập mật mã (Passcode) đã thiết lập để tiếp tục.
+              {t('unlockModalDesc')}
             </p>
 
             {verifyError && (
@@ -574,9 +574,15 @@ function App() {
               </div>
             )}
 
-            <div className="flex flex-col gap-4">
+            <form
+              onSubmit={(e) => {
+                e.preventDefault();
+                handleUnlockVerify();
+              }}
+              className="flex flex-col gap-4"
+            >
               <div>
-                <label className="block text-xs font-bold text-slate-400 mb-1.5 uppercase tracking-wider">{t('passcode')} chỉnh sửa</label>
+                <label className="block text-xs font-bold text-slate-400 mb-1.5 uppercase tracking-wider">{t('verifyPasscodeLabel')}</label>
                 <input
                   type="password"
                   value={verifyPasscodeVal}
@@ -600,16 +606,15 @@ function App() {
                   {t('cancel')}
                 </button>
                 <button
-                  type="button"
-                  onClick={handleUnlockVerify}
+                  type="submit"
                   disabled={isLoading}
                   className="px-4 py-2 bg-purple-600 hover:bg-purple-700 active:scale-95 text-xs font-bold text-white rounded-xl transition-all shadow-md shadow-purple-600/10 flex items-center gap-1 cursor-pointer"
                 >
                   {isLoading && <Loader2 className="h-3 w-3 animate-spin" />}
-                  Xác minh
+                  {t('verify')}
                 </button>
               </div>
-            </div>
+            </form>
           </div>
         </div>
       )}
