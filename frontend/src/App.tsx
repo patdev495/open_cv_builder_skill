@@ -3,7 +3,7 @@ import {
   FileText, Save, Edit3, Eye, Printer, Lock, Globe, Plus, Trash2, 
   Sparkles, User, Briefcase, GraduationCap, FolderGit2, 
   Wrench, Award, Languages, Loader2, AlertCircle, CheckCircle2,
-  Camera
+  Camera, ExternalLink
 } from 'lucide-react';
 import type { CVSchema, ExperienceItem, EducationItem, ProjectItem, SkillGroup, CertificateItem, LanguageItem } from './types';
 import * as api from './services/api';
@@ -2083,6 +2083,17 @@ function App() {
                               <div className="flex justify-between items-center text-xs">
                                 <div>
                                   <span className="font-extrabold text-slate-900">{proj.name}</span>
+                                  {proj.url && (
+                                    <a
+                                      href={proj.url}
+                                      target="_blank"
+                                      rel="noopener noreferrer"
+                                      className="inline-flex items-center gap-0.5 text-[10px] text-purple-600 hover:text-purple-750 font-bold ml-1.5 hover:underline print:text-black print:no-underline"
+                                    >
+                                      <ExternalLink className="h-2.5 w-2.5" />
+                                      {proj.url.replace(/^https?:\/\/(www\.)?github\.com\//, 'github.com/').replace(/^https?:\/\/(www\.)?/, '').split('/')[0]}
+                                    </a>
+                                  )}
                                   <span className="text-slate-400 mx-1.5">•</span>
                                   <span className="text-[10px] text-slate-500 font-semibold italic">{proj.role}</span>
                                 </div>
@@ -2224,7 +2235,22 @@ function App() {
                       {cvData.projects.map((proj) => (
                         <div key={proj.id} className="flex flex-col gap-0.5">
                           <div className="flex justify-between items-center text-xs font-bold">
-                            <span className="text-slate-900 font-extrabold">{proj.name} — <span className="font-normal italic text-[11px]">{proj.role}</span></span>
+                            <span className="text-slate-900 font-extrabold">
+                              {proj.name}
+                              {proj.url && (
+                                <a
+                                  href={proj.url}
+                                  target="_blank"
+                                  rel="noopener noreferrer"
+                                  className="inline-flex items-center gap-0.5 text-[10px] text-indigo-650 hover:underline ml-2 font-normal print:text-black print:no-underline"
+                                >
+                                  <ExternalLink className="h-2.5 w-2.5" />
+                                  {proj.url.replace(/^https?:\/\/(www\.)?/, '')}
+                                </a>
+                              )}
+                              {" — "}
+                              <span className="font-normal italic text-[11px]">{proj.role}</span>
+                            </span>
                             <span className="text-[10px] font-mono text-slate-500 print:text-black">{proj.startDate}</span>
                           </div>
                           {proj.technologies.filter(Boolean).length > 0 && (
@@ -2418,6 +2444,17 @@ function App() {
                             <div className="flex justify-between items-center text-xs">
                               <div>
                                 <span className="font-extrabold text-slate-900 text-sm">{proj.name}</span>
+                                {proj.url && (
+                                  <a
+                                    href={proj.url}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className={`inline-flex items-center gap-0.5 text-[10px] ${activeColor.primary} hover:underline ml-2 font-bold print:text-black print:no-underline`}
+                                  >
+                                    <ExternalLink className="h-2.5 w-2.5" />
+                                    {proj.url.replace(/^https?:\/\/(www\.)?/, '')}
+                                  </a>
+                                )}
                                 <span className="text-slate-400 mx-1.5">•</span>
                                 <span className="text-[10px] text-slate-550 font-semibold italic">{proj.role}</span>
                               </div>
@@ -2601,6 +2638,17 @@ function App() {
                                 <div className="flex justify-between items-center text-xs">
                                   <div>
                                     <span className="font-extrabold text-slate-900">{proj.name}</span>
+                                    {proj.url && (
+                                      <a
+                                        href={proj.url}
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                        className={`inline-flex items-center gap-0.5 text-[10px] ${activeColor.primary} hover:underline ml-2 font-bold print:text-black print:no-underline`}
+                                      >
+                                        <ExternalLink className="h-2.5 w-2.5" />
+                                        {proj.url.replace(/^https?:\/\/(www\.)?/, '')}
+                                      </a>
+                                    )}
                                     <span className="text-slate-400 mx-1.5">•</span>
                                     <span className="text-[10px] text-slate-550 font-semibold italic">{proj.role}</span>
                                   </div>
@@ -2850,6 +2898,17 @@ function App() {
                             <div className="flex justify-between items-baseline text-xs">
                               <div>
                                 <span className="font-bold text-slate-900 font-serif text-sm">{proj.name}</span>
+                                {proj.url && (
+                                  <a
+                                    href={proj.url}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className={`inline-flex items-center gap-0.5 text-[10px] ${activeColor.primary} hover:underline ml-2 font-bold print:text-black print:no-underline font-mono`}
+                                  >
+                                    <ExternalLink className="h-2.5 w-2.5" />
+                                    {proj.url.replace(/^https?:\/\/(www\.)?/, '')}
+                                  </a>
+                                )}
                                 <span className="mx-2 text-slate-450">•</span>
                                 <span className="text-slate-500 font-medium italic text-[11px]">{proj.role}</span>
                               </div>
