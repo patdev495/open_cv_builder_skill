@@ -3,7 +3,7 @@ import {
   FileText, Save, Edit3, Eye, Printer, Lock, Globe, Plus, Trash2, 
   Sparkles, User, Briefcase, GraduationCap, FolderGit2, 
   Wrench, Award, Languages, Loader2, AlertCircle, CheckCircle2,
-  Camera, ExternalLink
+  Camera, ExternalLink, Layers, ArrowUp, ArrowDown
 } from 'lucide-react';
 import type { CVSchema, ExperienceItem, EducationItem, ProjectItem, SkillGroup, CertificateItem, LanguageItem } from './types';
 import * as api from './services/api';
@@ -1109,7 +1109,8 @@ function App() {
                   { id: 'education', name: t('education'), icon: GraduationCap },
                   { id: 'projects', name: t('projects'), icon: FolderGit2 },
                   { id: 'skills', name: t('skills'), icon: Wrench },
-                  { id: 'extra', name: t('languages'), icon: Award }
+                  { id: 'extra', name: t('languages'), icon: Award },
+                  { id: 'layout', name: language === 'vi' ? 'Bố cục' : 'Layout', icon: Layers }
                 ].map((tab) => {
                   const Icon = tab.icon;
                   return (
@@ -1845,6 +1846,105 @@ function App() {
                   </div>
                 )}
 
+                {activeTab === 'layout' && (
+                  <div className="flex flex-col gap-6">
+                    <div className="border-b border-slate-800 pb-2">
+                      <h3 className="text-sm font-bold text-slate-300 flex items-center gap-2">
+                        <Layers className="h-4 w-4 text-purple-400" />
+                        {language === 'vi' ? 'Sắp xếp Thứ tự các Khối (Sections)' : 'Adjust Section Layout Order'}
+                      </h3>
+                      <p className="text-xs text-slate-500 mt-1 leading-relaxed">
+                        {language === 'vi' 
+                          ? 'Sử dụng các nút mũi tên Lên/Xuống bên phải mỗi khối để thay đổi thứ tự hiển thị của khối đó trên CV của bạn. Bố cục CV sẽ tự động cập nhật ngay lập tức!'
+                          : 'Use the Up/Down arrow buttons to adjust the vertical order of sections on your CV. The CV template will update dynamically!'}
+                      </p>
+                    </div>
+
+                    <div className="flex flex-col gap-2.5">
+                      {(() => {
+                        const order = cvData.sectionOrder || ['summary', 'experience', 'projects', 'education', 'skills', 'certificates', 'languages'];
+                        
+                        const SECTION_META = {
+                          summary: { nameVi: 'Tóm tắt (Summary)', nameEn: 'Summary', icon: User },
+                          experience: { nameVi: 'Kinh nghiệm làm việc', nameEn: 'Work Experience', icon: Briefcase },
+                          projects: { nameVi: 'Dự án tiêu biểu', nameEn: 'Key Projects', icon: FolderGit2 },
+                          education: { nameVi: 'Học vấn', nameEn: 'Education', icon: GraduationCap },
+                          skills: { nameVi: 'Kỹ năng chuyên môn', nameEn: 'Professional Skills', icon: Wrench },
+                          certificates: { nameVi: 'Chứng chỉ', nameEn: 'Certificates', icon: Award },
+                          languages: { nameVi: 'Ngoại ngữ', nameEn: 'Languages', icon: Languages }
+                        };
+
+                        return order.map((sec, idx) => {
+                          const meta = SECTION_META[sec as keyof typeof SECTION_META];
+                          if (!meta) return null;
+                          const IconComp = meta.icon;
+
+                          return (
+                            <div 
+                              key={sec} 
+                              className="bg-slate-950/40 px-4 py-3.5 rounded-xl border border-slate-850 hover:border-slate-800 transition-all flex items-center justify-between"
+                            >
+                              <div className="flex items-center gap-3">
+                                <div className="bg-slate-900 p-2 rounded-lg border border-slate-800 text-purple-400">
+                                  <IconComp className="h-4 w-4" />
+                                </div>
+                                <span className="text-xs font-bold text-slate-200">
+                                  {language === 'vi' ? meta.nameVi : meta.nameEn}
+                                </span>
+                              </div>
+
+                              <div className="flex items-center gap-1.5">
+                                <button
+                                  type="button"
+                                  onClick={() => {
+                                    const currentOrder = [...order];
+                                    if (idx > 0) {
+                                      const temp = currentOrder[idx];
+                                      currentOrder[idx] = currentOrder[idx - 1];
+                                      currentOrder[idx - 1] = temp;
+                                      setCvData({ ...cvData, sectionOrder: currentOrder });
+                                    }
+                                  }}
+                                  disabled={idx === 0}
+                                  className={`p-1.5 rounded-lg border transition-all cursor-pointer ${
+                                    idx === 0 
+                                      ? 'text-slate-600 border-slate-850 bg-slate-900/10 cursor-not-allowed' 
+                                      : 'text-slate-400 border-slate-800 hover:text-slate-200 hover:bg-slate-800 bg-slate-900/40'
+                                  }`}
+                                  title={language === 'vi' ? 'Di chuyển lên' : 'Move up'}
+                                >
+                                  <ArrowUp className="h-3.5 w-3.5" />
+                                </button>
+                                <button
+                                  type="button"
+                                  onClick={() => {
+                                    const currentOrder = [...order];
+                                    if (idx < currentOrder.length - 1) {
+                                      const temp = currentOrder[idx];
+                                      currentOrder[idx] = currentOrder[idx + 1];
+                                      currentOrder[idx + 1] = temp;
+                                      setCvData({ ...cvData, sectionOrder: currentOrder });
+                                    }
+                                  }}
+                                  disabled={idx === order.length - 1}
+                                  className={`p-1.5 rounded-lg border transition-all cursor-pointer ${
+                                    idx === order.length - 1
+                                      ? 'text-slate-600 border-slate-850 bg-slate-900/10 cursor-not-allowed' 
+                                      : 'text-slate-400 border-slate-800 hover:text-slate-200 hover:bg-slate-800 bg-slate-900/40'
+                                  }`}
+                                  title={language === 'vi' ? 'Di chuyển xuống' : 'Move down'}
+                                >
+                                  <ArrowDown className="h-3.5 w-3.5" />
+                                </button>
+                              </div>
+                            </div>
+                          );
+                        });
+                      })()}
+                    </div>
+                  </div>
+                )}
+
               </div>
             </div>
 
@@ -1973,169 +2073,181 @@ function App() {
                     
                     {/* Left narrow sidebar with Glassmorphism */}
                     <div className="md:col-span-1 flex flex-col gap-6 glass-sidebar">
-                      
-                      {/* Skills group */}
-                      {cvData.skills.length > 0 && (
-                        <div className="flex flex-col gap-3">
-                          <h3 className={`text-xs font-bold uppercase tracking-wider ${activeColor.primary} pb-1 font-mono flex items-center gap-1.5 print:text-black`}>
-                            <Wrench className="h-3.5 w-3.5 stroke-[2.5]" />
-                            {t('skillsUpper')}
-                          </h3>
-                          {cvData.skills.map((grp) => (
-                            <div key={grp.id} className="flex flex-col gap-1">
-                              <span className="text-xs font-bold text-slate-800">{grp.category}</span>
-                              <div className="flex flex-wrap gap-1.5">
-                                {grp.skills.filter(Boolean).map((s, i) => (
-                                  <span key={i} className={`${activeColor.pill} px-2 py-0.5 rounded text-[11px] font-medium`}>
-                                    {s}
-                                  </span>
+                      {(() => {
+                        const order = cvData.sectionOrder || ['summary', 'experience', 'projects', 'education', 'skills', 'certificates', 'languages'];
+                        const sidebarSections = order.filter(sec => ['skills', 'languages', 'certificates'].includes(sec));
+                        return sidebarSections.map((sec) => {
+                          if (sec === 'skills' && cvData.skills.length > 0) {
+                            return (
+                              <div key={sec} className="flex flex-col gap-3">
+                                <h3 className={`text-xs font-bold uppercase tracking-wider ${activeColor.primary} pb-1 font-mono flex items-center gap-1.5 print:text-black`}>
+                                  <Wrench className="h-3.5 w-3.5 stroke-[2.5]" />
+                                  {t('skillsUpper')}
+                                </h3>
+                                {cvData.skills.map((grp) => (
+                                  <div key={grp.id} className="flex flex-col gap-1">
+                                    <span className="text-xs font-bold text-slate-800">{grp.category}</span>
+                                    <div className="flex flex-wrap gap-1.5">
+                                      {grp.skills.filter(Boolean).map((s, i) => (
+                                        <span key={i} className={`${activeColor.pill} px-2 py-0.5 rounded text-[11px] font-medium`}>
+                                          {s}
+                                        </span>
+                                      ))}
+                                    </div>
+                                  </div>
                                 ))}
                               </div>
-                            </div>
-                          ))}
-                        </div>
-                      )}
-
-                      {/* Languages */}
-                      {cvData.languages.length > 0 && (
-                        <div className="flex flex-col gap-2">
-                          <h3 className={`text-xs font-bold uppercase tracking-wider ${activeColor.primary} pb-1 font-mono flex items-center gap-1.5 print:text-black`}>
-                            <Languages className="h-3.5 w-3.5 stroke-[2.5]" />
-                            {t('languagesUpper')}
-                          </h3>
-                          <div className="flex flex-col gap-1">
-                            {cvData.languages.map((l) => (
-                              <div key={l.id} className="flex justify-between text-xs font-medium text-slate-750">
-                                <span className="font-semibold text-slate-800">{l.name}</span>
-                                <span className="text-slate-500 font-mono text-[10px] print:text-slate-800">{l.level}</span>
+                            );
+                          }
+                          if (sec === 'languages' && cvData.languages.length > 0) {
+                            return (
+                              <div key={sec} className="flex flex-col gap-2">
+                                <h3 className={`text-xs font-bold uppercase tracking-wider ${activeColor.primary} pb-1 font-mono flex items-center gap-1.5 print:text-black`}>
+                                  <Languages className="h-3.5 w-3.5 stroke-[2.5]" />
+                                  {t('languagesUpper')}
+                                </h3>
+                                <div className="flex flex-col gap-1">
+                                  {cvData.languages.map((l) => (
+                                    <div key={l.id} className="flex justify-between text-xs font-medium text-slate-750">
+                                      <span className="font-semibold text-slate-800">{l.name}</span>
+                                      <span className="text-slate-500 font-mono text-[10px] print:text-slate-800">{l.level}</span>
+                                    </div>
+                                  ))}
+                                </div>
                               </div>
-                            ))}
-                          </div>
-                        </div>
-                      )}
-
-                      {/* Certificates */}
-                      {cvData.certificates.length > 0 && (
-                        <div className="flex flex-col gap-3">
-                          <h3 className={`text-xs font-bold uppercase tracking-wider ${activeColor.primary} pb-1 font-mono flex items-center gap-1.5 print:text-black`}>
-                            <Award className="h-3.5 w-3.5 stroke-[2.5]" />
-                            {t('certificatesUpper')}
-                          </h3>
-                          {cvData.certificates.map((c) => (
-                            <div key={c.id} className="text-xs flex flex-col gap-0.5">
-                              <span className="font-bold text-slate-850 leading-snug">{c.name}</span>
-                              <span className="text-[10px] text-slate-500 font-medium">{c.issuer} ({c.date})</span>
-                            </div>
-                          ))}
-                        </div>
-                      )}
-
+                            );
+                          }
+                          if (sec === 'certificates' && cvData.certificates.length > 0) {
+                            return (
+                              <div key={sec} className="flex flex-col gap-3">
+                                <h3 className={`text-xs font-bold uppercase tracking-wider ${activeColor.primary} pb-1 font-mono flex items-center gap-1.5 print:text-black`}>
+                                  <Award className="h-3.5 w-3.5 stroke-[2.5]" />
+                                  {t('certificatesUpper')}
+                                </h3>
+                                {cvData.certificates.map((c) => (
+                                  <div key={c.id} className="text-xs flex flex-col gap-0.5">
+                                    <span className="font-bold text-slate-850 leading-snug">{c.name}</span>
+                                    <span className="text-[10px] text-slate-550 font-medium">{c.issuer} ({c.date})</span>
+                                  </div>
+                                ))}
+                              </div>
+                            );
+                          }
+                          return null;
+                        });
+                      })()}
                     </div>
 
                     {/* Right wide main column */}
                     <div className="md:col-span-2 flex flex-col gap-6">
-                      
-                      {/* Professional summary */}
-                      {cvData.summary && (
-                        <div className="flex flex-col gap-2">
-                          <h3 className={`text-xs font-bold uppercase tracking-wider ${activeColor.primary} pb-1 font-mono flex items-center gap-1.5 print:text-black`}>
-                            <User className="h-3.5 w-3.5 stroke-[2.5]" />
-                            {t('summaryUpper')}
-                          </h3>
-                          <p className="text-xs leading-relaxed text-slate-700 font-medium text-justify">{cvData.summary}</p>
-                        </div>
-                      )}
-
-                      {/* Experience */}
-                      {cvData.experience.length > 0 && (
-                        <div className="flex flex-col gap-4">
-                          <h3 className={`text-xs font-bold uppercase tracking-wider ${activeColor.primary} pb-1 font-mono flex items-center gap-1.5 print:text-black`}>
-                            <Briefcase className="h-3.5 w-3.5 stroke-[2.5]" />
-                            {t('experienceUpper')}
-                          </h3>
-                          {cvData.experience.map((exp) => (
-                            <div key={exp.id} className="flex flex-col gap-1 break-inside-avoid">
-                              <div className="flex justify-between items-start text-xs">
-                                <div>
-                                  <span className="font-extrabold text-slate-900">{exp.company}</span>
-                                  <span className="text-slate-400 mx-1.5">•</span>
-                                  <span className={`font-semibold ${activeColor.primary} print:text-black`}>{exp.position}</span>
-                                </div>
-                                <span className="text-[10px] font-mono font-bold text-slate-400 print:text-slate-850">{exp.startDate} - {exp.endDate || 'Hiện tại'}</span>
+                      {(() => {
+                        const order = cvData.sectionOrder || ['summary', 'experience', 'projects', 'education', 'skills', 'certificates', 'languages'];
+                        const mainSections = order.filter(sec => ['summary', 'experience', 'projects', 'education'].includes(sec));
+                        return mainSections.map((sec) => {
+                          if (sec === 'summary' && cvData.summary) {
+                            return (
+                              <div key={sec} className="flex flex-col gap-2">
+                                <h3 className={`text-xs font-bold uppercase tracking-wider ${activeColor.primary} pb-1 font-mono flex items-center gap-1.5 print:text-black`}>
+                                  <User className="h-3.5 w-3.5 stroke-[2.5]" />
+                                  {t('summaryUpper')}
+                                </h3>
+                                <p className="text-xs leading-relaxed text-slate-700 font-medium text-justify">{cvData.summary}</p>
                               </div>
-                              <p className="text-xs leading-relaxed text-slate-650 font-medium whitespace-pre-line mt-1 print:text-slate-950">
-                                {exp.description}
-                              </p>
-                            </div>
-                          ))}
-                        </div>
-                      )}
-
-                      {/* Projects */}
-                      {cvData.projects.length > 0 && (
-                        <div className="flex flex-col gap-4">
-                          <h3 className={`text-xs font-bold uppercase tracking-wider ${activeColor.primary} pb-1 font-mono flex items-center gap-1.5 print:text-black`}>
-                            <FolderGit2 className="h-3.5 w-3.5 stroke-[2.5]" />
-                            {t('projectsUpper')}
-                          </h3>
-                          {cvData.projects.map((proj) => (
-                            <div key={proj.id} className="flex flex-col gap-1 break-inside-avoid">
-                              <div className="flex justify-between items-center text-xs">
-                                <div>
-                                  <span className="font-extrabold text-slate-900">{proj.name}</span>
-                                  {proj.url && (
-                                    <a
-                                      href={proj.url}
-                                      target="_blank"
-                                      rel="noopener noreferrer"
-                                      className="inline-flex items-center gap-0.5 text-[10px] text-purple-600 hover:text-purple-750 font-bold ml-1.5 hover:underline print:text-black print:no-underline"
-                                    >
-                                      <ExternalLink className="h-2.5 w-2.5" />
-                                      {proj.url.replace(/^https?:\/\/(www\.)?github\.com\//, 'github.com/').replace(/^https?:\/\/(www\.)?/, '').split('/')[0]}
-                                    </a>
-                                  )}
-                                  <span className="text-slate-400 mx-1.5">•</span>
-                                  <span className="text-[10px] text-slate-500 font-semibold italic">{proj.role}</span>
-                                </div>
-                                <span className="text-[10px] font-mono font-bold text-slate-400 print:text-slate-850">{proj.startDate}</span>
+                            );
+                          }
+                          if (sec === 'experience' && cvData.experience.length > 0) {
+                            return (
+                              <div key={sec} className="flex flex-col gap-4">
+                                <h3 className={`text-xs font-bold uppercase tracking-wider ${activeColor.primary} pb-1 font-mono flex items-center gap-1.5 print:text-black`}>
+                                  <Briefcase className="h-3.5 w-3.5 stroke-[2.5]" />
+                                  {t('experienceUpper')}
+                                </h3>
+                                {cvData.experience.map((exp) => (
+                                  <div key={exp.id} className="flex flex-col gap-1 break-inside-avoid">
+                                    <div className="flex justify-between items-start text-xs">
+                                      <div>
+                                        <span className="font-extrabold text-slate-900">{exp.company}</span>
+                                        <span className="text-slate-400 mx-1.5">•</span>
+                                        <span className={`font-semibold ${activeColor.primary} print:text-black`}>{exp.position}</span>
+                                      </div>
+                                      <span className="text-[10px] font-mono font-bold text-slate-400 print:text-slate-850">{exp.startDate} - {exp.endDate || 'Hiện tại'}</span>
+                                    </div>
+                                    <p className="text-xs leading-relaxed text-slate-655 font-medium whitespace-pre-line mt-1 print:text-slate-950">
+                                      {exp.description}
+                                    </p>
+                                  </div>
+                                ))}
                               </div>
-                              {proj.technologies.filter(Boolean).length > 0 && (
-                                <div className="flex flex-wrap gap-1 mt-0.5">
-                                  {proj.technologies.filter(Boolean).map((tech, idx) => (
-                                    <span key={idx} className={`${activeColor.pill} rounded px-1.5 py-0.2 text-[9px] font-bold font-mono`}>
-                                      {tech}
-                                    </span>
-                                  ))}
-                                </div>
-                              )}
-                              <p className="text-xs leading-relaxed text-slate-650 font-medium whitespace-pre-line mt-1 print:text-slate-950">
-                                {proj.description}
-                              </p>
-                            </div>
-                          ))}
-                        </div>
-                      )}
-
-                      {/* Education */}
-                      {cvData.education.length > 0 && (
-                        <div className="flex flex-col gap-3">
-                          <h3 className={`text-xs font-bold uppercase tracking-wider ${activeColor.primary} pb-1 font-mono flex items-center gap-1.5 print:text-black`}>
-                            <GraduationCap className="h-3.5 w-3.5 stroke-[2.5]" />
-                            {t('educationUpper')}
-                          </h3>
-                          {cvData.education.map((edu) => (
-                            <div key={edu.id} className="flex flex-col gap-0.5 text-xs break-inside-avoid">
-                              <div className="flex justify-between items-start">
-                                <span className="font-extrabold text-slate-900">{edu.institution}</span>
-                                <span className="text-[10px] font-mono font-bold text-slate-400 print:text-slate-850">{edu.startDate} - {edu.endDate || 'Hiện tại'}</span>
+                            );
+                          }
+                          if (sec === 'projects' && cvData.projects.length > 0) {
+                            return (
+                              <div key={sec} className="flex flex-col gap-4">
+                                <h3 className={`text-xs font-bold uppercase tracking-wider ${activeColor.primary} pb-1 font-mono flex items-center gap-1.5 print:text-black`}>
+                                  <FolderGit2 className="h-3.5 w-3.5 stroke-[2.5]" />
+                                  {t('projectsUpper')}
+                                </h3>
+                                {cvData.projects.map((proj) => (
+                                  <div key={proj.id} className="flex flex-col gap-1 break-inside-avoid">
+                                    <div className="flex justify-between items-center text-xs">
+                                      <div>
+                                        <span className="font-extrabold text-slate-900">{proj.name}</span>
+                                        {proj.url && (
+                                          <a
+                                            href={proj.url}
+                                            target="_blank"
+                                            rel="noopener noreferrer"
+                                            className="inline-flex items-center gap-0.5 text-[10px] text-purple-600 hover:text-purple-750 font-bold ml-1.5 hover:underline print:text-black print:no-underline"
+                                          >
+                                            <ExternalLink className="h-2.5 w-2.5" />
+                                            {proj.url.replace(/^https?:\/\/(www\.)?github\.com\//, 'github.com/').replace(/^https?:\/\/(www\.)?/, '').split('/')[0]}
+                                          </a>
+                                        )}
+                                        <span className="text-slate-400 mx-1.5">•</span>
+                                        <span className="text-[10px] text-slate-550 font-semibold italic">{proj.role}</span>
+                                      </div>
+                                      <span className="text-[10px] font-mono font-bold text-slate-400 print:text-slate-850">{proj.startDate}</span>
+                                    </div>
+                                    {proj.technologies.filter(Boolean).length > 0 && (
+                                      <div className="flex flex-wrap gap-1 mt-0.5">
+                                        {proj.technologies.filter(Boolean).map((tech, idx) => (
+                                          <span key={idx} className={`${activeColor.pill} rounded px-1.5 py-0.2 text-[9px] font-bold font-mono`}>
+                                            {tech}
+                                          </span>
+                                        ))}
+                                      </div>
+                                    )}
+                                    <p className="text-xs leading-relaxed text-slate-655 font-medium whitespace-pre-line mt-1 print:text-slate-950">
+                                      {proj.description}
+                                    </p>
+                                  </div>
+                                ))}
                               </div>
-                              <div className="text-slate-600 font-semibold print:text-slate-900">{edu.degree}</div>
-                              {edu.description && <p className="text-[11px] text-slate-500 italic mt-0.5">{edu.description}</p>}
-                            </div>
-                          ))}
-                        </div>
-                      )}
-
+                            );
+                          }
+                          if (sec === 'education' && cvData.education.length > 0) {
+                            return (
+                              <div key={sec} className="flex flex-col gap-3">
+                                <h3 className={`text-xs font-bold uppercase tracking-wider ${activeColor.primary} pb-1 font-mono flex items-center gap-1.5 print:text-black`}>
+                                  <GraduationCap className="h-3.5 w-3.5 stroke-[2.5]" />
+                                  {t('educationUpper')}
+                                </h3>
+                                {cvData.education.map((edu) => (
+                                  <div key={edu.id} className="flex flex-col gap-0.5 text-xs break-inside-avoid">
+                                    <div className="flex justify-between items-start">
+                                      <span className="font-extrabold text-slate-900">{edu.institution}</span>
+                                      <span className="text-[10px] font-mono font-bold text-slate-400 print:text-slate-850">{edu.startDate} - {edu.endDate || 'Hiện tại'}</span>
+                                    </div>
+                                    <div className="text-slate-600 font-semibold print:text-slate-900">{edu.degree}</div>
+                                    {edu.description && <p className="text-[11px] text-slate-500 italic mt-0.5">{edu.description}</p>}
+                                  </div>
+                                ))}
+                              </div>
+                            );
+                          }
+                          return null;
+                        });
+                      })()}
                     </div>
 
                   </div>
@@ -2146,428 +2258,481 @@ function App() {
                   TEMPLATE 2: CLASSIC EXECUTIVE (Traditional Layout)
                  ======================================================== */}
               {template === 'classic' && (
-                <div className="flex flex-col flex-1 gap-5 text-sm">
-                  
-                   {/* Căn giữa Header */}
-                  <div className={`flex flex-col sm:flex-row items-center justify-center gap-4 border-b-[3px] ${activeColor.border} pb-4 print:flex-row print:justify-start print:items-center`}>
-                    {cvData.personalInfo.avatar && (
-                      <img 
-                        src={cvData.personalInfo.avatar} 
-                        alt="Avatar" 
-                        className="w-16 h-16 rounded-full object-cover border border-slate-300" 
-                      />
-                    )}
-                    <div className="text-center sm:text-left flex flex-col gap-1 print:text-left">
-                      <h1 className="text-3xl font-extrabold tracking-wide text-slate-950 uppercase m-0 print:text-black">
-                        {cvData.personalInfo.fullName || "HỌ VÀ TÊN"}
-                      </h1>
-                      <p className={`font-bold text-xs tracking-widest uppercase ${activeColor.primary}`}>
-                        {cvData.personalInfo.title || "VỊ TRÍ ỨNG TUYỂN"}
-                      </p>
-                      <div className="flex flex-wrap justify-center sm:justify-start gap-x-3 gap-y-1 text-slate-600 text-xs font-mono mt-2 print:text-black print:justify-start print:flex-wrap">
-                        <span>{cvData.personalInfo.email}</span>
-                        {cvData.personalInfo.phone && <span>• {cvData.personalInfo.phone}</span>}
-                        {cvData.personalInfo.location && <span>• {cvData.personalInfo.location}</span>}
-                        {cvData.personalInfo.website && (
-                          <span>
-                            • <a href={cvData.personalInfo.website} target="_blank" rel="noopener noreferrer" className="hover:underline">
-                              {cvData.personalInfo.website.replace(/^https?:\/\//, '')}
-                            </a>
-                          </span>
-                        )}
-                        {cvData.personalInfo.github && (
-                          <span>
-                            • <a href={cvData.personalInfo.github} target="_blank" rel="noopener noreferrer" className="hover:underline">
-                              github.com/{cvData.personalInfo.github.split('/').pop()}
-                            </a>
-                          </span>
-                        )}
-                        {cvData.personalInfo.linkedin && (
-                          <span>
-                            • <a href={cvData.personalInfo.linkedin} target="_blank" rel="noopener noreferrer" className="hover:underline">
-                              linkedin.com/in/{cvData.personalInfo.linkedin.split('/').pop()}
-                            </a>
-                          </span>
-                        )}
-                      </div>
-                    </div>
-                  </div>
+                 <div className="flex flex-col flex-1 gap-5 text-sm">
+                   
+                    {/* Căn giữa Header */}
+                   <div className={`flex flex-col sm:flex-row items-center justify-center gap-4 border-b-[3px] ${activeColor.border} pb-4 print:flex-row print:justify-start print:items-center`}>
+                     {cvData.personalInfo.avatar && (
+                       <img 
+                         src={cvData.personalInfo.avatar} 
+                         alt="Avatar" 
+                         className="w-16 h-16 rounded-full object-cover border border-slate-300" 
+                       />
+                     )}
+                     <div className="text-center sm:text-left flex flex-col gap-1 print:text-left">
+                       <h1 className="text-3xl font-extrabold tracking-wide text-slate-950 uppercase m-0 print:text-black">
+                         {cvData.personalInfo.fullName || "HỌ VÀ TÊN"}
+                       </h1>
+                       <p className={`font-bold text-xs tracking-widest uppercase ${activeColor.primary}`}>
+                         {cvData.personalInfo.title || "VỊ TRÍ ỨNG TUYỂN"}
+                       </p>
+                       <div className="flex flex-wrap justify-center sm:justify-start gap-x-3 gap-y-1 text-slate-650 text-xs font-mono mt-2 print:text-black print:justify-start print:flex-wrap">
+                         <span>{cvData.personalInfo.email}</span>
+                         {cvData.personalInfo.phone && <span>• {cvData.personalInfo.phone}</span>}
+                         {cvData.personalInfo.location && <span>• {cvData.personalInfo.location}</span>}
+                         {cvData.personalInfo.website && (
+                           <span>
+                             • <a href={cvData.personalInfo.website} target="_blank" rel="noopener noreferrer" className="hover:underline">
+                               {cvData.personalInfo.website.replace(/^https?:\/\//, '')}
+                             </a>
+                           </span>
+                         )}
+                         {cvData.personalInfo.github && (
+                           <span>
+                             • <a href={cvData.personalInfo.github} target="_blank" rel="noopener noreferrer" className="hover:underline">
+                               github.com/{cvData.personalInfo.github.split('/').pop()}
+                             </a>
+                           </span>
+                         )}
+                         {cvData.personalInfo.linkedin && (
+                           <span>
+                             • <a href={cvData.personalInfo.linkedin} target="_blank" rel="noopener noreferrer" className="hover:underline">
+                               linkedin.com/in/{cvData.personalInfo.linkedin.split('/').pop()}
+                             </a>
+                           </span>
+                         )}
+                       </div>
+                     </div>
+                   </div>
 
-                  {/* Summary */}
-                  {cvData.summary && (
-                    <div className="flex flex-col gap-1.5">
-                      <h3 className={`text-xs font-extrabold uppercase tracking-wider ${activeColor.primary} pb-0.5 flex items-center gap-1.5`}>
-                        <User className="h-3.5 w-3.5 stroke-[2.5]" />
-                        {t('summaryUpper')}
-                      </h3>
-                      <p className="text-xs leading-relaxed text-slate-700 italic text-justify">{cvData.summary}</p>
-                    </div>
-                  )}
+                   {/* Dynamic sections for linear upper part ordered according to cvData.sectionOrder */}
+                   {(() => {
+                     const order = cvData.sectionOrder || ['summary', 'experience', 'projects', 'education', 'skills', 'certificates', 'languages'];
+                     const upperSections = order.filter(sec => ['summary', 'experience', 'projects', 'education'].includes(sec));
+                     return upperSections.map((sec) => {
+                       if (sec === 'summary' && cvData.summary) {
+                         return (
+                           <div key={sec} className="flex flex-col gap-1.5">
+                             <h3 className={`text-xs font-extrabold uppercase tracking-wider ${activeColor.primary} pb-0.5 flex items-center gap-1.5`}>
+                               <User className="h-3.5 w-3.5 stroke-[2.5]" />
+                               {t('summaryUpper')}
+                             </h3>
+                             <p className="text-xs leading-relaxed text-slate-700 italic text-justify">{cvData.summary}</p>
+                           </div>
+                         );
+                       }
+                       if (sec === 'experience' && cvData.experience.length > 0) {
+                         return (
+                           <div key={sec} className="flex flex-col gap-3">
+                             <h3 className={`text-xs font-extrabold uppercase tracking-wider ${activeColor.primary} pb-0.5 flex items-center gap-1.5`}>
+                               <Briefcase className="h-3.5 w-3.5 stroke-[2.5]" />
+                               {t('experienceUpper')}
+                             </h3>
+                             {cvData.experience.map((exp) => (
+                               <div key={exp.id} className="flex flex-col gap-0.5">
+                                 <div className="flex justify-between items-center text-xs font-bold">
+                                   <span className="text-slate-900 font-extrabold">{exp.company} — <span className={`italic font-normal ${activeColor.primary}`}>{exp.position}</span></span>
+                                   <span className="text-[10px] font-mono text-slate-500 print:text-black">{exp.startDate} – {exp.endDate || 'Hiện tại'}</span>
+                                 </div>
+                                 <p className="text-xs leading-relaxed text-slate-705 whitespace-pre-line mt-1 print:text-black">
+                                   {exp.description}
+                                 </p>
+                               </div>
+                             ))}
+                           </div>
+                         );
+                       }
+                       if (sec === 'projects' && cvData.projects.length > 0) {
+                         return (
+                           <div key={sec} className="flex flex-col gap-3">
+                             <h3 className={`text-xs font-extrabold uppercase tracking-wider ${activeColor.primary} pb-0.5 flex items-center gap-1.5`}>
+                               <FolderGit2 className="h-3.5 w-3.5 stroke-[2.5]" />
+                               {t('projectsUpper')}
+                             </h3>
+                             {cvData.projects.map((proj) => (
+                               <div key={proj.id} className="flex flex-col gap-0.5">
+                                 <div className="flex justify-between items-center text-xs font-bold">
+                                   <span className="text-slate-900 font-extrabold">
+                                     {proj.name}
+                                     {proj.url && (
+                                       <a
+                                         href={proj.url}
+                                         target="_blank"
+                                         rel="noopener noreferrer"
+                                         className="inline-flex items-center gap-0.5 text-[10px] text-indigo-650 hover:underline ml-2 font-normal print:text-black print:no-underline"
+                                       >
+                                         <ExternalLink className="h-2.5 w-2.5" />
+                                         {proj.url.replace(/^https?:\/\/(www\.)?/, '')}
+                                       </a>
+                                     )}
+                                     {" — "}
+                                     <span className="font-normal italic text-[11px]">{proj.role}</span>
+                                   </span>
+                                   <span className="text-[10px] font-mono text-slate-500 print:text-black">{proj.startDate}</span>
+                                 </div>
+                                 {proj.technologies.filter(Boolean).length > 0 && (
+                                   <span className="text-[10px] text-slate-550 font-semibold">Công nghệ: {proj.technologies.filter(Boolean).join(", ")}</span>
+                                 )}
+                                 <p className="text-xs leading-relaxed text-slate-705 whitespace-pre-line mt-0.5 print:text-black">
+                                   {proj.description}
+                                 </p>
+                               </div>
+                             ))}
+                           </div>
+                         );
+                       }
+                       if (sec === 'education' && cvData.education.length > 0) {
+                         return (
+                           <div key={sec} className="flex flex-col gap-3">
+                             <h3 className={`text-xs font-extrabold uppercase tracking-wider ${activeColor.primary} pb-0.5 flex items-center gap-1.5`}>
+                               <GraduationCap className="h-3.5 w-3.5 stroke-[2.5]" />
+                               {t('educationUpper')}
+                             </h3>
+                             {cvData.education.map((edu) => (
+                               <div key={edu.id} className="flex flex-col gap-0.5 text-xs">
+                                 <div className="flex justify-between items-start font-bold">
+                                   <span className="text-slate-900 font-extrabold">{edu.institution}</span>
+                                   <span className="text-[10px] font-mono text-slate-500 print:text-black">{edu.startDate} – {edu.endDate || 'Hiện tại'}</span>
+                                 </div>
+                                 <div className="text-slate-655 italic print:text-black">{edu.degree}</div>
+                                 {edu.description && <p className="text-[10px] text-slate-500 mt-0.5">{edu.description}</p>}
+                               </div>
+                             ))}
+                           </div>
+                         );
+                       }
+                       return null;
+                     });
+                   })()}
 
-                  {/* Experience */}
-                  {cvData.experience.length > 0 && (
-                    <div className="flex flex-col gap-3">
-                      <h3 className={`text-xs font-extrabold uppercase tracking-wider ${activeColor.primary} pb-0.5 flex items-center gap-1.5`}>
-                        <Briefcase className="h-3.5 w-3.5 stroke-[2.5]" />
-                        {t('experienceUpper')}
-                      </h3>
-                      {cvData.experience.map((exp) => (
-                        <div key={exp.id} className="flex flex-col gap-0.5">
-                          <div className="flex justify-between items-center text-xs font-bold">
-                            <span className="text-slate-900 font-extrabold">{exp.company} — <span className={`italic font-normal ${activeColor.primary}`}>{exp.position}</span></span>
-                            <span className="text-[10px] font-mono text-slate-500 print:text-black">{exp.startDate} – {exp.endDate || 'Hiện tại'}</span>
-                          </div>
-                          <p className="text-xs leading-relaxed text-slate-700 whitespace-pre-line mt-1 print:text-black">
-                            {exp.description}
-                          </p>
-                        </div>
-                      ))}
-                    </div>
-                  )}
+                   {/* Skills, Certificates, Languages Grid */}
+                   <div className="grid grid-cols-2 gap-4 mt-2">
+                     
+                     {/* Left Grid Column: Skills */}
+                     <div className="flex flex-col gap-2">
+                       {(() => {
+                         const order = cvData.sectionOrder || ['summary', 'experience', 'projects', 'education', 'skills', 'certificates', 'languages'];
+                         const leftGridSections = order.filter(sec => ['skills'].includes(sec));
+                         return leftGridSections.map((sec) => {
+                           if (sec === 'skills' && cvData.skills.length > 0) {
+                             return (
+                               <div key={sec} className="flex flex-col gap-2">
+                                 <h3 className={`text-xs font-extrabold uppercase tracking-wider ${activeColor.primary} pb-0.5 flex items-center gap-1.5`}>
+                                   <Wrench className="h-3.5 w-3.5 stroke-[2.5]" />
+                                   {t('skillsUpper')}
+                                 </h3>
+                                 <div className="flex flex-col gap-1 text-xs">
+                                   {cvData.skills.map((grp) => (
+                                     <div key={grp.id} className="leading-snug">
+                                       <span className="font-bold text-slate-850">{grp.category}: </span>
+                                       <span className="text-slate-700">{grp.skills.filter(Boolean).join(", ")}</span>
+                                     </div>
+                                   ))}
+                                 </div>
+                               </div>
+                             );
+                           }
+                           return null;
+                         });
+                       })()}
+                     </div>
 
-                  {/* Projects */}
-                  {cvData.projects.length > 0 && (
-                    <div className="flex flex-col gap-3">
-                      <h3 className={`text-xs font-extrabold uppercase tracking-wider ${activeColor.primary} pb-0.5 flex items-center gap-1.5`}>
-                        <FolderGit2 className="h-3.5 w-3.5 stroke-[2.5]" />
-                        {t('projectsUpper')}
-                      </h3>
-                      {cvData.projects.map((proj) => (
-                        <div key={proj.id} className="flex flex-col gap-0.5">
-                          <div className="flex justify-between items-center text-xs font-bold">
-                            <span className="text-slate-900 font-extrabold">
-                              {proj.name}
-                              {proj.url && (
-                                <a
-                                  href={proj.url}
-                                  target="_blank"
-                                  rel="noopener noreferrer"
-                                  className="inline-flex items-center gap-0.5 text-[10px] text-indigo-650 hover:underline ml-2 font-normal print:text-black print:no-underline"
-                                >
-                                  <ExternalLink className="h-2.5 w-2.5" />
-                                  {proj.url.replace(/^https?:\/\/(www\.)?/, '')}
-                                </a>
-                              )}
-                              {" — "}
-                              <span className="font-normal italic text-[11px]">{proj.role}</span>
-                            </span>
-                            <span className="text-[10px] font-mono text-slate-500 print:text-black">{proj.startDate}</span>
-                          </div>
-                          {proj.technologies.filter(Boolean).length > 0 && (
-                            <span className="text-[10px] text-slate-500 font-semibold">Công nghệ: {proj.technologies.filter(Boolean).join(", ")}</span>
-                          )}
-                          <p className="text-xs leading-relaxed text-slate-700 whitespace-pre-line mt-0.5 print:text-black">
-                            {proj.description}
-                          </p>
-                        </div>
-                      ))}
-                    </div>
-                  )}
+                     {/* Right Grid Column: Certificates & Languages */}
+                     <div className="flex flex-col gap-4">
+                       {(() => {
+                         const order = cvData.sectionOrder || ['summary', 'experience', 'projects', 'education', 'skills', 'certificates', 'languages'];
+                         const rightGridSections = order.filter(sec => ['certificates', 'languages'].includes(sec));
+                         return rightGridSections.map((sec) => {
+                           if (sec === 'certificates' && cvData.certificates.length > 0) {
+                             return (
+                               <div key={sec} className="flex flex-col gap-1">
+                                 <h3 className={`text-xs font-extrabold uppercase tracking-wider ${activeColor.primary} pb-0.5 flex items-center gap-1.5`}>
+                                   <Award className="h-3.5 w-3.5 stroke-[2.5]" />
+                                   {t('certificatesUpper')}
+                                 </h3>
+                                 {cvData.certificates.map((c) => (
+                                   <div key={c.id} className="text-xs text-slate-750">
+                                     <span className="font-bold text-slate-900">{c.name}</span> <span className="text-[10px] text-slate-550">({c.date})</span>
+                                   </div>
+                                 ))}
+                               </div>
+                             );
+                           }
+                           if (sec === 'languages' && cvData.languages.length > 0) {
+                             return (
+                               <div key={sec} className="flex flex-col gap-1">
+                                 <h3 className={`text-xs font-extrabold uppercase tracking-wider ${activeColor.primary} pb-0.5 flex items-center gap-1.5`}>
+                                   <Languages className="h-3.5 w-3.5 stroke-[2.5]" />
+                                   {t('languagesUpper')}
+                                 </h3>
+                                 <div className="text-xs text-slate-750 flex flex-col gap-0.5">
+                                   {cvData.languages.map((l) => (
+                                     <div key={l.id}>
+                                       <span className="font-bold text-slate-900">{l.name}</span>: {l.level}
+                                     </div>
+                                   ))}
+                                 </div>
+                               </div>
+                             );
+                           }
+                           return null;
+                         });
+                       })()}
+                     </div>
 
-                  {/* Education */}
-                  {cvData.education.length > 0 && (
-                    <div className="flex flex-col gap-3">
-                      <h3 className={`text-xs font-extrabold uppercase tracking-wider ${activeColor.primary} pb-0.5 flex items-center gap-1.5`}>
-                        <GraduationCap className="h-3.5 w-3.5 stroke-[2.5]" />
-                        {t('educationUpper')}
-                      </h3>
-                      {cvData.education.map((edu) => (
-                        <div key={edu.id} className="flex flex-col gap-0.5 text-xs">
-                          <div className="flex justify-between items-start font-bold">
-                            <span className="text-slate-900 font-extrabold">{edu.institution}</span>
-                            <span className="text-[10px] font-mono text-slate-500 print:text-black">{edu.startDate} – {edu.endDate || 'Hiện tại'}</span>
-                          </div>
-                          <div className="text-slate-650 italic print:text-black">{edu.degree}</div>
-                          {edu.description && <p className="text-[10px] text-slate-500 mt-0.5">{edu.description}</p>}
-                        </div>
-                      ))}
-                    </div>
-                  )}
+                   </div>
 
-                  {/* Skills, Certificates, Languages Grid */}
-                  <div className="grid grid-cols-2 gap-4 mt-2">
-                    
-                    {cvData.skills.length > 0 && (
-                      <div className="flex flex-col gap-2">
-                        <h3 className={`text-xs font-extrabold uppercase tracking-wider ${activeColor.primary} pb-0.5 flex items-center gap-1.5`}>
-                          <Wrench className="h-3.5 w-3.5 stroke-[2.5]" />
-                          {t('skillsUpper')}
-                        </h3>
-                        <div className="flex flex-col gap-1 text-xs">
-                          {cvData.skills.map((grp) => (
-                            <div key={grp.id} className="leading-snug">
-                              <span className="font-bold text-slate-850">{grp.category}: </span>
-                              <span className="text-slate-700">{grp.skills.filter(Boolean).join(", ")}</span>
-                            </div>
-                          ))}
-                        </div>
-                      </div>
-                    )}
-
-                    <div className="flex flex-col gap-4">
-                      {/* Certificates */}
-                      {cvData.certificates.length > 0 && (
-                        <div className="flex flex-col gap-1">
-                          <h3 className={`text-xs font-extrabold uppercase tracking-wider ${activeColor.primary} pb-0.5 flex items-center gap-1.5`}>
-                            <Award className="h-3.5 w-3.5 stroke-[2.5]" />
-                            {t('certificatesUpper')}
-                          </h3>
-                          {cvData.certificates.map((c) => (
-                            <div key={c.id} className="text-xs text-slate-750">
-                              <span className="font-bold text-slate-900">{c.name}</span> <span className="text-[10px] text-slate-550">({c.date})</span>
-                            </div>
-                          ))}
-                        </div>
-                      )}
-
-                      {/* Languages */}
-                      {cvData.languages.length > 0 && (
-                        <div className="flex flex-col gap-1">
-                          <h3 className={`text-xs font-extrabold uppercase tracking-wider ${activeColor.primary} pb-0.5 flex items-center gap-1.5`}>
-                            <Languages className="h-3.5 w-3.5 stroke-[2.5]" />
-                            {t('languagesUpper')}
-                          </h3>
-                          <div className="text-xs text-slate-750 flex flex-col gap-0.5">
-                            {cvData.languages.map((l) => (
-                              <div key={l.id}>
-                                <span className="font-bold text-slate-900">{l.name}</span>: {l.level}
-                              </div>
-                            ))}
-                          </div>
-                        </div>
-                      )}
-                    </div>
-
-                  </div>
-
-                </div>
-              )}
+                 </div>
+               )}
 
               {/* ========================================================
                   TEMPLATE 3: CREATIVE TECH (Modern pill badges)
                  ======================================================== */}
               {template === 'creative' && (
-                <div className="flex flex-col flex-1 gap-6 text-sm">
-                  
-                  {/* Creative Header */}
-                  <div className={`flex flex-col md:flex-row justify-between items-center gap-4 ${activeColor.bg} text-white p-6 rounded-2xl print:bg-white print:text-black print:p-0 print:border-b-2 print:border-black print:rounded-none print:flex-row print:justify-between print:items-center`}>
-                    <div className="flex items-center gap-4">
-                      {cvData.personalInfo.avatar && (
-                        <img 
-                          src={cvData.personalInfo.avatar} 
-                          alt="Avatar" 
-                          className="w-16 h-16 rounded-full object-cover border-2 border-white print:border-slate-800" 
-                        />
-                      )}
-                      <div>
-                        <h1 className="text-3xl font-black tracking-tight text-white m-0 print:text-black">
-                          {cvData.personalInfo.fullName || "HỌ VÀ TÊN"}
-                        </h1>
-                        <div className={`inline-block ${activeColor.lightBg} ${activeColor.primary} px-3 py-0.5 rounded-full text-xs font-bold mt-2 font-mono print:bg-slate-100 print:text-black print:border-slate-300`}>
-                          {cvData.personalInfo.title || "VỊ TRÍ ỨNG TUYỂN"}
-                        </div>
-                      </div>
-                    </div>
-                    <div className="flex flex-col gap-1 text-slate-100 text-xs font-mono sm:items-end mt-2 md:mt-0 print:text-black print:items-end print:text-right print:mt-0">
-                      <div>{cvData.personalInfo.email}</div>
-                      {cvData.personalInfo.phone && <div>{cvData.personalInfo.phone}</div>}
-                      {cvData.personalInfo.location && <div>{cvData.personalInfo.location}</div>}
-                      <div className="flex flex-wrap gap-2 mt-1 md:justify-end print:justify-end">
-                        {cvData.personalInfo.github && (
-                          <a 
-                            href={cvData.personalInfo.github} 
-                            target="_blank" 
-                            rel="noopener noreferrer" 
-                            className="bg-white/15 hover:bg-white/20 text-white px-2 py-0.5 rounded text-[10px] font-bold border border-white/10 print:bg-slate-50 print:border-slate-300 print:text-black transition-colors"
-                          >
-                            github.com/{cvData.personalInfo.github.split('/').pop()}
-                          </a>
-                        )}
-                        {cvData.personalInfo.linkedin && (
-                          <a 
-                            href={cvData.personalInfo.linkedin} 
-                            target="_blank" 
-                            rel="noopener noreferrer" 
-                            className="bg-white/15 hover:bg-white/20 text-white px-2 py-0.5 rounded text-[10px] font-bold border border-white/10 print:bg-slate-50 print:border-slate-300 print:text-black transition-colors"
-                          >
-                            linkedin.com/in/{cvData.personalInfo.linkedin.split('/').pop()}
-                          </a>
-                        )}
-                      </div>
-                    </div>
-                  </div>
+                 <div className="flex flex-col flex-1 gap-6 text-sm">
+                   
+                   {/* Creative Header */}
+                   <div className={`flex flex-col md:flex-row justify-between items-center gap-4 ${activeColor.bg} text-white p-6 rounded-2xl print:bg-white print:text-black print:p-0 print:border-b-2 print:border-black print:rounded-none print:flex-row print:justify-between print:items-center`}>
+                     <div className="flex items-center gap-4">
+                       {cvData.personalInfo.avatar && (
+                         <img 
+                           src={cvData.personalInfo.avatar} 
+                           alt="Avatar" 
+                           className="w-16 h-16 rounded-full object-cover border-2 border-white print:border-slate-800" 
+                         />
+                       )}
+                       <div>
+                         <h1 className="text-3xl font-black tracking-tight text-white m-0 print:text-black">
+                           {cvData.personalInfo.fullName || "HỌ VÀ TÊN"}
+                         </h1>
+                         <div className={`inline-block ${activeColor.lightBg} ${activeColor.primary} px-3 py-0.5 rounded-full text-xs font-bold mt-2 font-mono print:bg-slate-100 print:text-black print:border-slate-300`}>
+                           {cvData.personalInfo.title || "VỊ TRÍ ỨNG TUYỂN"}
+                         </div>
+                       </div>
+                     </div>
+                     <div className="flex flex-col gap-1 text-slate-100 text-xs font-mono sm:items-end mt-2 md:mt-0 print:text-black print:items-end print:text-right print:mt-0">
+                       <div>{cvData.personalInfo.email}</div>
+                       {cvData.personalInfo.phone && <div>{cvData.personalInfo.phone}</div>}
+                       {cvData.personalInfo.location && <div>{cvData.personalInfo.location}</div>}
+                       <div className="flex flex-wrap gap-2 mt-1 md:justify-end print:justify-end">
+                         {cvData.personalInfo.github && (
+                           <a 
+                             href={cvData.personalInfo.github} 
+                             target="_blank" 
+                             rel="noopener noreferrer" 
+                             className="bg-white/15 hover:bg-white/20 text-white px-2 py-0.5 rounded text-[10px] font-bold border border-white/10 print:bg-slate-50 print:border-slate-300 print:text-black transition-colors"
+                           >
+                             github.com/{cvData.personalInfo.github.split('/').pop()}
+                           </a>
+                         )}
+                         {cvData.personalInfo.linkedin && (
+                           <a 
+                             href={cvData.personalInfo.linkedin} 
+                             target="_blank" 
+                             rel="noopener noreferrer" 
+                             className="bg-white/15 hover:bg-white/20 text-white px-2 py-0.5 rounded text-[10px] font-bold border border-white/10 print:bg-slate-50 print:border-slate-300 print:text-black transition-colors"
+                           >
+                             linkedin.com/in/{cvData.personalInfo.linkedin.split('/').pop()}
+                           </a>
+                         )}
+                       </div>
+                     </div>
+                   </div>
 
-                  {/* Summary */}
-                  {cvData.summary && (
-                    <div className={`${activeColor.lightBg} p-4 rounded-xl border border-slate-200/40 print:bg-white print:p-0 print:border-none`}>
-                      <p className="text-xs leading-relaxed text-slate-750 font-medium text-justify">{cvData.summary}</p>
-                    </div>
-                  )}
+                   {/* Dynamic Linear Upper Sections */}
+                   {(() => {
+                     const order = cvData.sectionOrder || ['summary', 'experience', 'projects', 'education', 'skills', 'certificates', 'languages'];
+                     const linearSections = order.filter(sec => ['summary', 'experience', 'projects', 'skills'].includes(sec));
+                     return linearSections.map((sec) => {
+                       if (sec === 'summary' && cvData.summary) {
+                         return (
+                           <div key={sec} className={`${activeColor.lightBg} p-4 rounded-xl border border-slate-200/40 print:bg-white print:p-0 print:border-none`}>
+                             <p className="text-xs leading-relaxed text-slate-755 font-medium text-justify">{cvData.summary}</p>
+                           </div>
+                         );
+                       }
+                       if (sec === 'experience' && cvData.experience.length > 0) {
+                         return (
+                           <div key={sec} className="flex flex-col gap-4">
+                             <h3 className={`text-xs font-black uppercase tracking-wider ${activeColor.primary} flex items-center gap-1.5`}>
+                               <Briefcase className="h-3.5 w-3.5 stroke-[2.5]" />
+                               {t('experienceUpper')}
+                             </h3>
+                             {cvData.experience.map((exp) => (
+                               <div key={exp.id} className={`border-l-2 ${activeColor.border} pl-4 py-0.5 flex flex-col gap-1 relative print:border-slate-300`}>
+                                 <div className="flex justify-between items-start text-xs">
+                                   <div>
+                                     <span className="font-extrabold text-slate-900 text-sm">{exp.company}</span>
+                                     <span className={`mx-2 ${activeColor.primary}`}>•</span>
+                                     <span className="font-bold text-slate-850">{exp.position}</span>
+                                   </div>
+                                   <span className="text-[10px] font-mono font-bold bg-slate-100 text-slate-600 px-2 py-0.5 rounded print:bg-slate-50 print:border print:border-slate-200">{exp.startDate} – {exp.endDate || 'Hiện tại'}</span>
+                                 </div>
+                                 <p className="text-xs leading-relaxed text-slate-655 font-medium whitespace-pre-line mt-1 print:text-black">
+                                   {exp.description}
+                                 </p>
+                               </div>
+                             ))}
+                           </div>
+                         );
+                       }
+                       if (sec === 'projects' && cvData.projects.length > 0) {
+                         return (
+                           <div key={sec} className="flex flex-col gap-4">
+                             <h3 className={`text-xs font-black uppercase tracking-wider ${activeColor.primary} flex items-center gap-1.5`}>
+                               <FolderGit2 className="h-3.5 w-3.5 stroke-[2.5]" />
+                               {t('projectsUpper')}
+                             </h3>
+                             {cvData.projects.map((proj) => (
+                               <div key={proj.id} className={`border-l-2 ${activeColor.border} pl-4 py-0.5 flex flex-col gap-1 print:border-slate-300`}>
+                                 <div className="flex justify-between items-center text-xs">
+                                   <div>
+                                     <span className="font-extrabold text-slate-900 text-sm">{proj.name}</span>
+                                     {proj.url && (
+                                       <a
+                                         href={proj.url}
+                                         target="_blank"
+                                         rel="noopener noreferrer"
+                                         className={`inline-flex items-center gap-0.5 text-[10px] ${activeColor.primary} hover:underline ml-2 font-bold print:text-black print:no-underline`}
+                                       >
+                                         <ExternalLink className="h-2.5 w-2.5" />
+                                         {proj.url.replace(/^https?:\/\/(www\.)?/, '')}
+                                       </a>
+                                     )}
+                                     <span className="text-slate-400 mx-1.5">•</span>
+                                     <span className="text-[10px] text-slate-550 font-semibold italic">{proj.role}</span>
+                                   </div>
+                                   <span className="text-[10px] font-mono font-bold text-slate-400 print:text-black">{proj.startDate}</span>
+                                 </div>
+                                 {proj.technologies.filter(Boolean).length > 0 && (
+                                   <div className="flex flex-wrap gap-1 mt-0.5">
+                                       {proj.technologies.filter(Boolean).map((tech, idx) => (
+                                         <span key={idx} className={`${activeColor.pill} rounded px-2 py-0.5 text-[9px] font-bold font-mono`}>
+                                           {tech}
+                                         </span>
+                                       ))}
+                                   </div>
+                                 )}
+                                 <p className="text-xs leading-relaxed text-slate-655 font-medium whitespace-pre-line mt-1 print:text-black">
+                                   {proj.description}
+                                 </p>
+                               </div>
+                             ))}
+                           </div>
+                         );
+                       }
+                       if (sec === 'skills' && cvData.skills.length > 0) {
+                         return (
+                           <div key={sec} className="flex flex-col gap-3">
+                             <h3 className={`text-xs font-black uppercase tracking-wider ${activeColor.primary} flex items-center gap-1.5`}>
+                               <Wrench className="h-3.5 w-3.5 stroke-[2.5]" />
+                               {t('skillsUpper')}
+                             </h3>
+                             <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+                               {cvData.skills.map((grp) => (
+                                 <div key={grp.id} className="bg-slate-50 border border-slate-150 p-3 rounded-xl print:bg-white print:border-slate-300">
+                                   <span className="text-xs font-bold text-slate-850 block mb-1.5 border-b pb-0.5 print:border-slate-300">{grp.category}</span>
+                                   <div className="flex flex-wrap gap-1">
+                                     {grp.skills.filter(Boolean).map((s, idx) => (
+                                       <span key={idx} className="bg-white border border-slate-200 text-slate-700 px-1.5 py-0.5 rounded text-[10px] font-semibold print:bg-slate-50 print:border-slate-300 print:text-black">
+                                         {s}
+                                       </span>
+                                     ))}
+                                   </div>
+                                 </div>
+                               ))}
+                             </div>
+                           </div>
+                         );
+                       }
+                       return null;
+                     });
+                   })()}
 
-                  {/* Linear details */}
-                  <div className="flex flex-col gap-6">
-                    
-                    {/* Experience */}
-                    {cvData.experience.length > 0 && (
-                      <div className="flex flex-col gap-4">
-                        <h3 className={`text-xs font-black uppercase tracking-wider ${activeColor.primary} flex items-center gap-1.5`}>
-                          <Briefcase className="h-3.5 w-3.5 stroke-[2.5]" />
-                          {t('experienceUpper')}
-                        </h3>
-                        {cvData.experience.map((exp) => (
-                          <div key={exp.id} className={`border-l-2 ${activeColor.border} pl-4 py-0.5 flex flex-col gap-1 relative print:border-slate-300`}>
-                            <div className="flex justify-between items-start text-xs">
-                              <div>
-                                <span className="font-extrabold text-slate-900 text-sm">{exp.company}</span>
-                                <span className={`mx-2 ${activeColor.primary}`}>•</span>
-                                <span className="font-bold text-slate-850">{exp.position}</span>
-                              </div>
-                              <span className="text-[10px] font-mono font-bold bg-slate-100 text-slate-600 px-2 py-0.5 rounded print:bg-slate-50 print:border print:border-slate-200">{exp.startDate} – {exp.endDate || 'Hiện tại'}</span>
-                            </div>
-                            <p className="text-xs leading-relaxed text-slate-650 font-medium whitespace-pre-line mt-1 print:text-black">
-                              {exp.description}
-                            </p>
-                          </div>
-                        ))}
-                      </div>
-                    )}
+                   {/* Education, Certificates and Languages split Grid */}
+                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                     
+                     {/* Left Column Grid: Education */}
+                     <div>
+                       {(() => {
+                         const order = cvData.sectionOrder || ['summary', 'experience', 'projects', 'education', 'skills', 'certificates', 'languages'];
+                         const leftGridSections = order.filter(sec => ['education'].includes(sec));
+                         return leftGridSections.map((sec) => {
+                           if (sec === 'education' && cvData.education.length > 0) {
+                             return (
+                               <div key={sec} className="flex flex-col gap-3">
+                                 <h3 className={`text-xs font-black uppercase tracking-wider ${activeColor.primary} flex items-center gap-1.5`}>
+                                   <GraduationCap className="h-3.5 w-3.5 stroke-[2.5]" />
+                                   {t('educationUpper')}
+                                 </h3>
+                                 {cvData.education.map((edu) => (
+                                   <div key={edu.id} className="flex flex-col gap-0.5 text-xs">
+                                     <div className="flex justify-between items-start font-bold">
+                                       <span className="text-slate-900 font-extrabold">{edu.institution}</span>
+                                       <span className="text-[10px] font-mono text-slate-500 print:text-black">{edu.startDate} – {edu.endDate || 'Hiên tại'}</span>
+                                     </div>
+                                     <div className={`font-semibold ${activeColor.primary} print:text-black`}>{edu.degree}</div>
+                                     {edu.description && <p className="text-[10px] text-slate-500 italic mt-0.5">{edu.description}</p>}
+                                   </div>
+                                 ))}
+                               </div>
+                             );
+                           }
+                           return null;
+                         });
+                       })()}
+                     </div>
 
-                    {/* Projects */}
-                    {cvData.projects.length > 0 && (
-                      <div className="flex flex-col gap-4">
-                        <h3 className={`text-xs font-black uppercase tracking-wider ${activeColor.primary} flex items-center gap-1.5`}>
-                          <FolderGit2 className="h-3.5 w-3.5 stroke-[2.5]" />
-                          {t('projectsUpper')}
-                        </h3>
-                        {cvData.projects.map((proj) => (
-                          <div key={proj.id} className={`border-l-2 ${activeColor.border} pl-4 py-0.5 flex flex-col gap-1 print:border-slate-300`}>
-                            <div className="flex justify-between items-center text-xs">
-                              <div>
-                                <span className="font-extrabold text-slate-900 text-sm">{proj.name}</span>
-                                {proj.url && (
-                                  <a
-                                    href={proj.url}
-                                    target="_blank"
-                                    rel="noopener noreferrer"
-                                    className={`inline-flex items-center gap-0.5 text-[10px] ${activeColor.primary} hover:underline ml-2 font-bold print:text-black print:no-underline`}
-                                  >
-                                    <ExternalLink className="h-2.5 w-2.5" />
-                                    {proj.url.replace(/^https?:\/\/(www\.)?/, '')}
-                                  </a>
-                                )}
-                                <span className="text-slate-400 mx-1.5">•</span>
-                                <span className="text-[10px] text-slate-550 font-semibold italic">{proj.role}</span>
-                              </div>
-                              <span className="text-[10px] font-mono font-bold text-slate-400 print:text-black">{proj.startDate}</span>
-                            </div>
-                            {proj.technologies.filter(Boolean).length > 0 && (
-                              <div className="flex flex-wrap gap-1 mt-0.5">
-                                  {proj.technologies.filter(Boolean).map((tech, idx) => (
-                                    <span key={idx} className={`${activeColor.pill} rounded px-2 py-0.5 text-[9px] font-bold font-mono`}>
-                                      {tech}
-                                    </span>
-                                  ))}
-                              </div>
-                            )}
-                            <p className="text-xs leading-relaxed text-slate-650 font-medium whitespace-pre-line mt-1 print:text-black">
-                              {proj.description}
-                            </p>
-                          </div>
-                        ))}
-                      </div>
-                    )}
+                     {/* Right Column Grid: Certificates & Languages */}
+                     <div className="flex flex-col gap-4">
+                       {(() => {
+                         const order = cvData.sectionOrder || ['summary', 'experience', 'projects', 'education', 'skills', 'certificates', 'languages'];
+                         const rightGridSections = order.filter(sec => ['certificates', 'languages'].includes(sec));
+                         return rightGridSections.map((sec) => {
+                           if (sec === 'certificates' && cvData.certificates.length > 0) {
+                             return (
+                               <div key={sec} className="flex flex-col gap-2">
+                                 <h3 className={`text-xs font-black uppercase tracking-wider ${activeColor.primary} flex items-center gap-1.5`}>
+                                   <Award className="h-3.5 w-3.5 stroke-[2.5]" />
+                                   {t('certificatesUpper')}
+                                 </h3>
+                                 <div className="flex flex-col gap-1.5 text-xs text-slate-755">
+                                   {cvData.certificates.map((c) => (
+                                     <div key={c.id} className="leading-snug">
+                                       <span className="font-extrabold text-slate-900">{c.name}</span> — <span className="text-slate-500 text-[11px] font-medium">{c.issuer} ({c.date})</span>
+                                     </div>
+                                   ))}
+                                 </div>
+                               </div>
+                             );
+                           }
+                           if (sec === 'languages' && cvData.languages.length > 0) {
+                             return (
+                               <div key={sec} className="flex flex-col gap-2">
+                                 <h3 className={`text-xs font-black uppercase tracking-wider ${activeColor.primary} flex items-center gap-1.5`}>
+                                   <Languages className="h-3.5 w-3.5 stroke-[2.5]" />
+                                   {t('languagesUpper')}
+                                 </h3>
+                                 <div className="flex flex-col gap-1 text-xs">
+                                   {cvData.languages.map((l) => (
+                                     <div key={l.id} className="flex justify-between font-medium">
+                                       <span className="font-bold text-slate-900">{l.name}</span>
+                                       <span className="text-slate-500 font-mono text-[10px] print:text-black">{l.level}</span>
+                                     </div>
+                                   ))}
+                                 </div>
+                               </div>
+                             );
+                           }
+                           return null;
+                         });
+                       })()}
+                     </div>
 
-                    {/* Skills Group Grid layout */}
-                    {cvData.skills.length > 0 && (
-                      <div className="flex flex-col gap-3">
-                        <h3 className={`text-xs font-black uppercase tracking-wider ${activeColor.primary} flex items-center gap-1.5`}>
-                          <Wrench className="h-3.5 w-3.5 stroke-[2.5]" />
-                          {t('skillsUpper')}
-                        </h3>
-                        <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
-                          {cvData.skills.map((grp) => (
-                            <div key={grp.id} className="bg-slate-50 border border-slate-150 p-3 rounded-xl print:bg-white print:border-slate-300">
-                              <span className="text-xs font-bold text-slate-850 block mb-1.5 border-b pb-0.5 print:border-slate-300">{grp.category}</span>
-                              <div className="flex flex-wrap gap-1">
-                                {grp.skills.filter(Boolean).map((s, idx) => (
-                                  <span key={idx} className="bg-white border border-slate-200 text-slate-700 px-1.5 py-0.5 rounded text-[10px] font-semibold print:bg-slate-50 print:border-slate-300 print:text-black">
-                                    {s}
-                                  </span>
-                                ))}
-                              </div>
-                            </div>
-                          ))}
-                        </div>
-                      </div>
-                    )}
+                   </div>
 
-                    {/* Education, Certificates and Languages split */}
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                      
-                      {/* Education */}
-                      {cvData.education.length > 0 && (
-                        <div className="flex flex-col gap-3">
-                          <h3 className={`text-xs font-black uppercase tracking-wider ${activeColor.primary} flex items-center gap-1.5`}>
-                            <GraduationCap className="h-3.5 w-3.5 stroke-[2.5]" />
-                            {t('educationUpper')}
-                          </h3>
-                          {cvData.education.map((edu) => (
-                            <div key={edu.id} className="flex flex-col gap-0.5 text-xs">
-                              <div className="flex justify-between items-start font-bold">
-                                <span className="text-slate-900 font-extrabold">{edu.institution}</span>
-                                <span className="text-[10px] font-mono text-slate-500 print:text-black">{edu.startDate} – {edu.endDate || 'Hiên tại'}</span>
-                              </div>
-                              <div className={`font-semibold ${activeColor.primary} print:text-black`}>{edu.degree}</div>
-                              {edu.description && <p className="text-[10px] text-slate-500 italic mt-0.5">{edu.description}</p>}
-                            </div>
-                          ))}
-                        </div>
-                      )}
-
-                      {/* Certificates & Languages */}
-                      <div className="flex flex-col gap-4">
-                        {/* Certificates */}
-                        {cvData.certificates.length > 0 && (
-                          <div className="flex flex-col gap-2">
-                            <h3 className={`text-xs font-black uppercase tracking-wider ${activeColor.primary} flex items-center gap-1.5`}>
-                              <Award className="h-3.5 w-3.5 stroke-[2.5]" />
-                              {t('certificatesUpper')}
-                            </h3>
-                            <div className="flex flex-col gap-1.5 text-xs text-slate-750">
-                              {cvData.certificates.map((c) => (
-                                <div key={c.id} className="leading-snug">
-                                  <span className="font-extrabold text-slate-900">{c.name}</span> — <span className="text-slate-500 text-[11px] font-medium">{c.issuer} ({c.date})</span>
-                                </div>
-                              ))}
-                            </div>
-                          </div>
-                        )}
-
-                        {/* Languages */}
-                        {cvData.languages.length > 0 && (
-                          <div className="flex flex-col gap-2">
-                            <h3 className={`text-xs font-black uppercase tracking-wider ${activeColor.primary} flex items-center gap-1.5`}>
-                              <Languages className="h-3.5 w-3.5 stroke-[2.5]" />
-                              {t('languagesUpper')}
-                            </h3>
-                            <div className="flex flex-col gap-1 text-xs">
-                              {cvData.languages.map((l) => (
-                                <div key={l.id} className="flex justify-between font-medium">
-                                  <span className="font-bold text-slate-900">{l.name}</span>
-                                  <span className="text-slate-500 font-mono text-[10px] print:text-black">{l.level}</span>
-                                </div>
-                              ))}
-                            </div>
-                          </div>
-                        )}
-                      </div>
-
-                    </div>
-
-                  </div>
-
-                </div>
-              )}
+                 </div>
+               )}
 
               {/* ========================================================
                   TEMPLATE 4: EXECUTIVE ELITE (Asymmetrical Layout)

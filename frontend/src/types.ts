@@ -72,6 +72,7 @@ export interface CVSchema {
   fontFamily?: string;
   layoutDensity?: 'compact' | 'normal' | 'comfortable';
   pageLayout?: 'single' | 'multi';
+  sectionOrder?: string[];
 }
 
 export interface CVResponse {

@@ -67,6 +67,7 @@ class CVSchema(BaseModel):
     fontFamily: Optional[str] = "sans"
     layoutDensity: Optional[str] = "normal"
     pageLayout: Optional[str] = "single"
+    sectionOrder: Optional[List[str]] = None
 
 
 # ==========================================
