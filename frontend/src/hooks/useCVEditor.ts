@@ -1,7 +1,9 @@
 import { useState, useEffect, useReducer } from 'react';
 import type { CVSchema } from '../types';
 import * as api from '../services/api';
-import { DEFAULT_CV, TRANSLATIONS } from '../constants';
+import { DEFAULT_CV } from '../constants';
+import { useTranslation } from '../i18n/useTranslation';
+import { TRANSLATIONS } from '../i18n/translations';
 import { processAvatar } from '../services/avatarProcessor';
 import { cvDataReducer, type CVAction } from './cvDataReducer';
 
@@ -68,19 +70,8 @@ export interface CVEditorState {
 }
 
 export function useCVEditor(): CVEditorState {
-  // --- Language ---
-  const [language, setLanguageState] = useState<'vi' | 'en'>(() => {
-    const saved = localStorage.getItem('cv_builder_lang');
-    return saved === 'en' || saved === 'vi' ? saved : 'vi';
-  });
-
-  const setLanguage = (lang: 'vi' | 'en') => {
-    localStorage.setItem('cv_builder_lang', lang);
-    setLanguageState(lang);
-  };
-
-  const t = (key: keyof typeof TRANSLATIONS.vi): string =>
-    TRANSLATIONS[language][key] || TRANSLATIONS.vi[key];
+  // --- Language / i18n ---
+  const { language, setLanguage, t } = useTranslation();
 
   // --- Routing ---
   const [slug, setSlug] = useState<string>('');
