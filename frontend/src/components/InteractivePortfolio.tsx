@@ -4,7 +4,7 @@ import { useCVViewer } from '../hooks/useCVViewer';
 import { usePasscodeVerify } from '../hooks/usePasscodeVerify';
 import TemplateRenderer from '../templates/TemplateRenderer';
 import { API_BASE_URL } from '../services/api';
-import { COLOR_MAP, FONT_MAP, DENSITY_MAP } from '../constants';
+import { COLOR_MAP, FONT_MAP } from '../constants';
 
 export function InteractivePortfolio({ 
   slug, 

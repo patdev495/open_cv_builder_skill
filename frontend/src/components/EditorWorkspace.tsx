@@ -12,7 +12,7 @@ import { ExtraForm } from '../editor/ExtraForm';
 import { LayoutForm } from '../editor/LayoutForm';
 import { AnalyticsDashboard } from './AnalyticsDashboard';
 import TemplateRenderer from '../templates/TemplateRenderer';
-import { COLOR_MAP, FONT_MAP, DENSITY_MAP } from '../constants';
+import { COLOR_MAP, FONT_MAP } from '../constants';
 
 export function EditorWorkspace({ onExit, initialPasscode = '' }: { onExit: () => void, initialPasscode?: string }) {
   const editorState = useCVEditor(initialPasscode);
@@ -181,7 +181,6 @@ export function EditorWorkspace({ onExit, initialPasscode = '' }: { onExit: () =
 
   const activeColor = COLOR_MAP[(cvData.themeColor || 'indigo') as keyof typeof COLOR_MAP] || COLOR_MAP.indigo;
   const activeFont = FONT_MAP[(cvData.fontFamily || 'sans') as keyof typeof FONT_MAP] || FONT_MAP.sans;
-  const activeDensity = DENSITY_MAP[(cvData.layoutDensity || 'normal') as keyof typeof DENSITY_MAP] || DENSITY_MAP.normal;
 
   return (
     <CVEditorContext.Provider value={{ ...editorState, cvData: activeCvData, handleAutoFit }}>
