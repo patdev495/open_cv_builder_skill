@@ -65,6 +65,8 @@ class CVSchema(BaseModel):
     languages: List[LanguageItem] = []
     themeColor: Optional[str] = "indigo"
     fontFamily: Optional[str] = "sans"
+    layoutDensity: Optional[str] = "normal"
+    pageLayout: Optional[str] = "single"
 
 
 # ==========================================

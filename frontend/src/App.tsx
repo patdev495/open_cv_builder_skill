@@ -101,7 +101,9 @@ const DEFAULT_CV: CVSchema = {
     }
   ],
   themeColor: "indigo",
-  fontFamily: "sans"
+  fontFamily: "sans",
+  layoutDensity: "normal",
+  pageLayout: "single"
 };
 
 
@@ -439,6 +441,11 @@ function App() {
 
   // CV data & settings state
   const [cvData, setCvData] = useState<CVSchema>(DEFAULT_CV);
+
+  useEffect(() => {
+    document.title = cvData?.personalInfo?.fullName ? `${cvData.personalInfo.fullName} - CV` : "CV Builder Pro";
+  }, [cvData?.personalInfo?.fullName]);
+
   const [template, setTemplate] = useState<string>("modern");
   
   const handleTemplateChange = (tempId: string) => {
@@ -535,14 +542,26 @@ function App() {
     setStatusMessage(null);
     const targetSlug = inputSlug.trim().toLowerCase();
 
+    const cleanedCvData: CVSchema = {
+      ...cvData,
+      projects: cvData.projects.map(p => ({
+        ...p,
+        technologies: p.technologies.filter(Boolean)
+      })),
+      skills: cvData.skills.map(s => ({
+        ...s,
+        skills: s.skills.filter(Boolean)
+      }))
+    };
+
     try {
       if (isViewOnly) {
         // Updating an existing CV that we unlocked
-        await api.updateCV(targetSlug, passcode, template, cvData);
+        await api.updateCV(targetSlug, passcode, template, cleanedCvData);
         setStatusMessage({ type: 'success', text: t('successUpdate') });
       } else {
         // Creating a new CV
-        await api.createCV(targetSlug, passcode, template, cvData);
+        await api.createCV(targetSlug, passcode, template, cleanedCvData);
         setSlug(targetSlug);
         setIsViewOnly(true);
         setIsEditMode(false);
@@ -550,6 +569,7 @@ function App() {
         window.history.pushState({}, '', `/${targetSlug}`);
         setStatusMessage({ type: 'success', text: `${t('successPublish')}${targetSlug}` });
       }
+      setCvData(cleanedCvData);
     } catch (err: any) {
       setStatusMessage({ type: 'error', text: err.message || 'Lỗi khi lưu trữ CV.' });
     } finally {
@@ -847,7 +867,7 @@ function App() {
       {/* ==========================================
           MAIN LAYOUT
          ========================================== */}
-      <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8 flex flex-col lg:flex-row gap-8 overflow-hidden print:overflow-visible print:p-0 print:m-0 print:max-w-none print:w-auto">
+      <main className={`flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8 flex flex-col lg:flex-row gap-8 print:overflow-visible print:p-0 print:m-0 print:max-w-none print:w-auto ${isEditMode ? 'overflow-hidden' : 'overflow-visible'}`}>
         
         {/* ==========================================
             LEFT PANEL: EDITOR (Hidden when printing)
@@ -1584,7 +1604,7 @@ function App() {
                               value={proj.technologies.join(", ")}
                               onChange={(e) => {
                                 const list = [...cvData.projects];
-                                list[index].technologies = e.target.value.split(",").map(t => t.trim()).filter(Boolean);
+                                list[index].technologies = e.target.value.split(",").map(t => t.trim());
                                 setCvData({ ...cvData, projects: list });
                               }}
                               placeholder="React, TypeScript, Tailwind, FastAPI"
@@ -1662,7 +1682,7 @@ function App() {
                                 value={grp.skills.join(", ")}
                                 onChange={(e) => {
                                   const list = [...cvData.skills];
-                                  list[index].skills = e.target.value.split(",").map(s => s.trim()).filter(Boolean);
+                                  list[index].skills = e.target.value.split(",").map(s => s.trim());
                                   setCvData({ ...cvData, skills: list });
                                 }}
                                 placeholder="React, Next.js, HTML, CSS"
@@ -1831,10 +1851,7 @@ function App() {
           </section>
         )}
 
-        {/* ==========================================
-            RIGHT PANEL: LIVE PREVIEW & VIEW MODE
-           ========================================== */}
-        <section className={`flex-1 flex flex-col items-center justify-start overflow-y-auto ${isEditMode ? 'lg:w-[48%]' : 'w-full'} print:p-0 print:m-0`}>
+        <section className={`flex-1 flex flex-col items-center justify-start ${isEditMode ? 'lg:w-[48%] overflow-y-auto' : 'w-full overflow-visible'} print:p-0 print:m-0`}>
           
           {/* View Only Mode Info Panel (Hidden when printing) */}
           {!isEditMode && isViewOnly && (
@@ -1867,14 +1884,27 @@ function App() {
                 Using deep Tailwind vector printer styles.
                 ==========================================================
             */}
-            <div className={`w-[210mm] bg-white text-slate-800 ${activeDensity.paperPadding} shadow-2xl flex flex-col relative transition-all duration-300 print:shadow-none print:p-0 print:w-full print:bg-white print:text-black ${activeFont} ${
+            <div className={`w-[210mm] bg-white text-slate-800 ${activeDensity.paperPadding} shadow-2xl flex flex-col relative transition-all duration-300 print:shadow-none print:w-full print:bg-white print:text-black ${activeFont} ${
               (cvData.pageLayout || 'single') === 'single'
                 ? 'min-h-[297mm] max-h-[297mm] overflow-hidden print:overflow-visible print:max-h-none print:min-h-0'
                 : 'min-h-[297mm] overflow-visible'
             } ${
               template === 'modern' ? `border-t-[6px] ${activeColor.border}` : ''
             }`}>
-              <style>{`@media print { @page { margin: ${activeDensity.printMargin}; } }`}</style>
+              <style>{`
+                @media print {
+                  @page {
+                    margin: 0;
+                    size: A4 portrait;
+                  }
+                  body {
+                    margin: 0;
+                    background: white;
+                    -webkit-print-color-adjust: exact;
+                    print-color-adjust: exact;
+                  }
+                }
+              `}</style>
               
               {/* ========================================================
                   TEMPLATE 1: MODERN MINIMALIST (Default Modern)
@@ -1896,7 +1926,7 @@ function App() {
               {template === 'modern' && (
                 <div className="flex flex-col flex-1 gap-6 text-sm">
                   {/* Top section / Contact block */}
-                  <div className="border-b pb-6 flex flex-col sm:flex-row sm:justify-between sm:items-start gap-4">
+                  <div className="border-b pb-6 flex flex-col sm:flex-row sm:justify-between sm:items-start gap-4 print:flex-row print:justify-between print:items-start">
                     <div className="flex items-center gap-4">
                       {cvData.personalInfo.avatar && (
                         <img 
@@ -1914,13 +1944,26 @@ function App() {
                         </p>
                       </div>
                     </div>
-                    <div className="flex flex-col gap-1 text-slate-550 text-xs text-right sm:items-end font-medium print:text-slate-700">
+                    <div className="flex flex-col gap-1 text-slate-550 text-xs text-right sm:items-end font-medium print:text-slate-700 print:items-end print:text-right">
                       <div>{cvData.personalInfo.email}</div>
                       {cvData.personalInfo.phone && <div>{cvData.personalInfo.phone}</div>}
                       {cvData.personalInfo.location && <div>{cvData.personalInfo.location}</div>}
-                      <div className="flex flex-wrap gap-2 mt-1 sm:justify-end">
-                        {cvData.personalInfo.website && <span className="font-mono">{cvData.personalInfo.website.replace(/^https?:\/\//, '')}</span>}
-                        {cvData.personalInfo.github && <span className="font-mono">github.com/{cvData.personalInfo.github.split('/').pop()}</span>}
+                      <div className="flex flex-wrap gap-2 mt-1 sm:justify-end print:justify-end">
+                        {cvData.personalInfo.website && (
+                          <a href={cvData.personalInfo.website} target="_blank" rel="noopener noreferrer" className="font-mono hover:underline text-slate-550 print:text-slate-700">
+                            {cvData.personalInfo.website.replace(/^https?:\/\//, '')}
+                          </a>
+                        )}
+                        {cvData.personalInfo.github && (
+                          <a href={cvData.personalInfo.github} target="_blank" rel="noopener noreferrer" className="font-mono hover:underline text-slate-550 print:text-slate-700">
+                            github.com/{cvData.personalInfo.github.split('/').pop()}
+                          </a>
+                        )}
+                        {cvData.personalInfo.linkedin && (
+                          <a href={cvData.personalInfo.linkedin} target="_blank" rel="noopener noreferrer" className="font-mono hover:underline text-slate-550 print:text-slate-700">
+                            linkedin.com/in/{cvData.personalInfo.linkedin.split('/').pop()}
+                          </a>
+                        )}
                       </div>
                     </div>
                   </div>
@@ -1942,7 +1985,7 @@ function App() {
                             <div key={grp.id} className="flex flex-col gap-1">
                               <span className="text-xs font-bold text-slate-800">{grp.category}</span>
                               <div className="flex flex-wrap gap-1.5">
-                                {grp.skills.map((s, i) => (
+                                {grp.skills.filter(Boolean).map((s, i) => (
                                   <span key={i} className={`${activeColor.pill} px-2 py-0.5 rounded text-[11px] font-medium`}>
                                     {s}
                                   </span>
@@ -2045,9 +2088,9 @@ function App() {
                                 </div>
                                 <span className="text-[10px] font-mono font-bold text-slate-400 print:text-slate-850">{proj.startDate}</span>
                               </div>
-                              {proj.technologies.length > 0 && (
+                              {proj.technologies.filter(Boolean).length > 0 && (
                                 <div className="flex flex-wrap gap-1 mt-0.5">
-                                  {proj.technologies.map((tech, idx) => (
+                                  {proj.technologies.filter(Boolean).map((tech, idx) => (
                                     <span key={idx} className={`${activeColor.pill} rounded px-1.5 py-0.2 text-[9px] font-bold font-mono`}>
                                       {tech}
                                     </span>
@@ -2094,8 +2137,8 @@ function App() {
               {template === 'classic' && (
                 <div className="flex flex-col flex-1 gap-5 text-sm">
                   
-                  {/* Căn giữa Header */}
-                  <div className={`flex flex-col sm:flex-row items-center justify-center gap-4 border-b-[3px] ${activeColor.border} pb-4`}>
+                   {/* Căn giữa Header */}
+                  <div className={`flex flex-col sm:flex-row items-center justify-center gap-4 border-b-[3px] ${activeColor.border} pb-4 print:flex-row print:justify-start print:items-center`}>
                     {cvData.personalInfo.avatar && (
                       <img 
                         src={cvData.personalInfo.avatar} 
@@ -2103,18 +2146,38 @@ function App() {
                         className="w-16 h-16 rounded-full object-cover border border-slate-300" 
                       />
                     )}
-                    <div className="text-center sm:text-left flex flex-col gap-1">
+                    <div className="text-center sm:text-left flex flex-col gap-1 print:text-left">
                       <h1 className="text-3xl font-extrabold tracking-wide text-slate-950 uppercase m-0 print:text-black">
                         {cvData.personalInfo.fullName || "HỌ VÀ TÊN"}
                       </h1>
                       <p className={`font-bold text-xs tracking-widest uppercase ${activeColor.primary}`}>
                         {cvData.personalInfo.title || "VỊ TRÍ ỨNG TUYỂN"}
                       </p>
-                      <div className="flex flex-wrap justify-center sm:justify-start gap-x-4 gap-y-1 text-slate-600 text-xs font-mono mt-2 print:text-black">
+                      <div className="flex flex-wrap justify-center sm:justify-start gap-x-3 gap-y-1 text-slate-600 text-xs font-mono mt-2 print:text-black print:justify-start print:flex-wrap">
                         <span>{cvData.personalInfo.email}</span>
                         {cvData.personalInfo.phone && <span>• {cvData.personalInfo.phone}</span>}
                         {cvData.personalInfo.location && <span>• {cvData.personalInfo.location}</span>}
-                        {cvData.personalInfo.website && <span>• {cvData.personalInfo.website.replace(/^https?:\/\//, '')}</span>}
+                        {cvData.personalInfo.website && (
+                          <span>
+                            • <a href={cvData.personalInfo.website} target="_blank" rel="noopener noreferrer" className="hover:underline">
+                              {cvData.personalInfo.website.replace(/^https?:\/\//, '')}
+                            </a>
+                          </span>
+                        )}
+                        {cvData.personalInfo.github && (
+                          <span>
+                            • <a href={cvData.personalInfo.github} target="_blank" rel="noopener noreferrer" className="hover:underline">
+                              github.com/{cvData.personalInfo.github.split('/').pop()}
+                            </a>
+                          </span>
+                        )}
+                        {cvData.personalInfo.linkedin && (
+                          <span>
+                            • <a href={cvData.personalInfo.linkedin} target="_blank" rel="noopener noreferrer" className="hover:underline">
+                              linkedin.com/in/{cvData.personalInfo.linkedin.split('/').pop()}
+                            </a>
+                          </span>
+                        )}
                       </div>
                     </div>
                   </div>
@@ -2164,8 +2227,8 @@ function App() {
                             <span className="text-slate-900 font-extrabold">{proj.name} — <span className="font-normal italic text-[11px]">{proj.role}</span></span>
                             <span className="text-[10px] font-mono text-slate-500 print:text-black">{proj.startDate}</span>
                           </div>
-                          {proj.technologies.length > 0 && (
-                            <span className="text-[10px] text-slate-500 font-semibold">Công nghệ: {proj.technologies.join(", ")}</span>
+                          {proj.technologies.filter(Boolean).length > 0 && (
+                            <span className="text-[10px] text-slate-500 font-semibold">Công nghệ: {proj.technologies.filter(Boolean).join(", ")}</span>
                           )}
                           <p className="text-xs leading-relaxed text-slate-700 whitespace-pre-line mt-0.5 print:text-black">
                             {proj.description}
@@ -2208,7 +2271,7 @@ function App() {
                           {cvData.skills.map((grp) => (
                             <div key={grp.id} className="leading-snug">
                               <span className="font-bold text-slate-850">{grp.category}: </span>
-                              <span className="text-slate-700">{grp.skills.join(", ")}</span>
+                              <span className="text-slate-700">{grp.skills.filter(Boolean).join(", ")}</span>
                             </div>
                           ))}
                         </div>
@@ -2261,7 +2324,7 @@ function App() {
                 <div className="flex flex-col flex-1 gap-6 text-sm">
                   
                   {/* Creative Header */}
-                  <div className={`flex flex-col md:flex-row justify-between items-center gap-4 ${activeColor.bg} text-white p-6 rounded-2xl print:bg-white print:text-black print:p-0 print:border-b-2 print:border-black print:rounded-none`}>
+                  <div className={`flex flex-col md:flex-row justify-between items-center gap-4 ${activeColor.bg} text-white p-6 rounded-2xl print:bg-white print:text-black print:p-0 print:border-b-2 print:border-black print:rounded-none print:flex-row print:justify-between print:items-center`}>
                     <div className="flex items-center gap-4">
                       {cvData.personalInfo.avatar && (
                         <img 
@@ -2279,13 +2342,31 @@ function App() {
                         </div>
                       </div>
                     </div>
-                    <div className="flex flex-col gap-1 text-slate-100 text-xs font-mono sm:items-end mt-2 md:mt-0 print:text-black">
+                    <div className="flex flex-col gap-1 text-slate-100 text-xs font-mono sm:items-end mt-2 md:mt-0 print:text-black print:items-end print:text-right print:mt-0">
                       <div>{cvData.personalInfo.email}</div>
                       {cvData.personalInfo.phone && <div>{cvData.personalInfo.phone}</div>}
                       {cvData.personalInfo.location && <div>{cvData.personalInfo.location}</div>}
-                      <div className="flex flex-wrap gap-2 mt-1 md:justify-end">
-                        {cvData.personalInfo.github && <span className="bg-white/15 text-white px-2 py-0.5 rounded text-[10px] font-bold border border-white/10 print:bg-slate-50 print:border-slate-300 print:text-black">GitHub</span>}
-                        {cvData.personalInfo.linkedin && <span className="bg-white/15 text-white px-2 py-0.5 rounded text-[10px] font-bold border border-white/10 print:bg-slate-50 print:border-slate-300 print:text-black">LinkedIn</span>}
+                      <div className="flex flex-wrap gap-2 mt-1 md:justify-end print:justify-end">
+                        {cvData.personalInfo.github && (
+                          <a 
+                            href={cvData.personalInfo.github} 
+                            target="_blank" 
+                            rel="noopener noreferrer" 
+                            className="bg-white/15 hover:bg-white/20 text-white px-2 py-0.5 rounded text-[10px] font-bold border border-white/10 print:bg-slate-50 print:border-slate-300 print:text-black transition-colors"
+                          >
+                            github.com/{cvData.personalInfo.github.split('/').pop()}
+                          </a>
+                        )}
+                        {cvData.personalInfo.linkedin && (
+                          <a 
+                            href={cvData.personalInfo.linkedin} 
+                            target="_blank" 
+                            rel="noopener noreferrer" 
+                            className="bg-white/15 hover:bg-white/20 text-white px-2 py-0.5 rounded text-[10px] font-bold border border-white/10 print:bg-slate-50 print:border-slate-300 print:text-black transition-colors"
+                          >
+                            linkedin.com/in/{cvData.personalInfo.linkedin.split('/').pop()}
+                          </a>
+                        )}
                       </div>
                     </div>
                   </div>
@@ -2342,9 +2423,9 @@ function App() {
                               </div>
                               <span className="text-[10px] font-mono font-bold text-slate-400 print:text-black">{proj.startDate}</span>
                             </div>
-                            {proj.technologies.length > 0 && (
+                            {proj.technologies.filter(Boolean).length > 0 && (
                               <div className="flex flex-wrap gap-1 mt-0.5">
-                                  {proj.technologies.map((tech, idx) => (
+                                  {proj.technologies.filter(Boolean).map((tech, idx) => (
                                     <span key={idx} className={`${activeColor.pill} rounded px-2 py-0.5 text-[9px] font-bold font-mono`}>
                                       {tech}
                                     </span>
@@ -2371,7 +2452,7 @@ function App() {
                             <div key={grp.id} className="bg-slate-50 border border-slate-150 p-3 rounded-xl print:bg-white print:border-slate-300">
                               <span className="text-xs font-bold text-slate-850 block mb-1.5 border-b pb-0.5 print:border-slate-300">{grp.category}</span>
                               <div className="flex flex-wrap gap-1">
-                                {grp.skills.map((s, idx) => (
+                                {grp.skills.filter(Boolean).map((s, idx) => (
                                   <span key={idx} className="bg-white border border-slate-200 text-slate-700 px-1.5 py-0.5 rounded text-[10px] font-semibold print:bg-slate-50 print:border-slate-300 print:text-black">
                                     {s}
                                   </span>
@@ -2587,7 +2668,17 @@ function App() {
                           )}
                           {cvData.personalInfo.website && (
                             <div className="truncate">
-                              <span className="font-bold text-slate-800">Web:</span> {cvData.personalInfo.website.replace(/^https?:\/\//, '')}
+                              <span className="font-bold text-slate-800">Web:</span> <a href={cvData.personalInfo.website} target="_blank" rel="noopener noreferrer" className="hover:underline text-slate-700 font-medium">{cvData.personalInfo.website.replace(/^https?:\/\//, '')}</a>
+                            </div>
+                          )}
+                          {cvData.personalInfo.github && (
+                            <div className="truncate">
+                              <span className="font-bold text-slate-800">Git:</span> <a href={cvData.personalInfo.github} target="_blank" rel="noopener noreferrer" className="hover:underline text-slate-700 font-medium">github.com/{cvData.personalInfo.github.split('/').pop()}</a>
+                            </div>
+                          )}
+                          {cvData.personalInfo.linkedin && (
+                            <div className="truncate">
+                              <span className="font-bold text-slate-800">In:</span> <a href={cvData.personalInfo.linkedin} target="_blank" rel="noopener noreferrer" className="hover:underline text-slate-700 font-medium">linkedin.com/in/{cvData.personalInfo.linkedin.split('/').pop()}</a>
                             </div>
                           )}
                         </div>
@@ -2604,7 +2695,7 @@ function App() {
                             <div key={grp.id} className="flex flex-col gap-1">
                               <span className="text-xs font-bold text-slate-850">{grp.category}</span>
                               <div className="flex flex-wrap gap-1">
-                                {grp.skills.map((s, idx) => (
+                                {grp.skills.filter(Boolean).map((s, idx) => (
                                   <span key={idx} className={`${activeColor.pill} px-2 py-0.5 rounded text-[10px] font-semibold`}>
                                     {s}
                                   </span>
@@ -2673,11 +2764,31 @@ function App() {
                     <p className={`${activeColor.primary} font-semibold text-xs tracking-widest uppercase font-serif`}>
                       {cvData.personalInfo.title || "VỊ TRÍ ỨNG TUYỂN"}
                     </p>
-                    <div className="flex flex-wrap justify-center gap-x-6 gap-y-1 text-slate-500 text-xs font-mono mt-1 print:text-black">
+                    <div className="flex flex-wrap justify-center gap-x-6 gap-y-1 text-slate-500 text-xs font-mono mt-1 print:text-black print:justify-center print:flex-wrap">
                       <span>{cvData.personalInfo.email}</span>
                       {cvData.personalInfo.phone && <span>• {cvData.personalInfo.phone}</span>}
                       {cvData.personalInfo.location && <span>• {cvData.personalInfo.location}</span>}
-                      {cvData.personalInfo.website && <span>• {cvData.personalInfo.website.replace(/^https?:\/\//, '')}</span>}
+                      {cvData.personalInfo.website && (
+                        <span>
+                          • <a href={cvData.personalInfo.website} target="_blank" rel="noopener noreferrer" className="hover:underline">
+                            {cvData.personalInfo.website.replace(/^https?:\/\//, '')}
+                          </a>
+                        </span>
+                      )}
+                      {cvData.personalInfo.github && (
+                        <span>
+                          • <a href={cvData.personalInfo.github} target="_blank" rel="noopener noreferrer" className="hover:underline">
+                            github.com/{cvData.personalInfo.github.split('/').pop()}
+                          </a>
+                        </span>
+                      )}
+                      {cvData.personalInfo.linkedin && (
+                        <span>
+                          • <a href={cvData.personalInfo.linkedin} target="_blank" rel="noopener noreferrer" className="hover:underline">
+                            linkedin.com/in/{cvData.personalInfo.linkedin.split('/').pop()}
+                          </a>
+                        </span>
+                      )}
                     </div>
                   </div>
 
@@ -2807,7 +2918,7 @@ function App() {
                             {cvData.skills.map((grp) => (
                               <div key={grp.id} className="leading-relaxed">
                                 <span className="font-bold text-slate-900 font-serif block">{grp.category}</span>
-                                <span className="text-slate-655">{grp.skills.join(", ")}</span>
+                                <span className="text-slate-655">{grp.skills.filter(Boolean).join(", ")}</span>
                               </div>
                             ))}
                           </div>
