@@ -2305,11 +2305,10 @@ function App() {
                      </div>
                    </div>
 
-                   {/* Dynamic sections for linear upper part ordered according to cvData.sectionOrder */}
+                   {/* Dynamic sections in a single vertical stream ordered according to cvData.sectionOrder */}
                    {(() => {
                      const order = cvData.sectionOrder || ['summary', 'experience', 'projects', 'education', 'skills', 'certificates', 'languages'];
-                     const upperSections = order.filter(sec => ['summary', 'experience', 'projects', 'education'].includes(sec));
-                     return upperSections.map((sec) => {
+                     return order.map((sec) => {
                        if (sec === 'summary' && cvData.summary) {
                          return (
                            <div key={sec} className="flex flex-col gap-1.5">
@@ -2401,86 +2400,59 @@ function App() {
                            </div>
                          );
                        }
+                       if (sec === 'skills' && cvData.skills.length > 0) {
+                         return (
+                           <div key={sec} className="flex flex-col gap-2">
+                             <h3 className={`text-xs font-extrabold uppercase tracking-wider ${activeColor.primary} pb-0.5 flex items-center gap-1.5`}>
+                               <Wrench className="h-3.5 w-3.5 stroke-[2.5]" />
+                               {t('skillsUpper')}
+                             </h3>
+                             <div className="flex flex-col gap-1 text-xs">
+                               {cvData.skills.map((grp) => (
+                                 <div key={grp.id} className="leading-snug">
+                                   <span className="font-bold text-slate-850">{grp.category}: </span>
+                                   <span className="text-slate-700">{grp.skills.filter(Boolean).join(", ")}</span>
+                                 </div>
+                               ))}
+                             </div>
+                           </div>
+                         );
+                       }
+                       if (sec === 'certificates' && cvData.certificates.length > 0) {
+                         return (
+                           <div key={sec} className="flex flex-col gap-1">
+                             <h3 className={`text-xs font-extrabold uppercase tracking-wider ${activeColor.primary} pb-0.5 flex items-center gap-1.5`}>
+                               <Award className="h-3.5 w-3.5 stroke-[2.5]" />
+                               {t('certificatesUpper')}
+                             </h3>
+                             {cvData.certificates.map((c) => (
+                               <div key={c.id} className="text-xs text-slate-755">
+                                 <span className="font-bold text-slate-900">{c.name}</span> <span className="text-[10px] text-slate-550">({c.date})</span>
+                               </div>
+                             ))}
+                           </div>
+                         );
+                       }
+                       if (sec === 'languages' && cvData.languages.length > 0) {
+                         return (
+                           <div key={sec} className="flex flex-col gap-1">
+                             <h3 className={`text-xs font-extrabold uppercase tracking-wider ${activeColor.primary} pb-0.5 flex items-center gap-1.5`}>
+                               <Languages className="h-3.5 w-3.5 stroke-[2.5]" />
+                               {t('languagesUpper')}
+                             </h3>
+                             <div className="text-xs text-slate-755 flex flex-col gap-0.5">
+                               {cvData.languages.map((l) => (
+                                 <div key={l.id}>
+                                   <span className="font-bold text-slate-900">{l.name}</span>: {l.level}
+                                 </div>
+                               ))}
+                             </div>
+                           </div>
+                         );
+                       }
                        return null;
                      });
                    })()}
-
-                   {/* Skills, Certificates, Languages Grid */}
-                   <div className="grid grid-cols-2 gap-4 mt-2">
-                     
-                     {/* Left Grid Column: Skills */}
-                     <div className="flex flex-col gap-2">
-                       {(() => {
-                         const order = cvData.sectionOrder || ['summary', 'experience', 'projects', 'education', 'skills', 'certificates', 'languages'];
-                         const leftGridSections = order.filter(sec => ['skills'].includes(sec));
-                         return leftGridSections.map((sec) => {
-                           if (sec === 'skills' && cvData.skills.length > 0) {
-                             return (
-                               <div key={sec} className="flex flex-col gap-2">
-                                 <h3 className={`text-xs font-extrabold uppercase tracking-wider ${activeColor.primary} pb-0.5 flex items-center gap-1.5`}>
-                                   <Wrench className="h-3.5 w-3.5 stroke-[2.5]" />
-                                   {t('skillsUpper')}
-                                 </h3>
-                                 <div className="flex flex-col gap-1 text-xs">
-                                   {cvData.skills.map((grp) => (
-                                     <div key={grp.id} className="leading-snug">
-                                       <span className="font-bold text-slate-850">{grp.category}: </span>
-                                       <span className="text-slate-700">{grp.skills.filter(Boolean).join(", ")}</span>
-                                     </div>
-                                   ))}
-                                 </div>
-                               </div>
-                             );
-                           }
-                           return null;
-                         });
-                       })()}
-                     </div>
-
-                     {/* Right Grid Column: Certificates & Languages */}
-                     <div className="flex flex-col gap-4">
-                       {(() => {
-                         const order = cvData.sectionOrder || ['summary', 'experience', 'projects', 'education', 'skills', 'certificates', 'languages'];
-                         const rightGridSections = order.filter(sec => ['certificates', 'languages'].includes(sec));
-                         return rightGridSections.map((sec) => {
-                           if (sec === 'certificates' && cvData.certificates.length > 0) {
-                             return (
-                               <div key={sec} className="flex flex-col gap-1">
-                                 <h3 className={`text-xs font-extrabold uppercase tracking-wider ${activeColor.primary} pb-0.5 flex items-center gap-1.5`}>
-                                   <Award className="h-3.5 w-3.5 stroke-[2.5]" />
-                                   {t('certificatesUpper')}
-                                 </h3>
-                                 {cvData.certificates.map((c) => (
-                                   <div key={c.id} className="text-xs text-slate-750">
-                                     <span className="font-bold text-slate-900">{c.name}</span> <span className="text-[10px] text-slate-550">({c.date})</span>
-                                   </div>
-                                 ))}
-                               </div>
-                             );
-                           }
-                           if (sec === 'languages' && cvData.languages.length > 0) {
-                             return (
-                               <div key={sec} className="flex flex-col gap-1">
-                                 <h3 className={`text-xs font-extrabold uppercase tracking-wider ${activeColor.primary} pb-0.5 flex items-center gap-1.5`}>
-                                   <Languages className="h-3.5 w-3.5 stroke-[2.5]" />
-                                   {t('languagesUpper')}
-                                 </h3>
-                                 <div className="text-xs text-slate-750 flex flex-col gap-0.5">
-                                   {cvData.languages.map((l) => (
-                                     <div key={l.id}>
-                                       <span className="font-bold text-slate-900">{l.name}</span>: {l.level}
-                                     </div>
-                                   ))}
-                                 </div>
-                               </div>
-                             );
-                           }
-                           return null;
-                         });
-                       })()}
-                     </div>
-
-                   </div>
 
                  </div>
                )}
@@ -2539,11 +2511,10 @@ function App() {
                      </div>
                    </div>
 
-                   {/* Dynamic Linear Upper Sections */}
+                   {/* Dynamic sections in a single vertical stream ordered according to cvData.sectionOrder */}
                    {(() => {
                      const order = cvData.sectionOrder || ['summary', 'experience', 'projects', 'education', 'skills', 'certificates', 'languages'];
-                     const linearSections = order.filter(sec => ['summary', 'experience', 'projects', 'skills'].includes(sec));
-                     return linearSections.map((sec) => {
+                     return order.map((sec) => {
                        if (sec === 'summary' && cvData.summary) {
                          return (
                            <div key={sec} className={`${activeColor.lightBg} p-4 rounded-xl border border-slate-200/40 print:bg-white print:p-0 print:border-none`}>
@@ -2564,7 +2535,7 @@ function App() {
                                    <div>
                                      <span className="font-extrabold text-slate-900 text-sm">{exp.company}</span>
                                      <span className={`mx-2 ${activeColor.primary}`}>•</span>
-                                     <span className="font-bold text-slate-850">{exp.position}</span>
+                                     <span className="font-bold text-slate-855">{exp.position}</span>
                                    </div>
                                    <span className="text-[10px] font-mono font-bold bg-slate-100 text-slate-600 px-2 py-0.5 rounded print:bg-slate-50 print:border print:border-slate-200">{exp.startDate} – {exp.endDate || 'Hiện tại'}</span>
                                  </div>
@@ -2631,7 +2602,7 @@ function App() {
                              <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
                                {cvData.skills.map((grp) => (
                                  <div key={grp.id} className="bg-slate-50 border border-slate-150 p-3 rounded-xl print:bg-white print:border-slate-300">
-                                   <span className="text-xs font-bold text-slate-850 block mb-1.5 border-b pb-0.5 print:border-slate-300">{grp.category}</span>
+                                   <span className="text-xs font-bold text-slate-855 block mb-1.5 border-b pb-0.5 print:border-slate-300">{grp.category}</span>
                                    <div className="flex flex-wrap gap-1">
                                      {grp.skills.filter(Boolean).map((s, idx) => (
                                        <span key={idx} className="bg-white border border-slate-200 text-slate-700 px-1.5 py-0.5 rounded text-[10px] font-semibold print:bg-slate-50 print:border-slate-300 print:text-black">
@@ -2645,91 +2616,64 @@ function App() {
                            </div>
                          );
                        }
+                       if (sec === 'education' && cvData.education.length > 0) {
+                         return (
+                           <div key={sec} className="flex flex-col gap-3">
+                             <h3 className={`text-xs font-black uppercase tracking-wider ${activeColor.primary} flex items-center gap-1.5`}>
+                               <GraduationCap className="h-3.5 w-3.5 stroke-[2.5]" />
+                               {t('educationUpper')}
+                             </h3>
+                             {cvData.education.map((edu) => (
+                               <div key={edu.id} className="flex flex-col gap-0.5 text-xs">
+                                 <div className="flex justify-between items-start font-bold">
+                                   <span className="text-slate-900 font-extrabold">{edu.institution}</span>
+                                   <span className="text-[10px] font-mono text-slate-500 print:text-black">{edu.startDate} – {edu.endDate || 'Hiện tại'}</span>
+                                 </div>
+                                 <div className={`font-semibold ${activeColor.primary} print:text-black`}>{edu.degree}</div>
+                                 {edu.description && <p className="text-[10px] text-slate-500 italic mt-0.5">{edu.description}</p>}
+                               </div>
+                             ))}
+                           </div>
+                         );
+                       }
+                       if (sec === 'certificates' && cvData.certificates.length > 0) {
+                         return (
+                           <div key={sec} className="flex flex-col gap-2">
+                             <h3 className={`text-xs font-black uppercase tracking-wider ${activeColor.primary} flex items-center gap-1.5`}>
+                               <Award className="h-3.5 w-3.5 stroke-[2.5]" />
+                               {t('certificatesUpper')}
+                             </h3>
+                             <div className="flex flex-col gap-1.5 text-xs text-slate-755">
+                               {cvData.certificates.map((c) => (
+                                 <div key={c.id} className="leading-snug">
+                                   <span className="font-extrabold text-slate-900">{c.name}</span> — <span className="text-slate-500 text-[11px] font-medium">{c.issuer} ({c.date})</span>
+                                 </div>
+                               ))}
+                             </div>
+                           </div>
+                         );
+                       }
+                       if (sec === 'languages' && cvData.languages.length > 0) {
+                         return (
+                           <div key={sec} className="flex flex-col gap-2">
+                             <h3 className={`text-xs font-black uppercase tracking-wider ${activeColor.primary} flex items-center gap-1.5`}>
+                               <Languages className="h-3.5 w-3.5 stroke-[2.5]" />
+                               {t('languagesUpper')}
+                             </h3>
+                             <div className="flex flex-col gap-1 text-xs">
+                               {cvData.languages.map((l) => (
+                                 <div key={l.id} className="flex justify-between font-medium">
+                                   <span className="font-bold text-slate-900">{l.name}</span>
+                                   <span className="text-slate-500 font-mono text-[10px] print:text-black">{l.level}</span>
+                                 </div>
+                               ))}
+                             </div>
+                           </div>
+                         );
+                       }
                        return null;
                      });
                    })()}
-
-                   {/* Education, Certificates and Languages split Grid */}
-                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                     
-                     {/* Left Column Grid: Education */}
-                     <div>
-                       {(() => {
-                         const order = cvData.sectionOrder || ['summary', 'experience', 'projects', 'education', 'skills', 'certificates', 'languages'];
-                         const leftGridSections = order.filter(sec => ['education'].includes(sec));
-                         return leftGridSections.map((sec) => {
-                           if (sec === 'education' && cvData.education.length > 0) {
-                             return (
-                               <div key={sec} className="flex flex-col gap-3">
-                                 <h3 className={`text-xs font-black uppercase tracking-wider ${activeColor.primary} flex items-center gap-1.5`}>
-                                   <GraduationCap className="h-3.5 w-3.5 stroke-[2.5]" />
-                                   {t('educationUpper')}
-                                 </h3>
-                                 {cvData.education.map((edu) => (
-                                   <div key={edu.id} className="flex flex-col gap-0.5 text-xs">
-                                     <div className="flex justify-between items-start font-bold">
-                                       <span className="text-slate-900 font-extrabold">{edu.institution}</span>
-                                       <span className="text-[10px] font-mono text-slate-500 print:text-black">{edu.startDate} – {edu.endDate || 'Hiên tại'}</span>
-                                     </div>
-                                     <div className={`font-semibold ${activeColor.primary} print:text-black`}>{edu.degree}</div>
-                                     {edu.description && <p className="text-[10px] text-slate-500 italic mt-0.5">{edu.description}</p>}
-                                   </div>
-                                 ))}
-                               </div>
-                             );
-                           }
-                           return null;
-                         });
-                       })()}
-                     </div>
-
-                     {/* Right Column Grid: Certificates & Languages */}
-                     <div className="flex flex-col gap-4">
-                       {(() => {
-                         const order = cvData.sectionOrder || ['summary', 'experience', 'projects', 'education', 'skills', 'certificates', 'languages'];
-                         const rightGridSections = order.filter(sec => ['certificates', 'languages'].includes(sec));
-                         return rightGridSections.map((sec) => {
-                           if (sec === 'certificates' && cvData.certificates.length > 0) {
-                             return (
-                               <div key={sec} className="flex flex-col gap-2">
-                                 <h3 className={`text-xs font-black uppercase tracking-wider ${activeColor.primary} flex items-center gap-1.5`}>
-                                   <Award className="h-3.5 w-3.5 stroke-[2.5]" />
-                                   {t('certificatesUpper')}
-                                 </h3>
-                                 <div className="flex flex-col gap-1.5 text-xs text-slate-755">
-                                   {cvData.certificates.map((c) => (
-                                     <div key={c.id} className="leading-snug">
-                                       <span className="font-extrabold text-slate-900">{c.name}</span> — <span className="text-slate-500 text-[11px] font-medium">{c.issuer} ({c.date})</span>
-                                     </div>
-                                   ))}
-                                 </div>
-                               </div>
-                             );
-                           }
-                           if (sec === 'languages' && cvData.languages.length > 0) {
-                             return (
-                               <div key={sec} className="flex flex-col gap-2">
-                                 <h3 className={`text-xs font-black uppercase tracking-wider ${activeColor.primary} flex items-center gap-1.5`}>
-                                   <Languages className="h-3.5 w-3.5 stroke-[2.5]" />
-                                   {t('languagesUpper')}
-                                 </h3>
-                                 <div className="flex flex-col gap-1 text-xs">
-                                   {cvData.languages.map((l) => (
-                                     <div key={l.id} className="flex justify-between font-medium">
-                                       <span className="font-bold text-slate-900">{l.name}</span>
-                                       <span className="text-slate-500 font-mono text-[10px] print:text-black">{l.level}</span>
-                                     </div>
-                                   ))}
-                                 </div>
-                               </div>
-                             );
-                           }
-                           return null;
-                         });
-                       })()}
-                     </div>
-
-                   </div>
 
                  </div>
                )}
