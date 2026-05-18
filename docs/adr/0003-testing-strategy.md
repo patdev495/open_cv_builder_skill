@@ -13,8 +13,13 @@ Chúng tôi quyết định áp dụng chiến lược kiểm thử (Testing Str
    - Viết các Integration Tests cho API endpoints (đặc biệt là kiểm tra các kịch bản: tạo CV mới, ghi đè khi đúng passcode, chặn ghi đè khi sai passcode, kiểm tra tính duy nhất của slug).
    - Chạy test thông qua công cụ UV: `uv run pytest`.
 2. **Frontend**:
-   - Tạm thời chưa viết test tự động cho frontend trong giai đoạn MVP để tối ưu hóa thời gian phát triển, nhưng code sẽ được viết dạng Modular (tách rời Logic hooks khỏi UI) để dễ dàng viết unit test bằng Vitest sau này.
+   - Thiết lập cấu hình **Vitest** kết hợp **React Testing Library** và **jsdom** để chạy các bộ test tự động nhanh chóng.
+   - Áp dụng cấu trúc kiểm thử 3 tầng: Unit Test cho state reducer, Integration Test cho custom hooks (Translation & Passcode), và Component Test mô phỏng hành vi người dùng trên các Form Adapters.
+   - Tất cả các tệp test được đặt cùng cấp với tệp mã nguồn tương ứng (`Colocated Tests`) để tăng tính dễ tiếp cận và dễ bảo trì.
 
 ## Consequences
-- **Ưu điểm**: Đảm bảo tuyệt đối các nghiệp vụ cốt lõi (bảo mật passcode, trùng lặp slug) hoạt động chính xác thông qua bộ test tự động trước khi deploy.
-- **Nhược điểm**: Tốn thêm một chút thời gian viết test ban đầu, nhưng tiết kiệm rất nhiều thời gian debug về sau.
+- **Ưu điểm**: 
+  - Đảm bảo tuyệt đối cả phần Backend (SQLite, APIs) và Frontend (UI Form, state, hooks) hoạt động chính xác.
+  - Tự tin tuyệt đối khi mở rộng tính năng mới hoặc thực hiện nâng cấp các phiên bản thư viện cốt lõi mà không sợ regression bugs.
+  - Chạy cực nhanh nhờ vào sự gọn nhẹ của Vitest và cấu trúc pure reducer.
+- **Nhược điểm**: Đòi hỏi quy trình phát triển nghiêm túc, lập trình viên cần viết test song song khi xây dựng tính năng mới theo quy chuẩn của `docs/TESTING.md`.
