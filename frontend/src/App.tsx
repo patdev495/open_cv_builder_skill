@@ -2530,7 +2530,7 @@ function App() {
                                {t('experienceUpper')}
                              </h3>
                              {cvData.experience.map((exp) => (
-                               <div key={exp.id} className={`border-l-2 ${activeColor.border} pl-4 py-0.5 flex flex-col gap-1 relative print:border-slate-300`}>
+                               <div key={exp.id} className={`border-l-2 ${activeColor.border} pl-4 py-0.5 flex flex-col gap-1 relative print:!border-slate-300`}>
                                  <div className="flex justify-between items-start text-xs">
                                    <div>
                                      <span className="font-extrabold text-slate-900 text-sm">{exp.company}</span>
@@ -2555,7 +2555,7 @@ function App() {
                                {t('projectsUpper')}
                              </h3>
                              {cvData.projects.map((proj) => (
-                               <div key={proj.id} className={`border-l-2 ${activeColor.border} pl-4 py-0.5 flex flex-col gap-1 print:border-slate-300`}>
+                               <div key={proj.id} className={`border-l-2 ${activeColor.border} pl-4 py-0.5 flex flex-col gap-1 print:!border-slate-300`}>
                                  <div className="flex justify-between items-center text-xs">
                                    <div>
                                      <span className="font-extrabold text-slate-900 text-sm">{proj.name}</span>
@@ -2599,9 +2599,9 @@ function App() {
                                <Wrench className="h-3.5 w-3.5 stroke-[2.5]" />
                                {t('skillsUpper')}
                              </h3>
-                             <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+                             <div className="grid grid-cols-1 md:grid-cols-3 print:grid-cols-3 gap-3">
                                {cvData.skills.map((grp) => (
-                                 <div key={grp.id} className="bg-slate-50 border border-slate-150 p-3 rounded-xl print:bg-white print:border-slate-300">
+                                 <div key={grp.id} className="bg-slate-50 border border-slate-150 p-3 rounded-xl print:bg-white print:!border-slate-300">
                                    <span className="text-xs font-bold text-slate-855 block mb-1.5 border-b pb-0.5 print:border-slate-300">{grp.category}</span>
                                    <div className="flex flex-wrap gap-1">
                                      {grp.skills.filter(Boolean).map((s, idx) => (
