@@ -99,3 +99,27 @@ export async function checkSlugAvailable(slug: string): Promise<boolean> {
     return true; // Not found (available)
   }
 }
+
+export async function optimizeWithAI(
+  text: string,
+  type: 'summary' | 'experience',
+  language: 'vi' | 'en'
+): Promise<string> {
+  const response = await fetch(`${API_BASE_URL}/ai/optimize`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      text,
+      type,
+      language
+    }),
+  });
+
+  if (!response.ok) {
+    const errData = await response.json().catch(() => ({}));
+    throw new Error(errData.detail || 'Không thể kết nối với dịch vụ AI.');
+  }
+
+  const data = await response.json();
+  return data.optimized_text;
+}

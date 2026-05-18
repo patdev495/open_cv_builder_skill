@@ -118,7 +118,15 @@ export const TRANSLATIONS = {
     printTipStep3: "3. Bỏ chọn \"Tiêu đề và chân trang\"",
     unlockModalTitle: "Mở khóa quyền Chỉnh sửa",
     unlockModalDesc: "Bạn đang yêu cầu quyền chỉnh sửa CV này. Vui lòng nhập mật mã (Passcode) đã thiết lập để tiếp tục.",
-    verifyPasscodeLabel: "Mật mã chỉnh sửa"
+    verifyPasscodeLabel: "Mật mã chỉnh sửa",
+    aiOptimize: "Tối ưu hóa bằng AI ✨",
+    aiOptimizing: "Đang phân tích...",
+    aiOptimizeTitle: "Trợ Lý AI Tối Ưu Hóa CV",
+    aiOriginal: "Nội dung gốc của bạn",
+    aiSuggested: "Gợi ý tối ưu hóa từ Gemini AI",
+    aiAccept: "✔️ Áp dụng kết quả",
+    aiDiscard: "❌ Bỏ qua gợi ý",
+    aiError: "Có lỗi xảy ra khi gọi AI."
   },
   en: {
     title: "CV BUILDER PRO",
@@ -239,6 +247,14 @@ export const TRANSLATIONS = {
     printTipStep3: "3. Uncheck \"Headers and footers\" checkbox",
     unlockModalTitle: "Unlock Editing Permissions",
     unlockModalDesc: "You are requesting editing access for this CV. Please enter the passcode to continue.",
-    verifyPasscodeLabel: "Editing Passcode"
+    verifyPasscodeLabel: "Editing Passcode",
+    aiOptimize: "Optimize with AI ✨",
+    aiOptimizing: "Analyzing...",
+    aiOptimizeTitle: "AI Resume Co-Pilot",
+    aiOriginal: "Your Original Content",
+    aiSuggested: "Suggested by Gemini AI",
+    aiAccept: "✔️ Accept & Replace",
+    aiDiscard: "❌ Discard Suggestion",
+    aiError: "An error occurred calling the AI."
   }
 };

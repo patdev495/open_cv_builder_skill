@@ -2,11 +2,16 @@ from fastapi import FastAPI, Depends, HTTPException, status
 from fastapi.middleware.cors import CORSMiddleware
 from sqlmodel import Session
 from contextlib import asynccontextmanager
+from dotenv import load_dotenv
+
+# Load environment variables from .env file
+load_dotenv()
 
 from app.database import create_db_and_tables, get_session
 from app.models import CVCreate, CVUpdate, CVResponse
 from app.auth import verify_passcode
 import app.crud as crud
+from app.routers.ai import router as ai_router
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
@@ -29,6 +34,8 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+app.include_router(ai_router)
 
 @app.post("/api/cvs", response_model=CVResponse, status_code=status.HTTP_201_CREATED)
 def create_new_cv(cv_in: CVCreate, db: Session = Depends(get_session)):

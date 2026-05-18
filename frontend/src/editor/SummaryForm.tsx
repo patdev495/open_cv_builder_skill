@@ -1,11 +1,19 @@
 
 import { useCVEditorContext } from '../context/CVEditorContext';
+import { AIEnhancer } from '../components/AIEnhancer';
 
 export function SummaryForm() {
   const { cvData, dispatch, t } = useCVEditorContext();
   return (
                   <div className="flex flex-col gap-4">
-                    <h3 className="text-sm font-bold text-slate-300 mb-1">{t('summaryTitle')}</h3>
+                    <div className="flex items-center justify-between mb-1">
+                      <h3 className="text-sm font-bold text-slate-300">{t('summaryTitle')}</h3>
+                      <AIEnhancer
+                        value={cvData.summary || ""}
+                        type="summary"
+                        onAccept={(newValue) => dispatch({ type: 'SET_SUMMARY', payload: newValue })}
+                      />
+                    </div>
                     <p className="text-xs text-slate-400 mb-2 leading-relaxed">
                       {t('summaryDesc')}
                     </p>

@@ -1,5 +1,6 @@
 import { Plus, Trash2 } from 'lucide-react';
 import { useCVEditorContext } from '../context/CVEditorContext';
+import { AIEnhancer } from '../components/AIEnhancer';
 
 export function ProjectsForm() {
   const { cvData, dispatch, t, addProject, removeProject } = useCVEditorContext();
@@ -85,7 +86,14 @@ export function ProjectsForm() {
                           </div>
 
                           <div>
-                            <label className="block text-[10px] font-bold uppercase tracking-wider text-slate-550 mb-1">Mô tả chi tiết dự án</label>
+                            <div className="flex items-center justify-between mb-1">
+                              <label className="block text-[10px] font-bold uppercase tracking-wider text-slate-550">Mô tả chi tiết dự án</label>
+                              <AIEnhancer
+                                value={proj.description}
+                                type="experience"
+                                onAccept={(newValue) => dispatch({ type: 'UPDATE_PROJECT', id: proj.id, payload: { description: newValue } })}
+                              />
+                            </div>
                             <textarea
                               value={proj.description}
                               onChange={(e) => dispatch({ type: 'UPDATE_PROJECT', id: proj.id, payload: { description: e.target.value } })}

@@ -359,7 +359,7 @@ function App() {
                           type="button"
                           onClick={() => dispatch({ type: 'SET_PAGE_LAYOUT', payload: val as 'single' | 'multi' })}
                           className={`flex-1 py-2 px-3 text-xs font-bold rounded-xl border transition-all cursor-pointer ${
-                            (cvData.pageLayout || 'single') === val
+                            (cvData.pageLayout || 'multi') === val
                               ? 'bg-purple-600 border-purple-500 text-white shadow-lg shadow-purple-900/30'
                               : 'bg-slate-950/60 border-slate-800 text-slate-400 hover:border-slate-600'
                           }`}
@@ -403,7 +403,7 @@ function App() {
             <div className="flex-1 bg-slate-900/40 backdrop-blur-md rounded-2xl border border-slate-800/80 shadow-xl overflow-hidden flex flex-col">
               
               {/* Tab Selector Header */}
-              <div className="flex border-b border-slate-800/80 bg-slate-900/60 overflow-x-auto no-scrollbar scroll-smooth">
+              <div className="grid grid-cols-4 border-b border-slate-800/80 bg-slate-900/60">
                 {[
                   { id: 'personal', name: t('personalInfo'), icon: User },
                   { id: 'summary', name: t('summary'), icon: FileText },
@@ -419,14 +419,14 @@ function App() {
                     <button
                       key={tab.id}
                       onClick={() => setActiveTab(tab.id)}
-                      className={`flex items-center gap-1.5 px-4 py-3.5 border-b-2 text-xs font-bold whitespace-nowrap transition-all cursor-pointer ${
+                      className={`flex items-center justify-center gap-1.5 px-1 sm:px-2 py-3 border-b-2 text-[10px] sm:text-xs font-bold transition-all cursor-pointer text-center ${
                         activeTab === tab.id
                           ? 'border-purple-500 text-purple-400 bg-purple-500/5'
                           : 'border-transparent text-slate-400 hover:text-slate-200'
                       }`}
                     >
-                      <Icon className="h-3.5 w-3.5" />
-                      {tab.name}
+                      <Icon className="h-3.5 w-3.5 shrink-0" />
+                      <span className="truncate sm:whitespace-normal">{tab.name}</span>
                     </button>
                   );
                 })}
@@ -515,7 +515,7 @@ function App() {
                 ==========================================================
             */}
             <div className={`w-[210mm] bg-white text-slate-800 ${activeDensity.paperPadding} shadow-2xl flex flex-col relative transition-all duration-300 print:shadow-none print:w-full print:bg-white print:text-black ${activeFont} ${
-              (cvData.pageLayout || 'single') === 'single'
+              (cvData.pageLayout || 'multi') === 'single'
                 ? 'min-h-[297mm] max-h-[297mm] overflow-hidden print:overflow-visible print:max-h-none print:min-h-0'
                 : 'min-h-[297mm] overflow-visible'
             } ${
@@ -590,6 +590,7 @@ function App() {
                   placeholder="••••••••"
                   className="w-full bg-slate-950/80 border border-slate-800 focus:border-purple-500 rounded-xl px-3 py-2 text-sm text-slate-200 focus:outline-none"
                   required
+                  autoFocus
                 />
               </div>
 

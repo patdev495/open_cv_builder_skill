@@ -94,7 +94,7 @@ export const DEFAULT_CV: CVSchema = {
   themeColor: "indigo",
   fontFamily: "sans",
   layoutDensity: "normal",
-  pageLayout: "single"
+  pageLayout: "multi"
 };
 
 

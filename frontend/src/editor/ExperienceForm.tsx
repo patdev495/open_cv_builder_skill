@@ -1,5 +1,6 @@
 import { Plus, Trash2 } from 'lucide-react';
 import { useCVEditorContext } from '../context/CVEditorContext';
+import { AIEnhancer } from '../components/AIEnhancer';
 
 export function ExperienceForm() {
   const { cvData, dispatch, t, addExperience, removeExperience } = useCVEditorContext();
@@ -74,7 +75,14 @@ export function ExperienceForm() {
                             </div>
                           </div>
                           <div>
-                            <label className="block text-[10px] font-bold uppercase tracking-wider text-slate-550 mb-1">{t('descLabel')}</label>
+                            <div className="flex items-center justify-between mb-1">
+                              <label className="block text-[10px] font-bold uppercase tracking-wider text-slate-550">{t('descLabel')}</label>
+                              <AIEnhancer
+                                value={exp.description}
+                                type="experience"
+                                onAccept={(newValue) => dispatch({ type: 'UPDATE_EXPERIENCE', id: exp.id, payload: { description: newValue } })}
+                              />
+                            </div>
                             <textarea
                               value={exp.description}
                               onChange={(e) => dispatch({ type: 'UPDATE_EXPERIENCE', id: exp.id, payload: { description: e.target.value } })}
