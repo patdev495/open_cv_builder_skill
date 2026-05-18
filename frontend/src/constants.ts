@@ -103,46 +103,46 @@ export const DEFAULT_CV: CVSchema = {
 // ==========================================
 export const COLOR_MAP = {
   indigo: {
-    primary: "text-indigo-600 print:text-indigo-800",
+    primary: "text-indigo-600 print:text-indigo-850",
     bg: "bg-indigo-600 print:bg-indigo-600",
-    border: "border-indigo-600 print:border-indigo-800",
-    lightBg: "bg-indigo-50/50 print:bg-slate-50",
-    pill: "bg-indigo-50 text-indigo-700 border-indigo-100 print:bg-slate-50 print:text-black print:border-slate-350"
+    border: "border-indigo-600 print:border-indigo-850",
+    lightBg: "bg-indigo-50/50 print:bg-indigo-50/50",
+    pill: "bg-indigo-50 text-indigo-700 border-indigo-100 print:bg-indigo-50 print:text-indigo-700 print:border-indigo-100"
   },
   emerald: {
-    primary: "text-emerald-600 print:text-emerald-800",
+    primary: "text-emerald-600 print:text-emerald-850",
     bg: "bg-emerald-600 print:bg-emerald-600",
-    border: "border-emerald-600 print:border-emerald-800",
-    lightBg: "bg-emerald-50/50 print:bg-slate-50",
-    pill: "bg-emerald-50 text-emerald-700 border-emerald-100 print:bg-slate-50 print:text-black print:border-slate-350"
+    border: "border-emerald-600 print:border-emerald-850",
+    lightBg: "bg-emerald-50/50 print:bg-emerald-50/50",
+    pill: "bg-emerald-50 text-emerald-700 border-emerald-100 print:bg-emerald-50 print:text-emerald-700 print:border-emerald-100"
   },
   rose: {
-    primary: "text-rose-600 print:text-rose-800",
+    primary: "text-rose-600 print:text-rose-850",
     bg: "bg-rose-600 print:bg-rose-600",
-    border: "border-rose-600 print:border-rose-800",
-    lightBg: "bg-rose-50/50 print:bg-slate-50",
-    pill: "bg-rose-50 text-rose-700 border-rose-100 print:bg-slate-50 print:text-black print:border-slate-350"
+    border: "border-rose-600 print:border-rose-850",
+    lightBg: "bg-rose-50/50 print:bg-rose-50/50",
+    pill: "bg-rose-50 text-rose-700 border-rose-100 print:bg-rose-50 print:text-rose-700 print:border-rose-100"
   },
   amber: {
-    primary: "text-amber-600 print:text-amber-800",
+    primary: "text-amber-600 print:text-amber-850",
     bg: "bg-amber-600 print:bg-amber-600",
-    border: "border-amber-600 print:border-amber-800",
-    lightBg: "bg-amber-50/50 print:bg-slate-50",
-    pill: "bg-amber-50 text-amber-700 border-amber-100 print:bg-slate-50 print:text-black print:border-slate-350"
+    border: "border-amber-600 print:border-amber-850",
+    lightBg: "bg-amber-50/50 print:bg-amber-50/50",
+    pill: "bg-amber-50 text-amber-700 border-amber-100 print:bg-amber-50 print:text-amber-700 print:border-amber-100"
   },
   bronze: {
     primary: "text-amber-900 print:text-amber-950",
     bg: "bg-amber-800 print:bg-amber-850",
     border: "border-amber-800 print:border-amber-950",
-    lightBg: "bg-amber-50/30 print:bg-slate-50",
-    pill: "bg-amber-50 text-amber-900 border-amber-200 print:bg-slate-50 print:text-black print:border-slate-350"
+    lightBg: "bg-amber-50/30 print:bg-amber-50/30",
+    pill: "bg-amber-50 text-amber-900 border-amber-200 print:bg-amber-50 print:text-amber-900 print:border-amber-200"
   },
   slate: {
     primary: "text-slate-650 print:text-slate-800",
     bg: "bg-slate-650 print:bg-slate-750",
     border: "border-slate-650 print:border-slate-800",
-    lightBg: "bg-slate-50 print:bg-slate-100",
-    pill: "bg-slate-100 text-slate-700 border-slate-200 print:bg-slate-50 print:text-black print:border-slate-350"
+    lightBg: "bg-slate-50 print:bg-slate-50",
+    pill: "bg-slate-100 text-slate-700 border-slate-200 print:bg-slate-100 print:text-slate-700 print:border-slate-200"
   }
 };
 
