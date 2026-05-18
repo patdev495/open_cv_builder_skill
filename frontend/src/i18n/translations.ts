@@ -126,7 +126,23 @@ export const TRANSLATIONS = {
     aiSuggested: "Gợi ý tối ưu hóa từ Gemini AI",
     aiAccept: "✔️ Áp dụng kết quả",
     aiDiscard: "❌ Bỏ qua gợi ý",
-    aiError: "Có lỗi xảy ra khi gọi AI."
+    aiError: "Có lỗi xảy ra khi gọi AI.",
+    embedUrlLabel: "Đường dẫn Nhúng Tiện ích (GitHub, YouTube, Figma, CodeSandbox...)",
+    analyticsTab: "Thống kê",
+    analyticsTitle: "Đo Lường & Thống Kê Tương Tác CV",
+    totalViews: "Tổng Lượt Xem",
+    totalFocusTime: "Tổng Thời Gian Đọc",
+    totalExports: "Lượt Tải PDF",
+    exportRate: "Tỷ Lệ Chuyển Đổi Tải",
+    sectionFocus: "Thời lượng tập trung từng phần (Giây)",
+    heatmapTitle: "Bản đồ nhiệt hành vi đọc",
+    deviceTitle: "Thiết bị truy cập",
+    geoTitle: "Vùng lãnh thổ truy cập",
+    noAnalyticsData: "Chưa có dữ liệu thống kê nào được ghi nhận cho CV này.",
+    defaultThemeMode: "Chế độ giao diện mặc định",
+    themeModeLight: "Giao diện Sáng (Light)",
+    themeModeDark: "Giao diện Tối (Dark)",
+    themeModeAuto: "Tự động theo hệ thống (System)"
   },
   en: {
     title: "CV BUILDER PRO",
@@ -255,6 +271,22 @@ export const TRANSLATIONS = {
     aiSuggested: "Suggested by Gemini AI",
     aiAccept: "✔️ Accept & Replace",
     aiDiscard: "❌ Discard Suggestion",
-    aiError: "An error occurred calling the AI."
+    aiError: "An error occurred calling the AI.",
+    embedUrlLabel: "Embed Widget URL (GitHub, YouTube, Figma, CodeSandbox...)",
+    analyticsTab: "Analytics",
+    analyticsTitle: "CV Engagement & Interaction Analytics",
+    totalViews: "Total Views",
+    totalFocusTime: "Total Read Duration",
+    totalExports: "PDF Downloads",
+    exportRate: "PDF Export Rate",
+    sectionFocus: "Section Read Focus (Seconds)",
+    heatmapTitle: "Viewer Focus Heat-map",
+    deviceTitle: "Access Devices",
+    geoTitle: "Top Viewer Regions",
+    noAnalyticsData: "No interaction data recorded yet for this CV.",
+    defaultThemeMode: "Default Theme Mode",
+    themeModeLight: "Light Theme",
+    themeModeDark: "Dark Theme",
+    themeModeAuto: "System Default (Auto)"
   }
 };

@@ -1,4 +1,5 @@
 import { Briefcase, GraduationCap, FolderGit2, Wrench, Award, Languages, ExternalLink } from 'lucide-react';
+import { ProjectEmbed } from '../components/ProjectEmbed';
 import type { TemplateProps } from './types';
 
 export default function CreativeTemplate({ cvData, activeColor, t }: TemplateProps) {
@@ -129,6 +130,7 @@ export default function CreativeTemplate({ cvData, activeColor, t }: TemplatePro
                                  <p className="text-xs leading-relaxed text-slate-655 font-medium whitespace-pre-line mt-1 print:text-black">
                                    {proj.description}
                                  </p>
+                                 <ProjectEmbed embedUrl={proj.embedUrl} projectName={proj.name} />
                                </div>
                              ))}
                            </div>

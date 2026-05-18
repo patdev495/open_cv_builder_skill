@@ -1,4 +1,5 @@
 import { User, Briefcase, GraduationCap, FolderGit2, Wrench, Award, Languages, ExternalLink } from 'lucide-react';
+import { ProjectEmbed } from '../components/ProjectEmbed';
 import type { TemplateProps } from './types';
 
 export default function ExecutiveTemplate({ cvData, activeColor, t }: TemplateProps) {
@@ -84,9 +85,10 @@ export default function ExecutiveTemplate({ cvData, activeColor, t }: TemplatePr
                                   </div>
                                   <span className="text-[10px] font-mono font-bold text-slate-400 print:text-black">{proj.startDate}</span>
                                 </div>
-                                <p className="text-xs leading-relaxed text-slate-650 whitespace-pre-line mt-1 print:text-black">
+                                <p className="text-xs leading-relaxed text-slate-655 whitespace-pre-line mt-1 print:text-black">
                                   {proj.description}
                                 </p>
+                                <ProjectEmbed embedUrl={proj.embedUrl} projectName={proj.name} />
                               </div>
                             ))}
                           </div>

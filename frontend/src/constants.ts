@@ -51,7 +51,8 @@ export const DEFAULT_CV: CVSchema = {
       endDate: "2024-04",
       description: "Ứng dụng web phân tích nội dung CV của lập trình viên và đưa ra gợi ý tối ưu chuẩn ATS sử dụng GPT-4.",
       technologies: ["React", "TypeScript", "TailwindCSS", "FastAPI", "OpenAI"],
-      url: "https://ai-cv-optimizer.dev"
+      url: "https://ai-cv-optimizer.dev",
+      embedUrl: "https://github.com/nguyenvana/ai-cv-optimizer"
     }
   ],
   skills: [
@@ -94,7 +95,8 @@ export const DEFAULT_CV: CVSchema = {
   themeColor: "indigo",
   fontFamily: "sans",
   layoutDensity: "normal",
-  pageLayout: "multi"
+  pageLayout: "multi",
+  themeMode: "light"
 };
 
 

@@ -86,6 +86,17 @@ export function ProjectsForm() {
                           </div>
 
                           <div>
+                            <label className="block text-[10px] font-bold uppercase tracking-wider text-slate-550 mb-1">{t('embedUrlLabel')}</label>
+                            <input
+                              type="text"
+                              value={proj.embedUrl || ""}
+                              onChange={(e) => dispatch({ type: 'UPDATE_PROJECT', id: proj.id, payload: { embedUrl: e.target.value } })}
+                              placeholder="https://github.com/nguyenvana/repo hoặc link YouTube, Figma..."
+                              className="w-full bg-slate-950/60 border border-slate-850 focus:border-purple-500 rounded-lg px-2 py-1.5 text-xs text-slate-200 focus:outline-none"
+                            />
+                          </div>
+
+                          <div>
                             <div className="flex items-center justify-between mb-1">
                               <label className="block text-[10px] font-bold uppercase tracking-wider text-slate-550">Mô tả chi tiết dự án</label>
                               <AIEnhancer

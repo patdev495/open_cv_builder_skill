@@ -44,6 +44,7 @@ export type CVAction =
   | { type: 'SET_LAYOUT_DENSITY'; payload: 'compact' | 'normal' | 'comfortable' }
   | { type: 'SET_PAGE_LAYOUT'; payload: 'single' | 'multi' }
   | { type: 'SET_SECTION_ORDER'; payload: string[] }
+  | { type: 'SET_THEME_MODE'; payload: 'light' | 'dark' | 'auto' }
   // Bulk operations
   | { type: 'LOAD_CV'; payload: CVSchema }
   | { type: 'CLEAR_ALL'; preserveSettings?: { themeColor?: string; fontFamily?: string } };
@@ -162,6 +163,8 @@ export function cvDataReducer(state: CVSchema, action: CVAction): CVSchema {
       return { ...state, pageLayout: action.payload };
     case 'SET_SECTION_ORDER':
       return { ...state, sectionOrder: action.payload };
+    case 'SET_THEME_MODE':
+      return { ...state, themeMode: action.payload };
 
     // ── Bulk ──────────────────────────────────────────────────────────────
     case 'LOAD_CV':

@@ -37,6 +37,7 @@ export interface ProjectItem {
   description: string;
   technologies: string[];
   url?: string;
+  embedUrl?: string;
 }
 
 export interface SkillGroup {
@@ -73,6 +74,7 @@ export interface CVSchema {
   layoutDensity?: 'compact' | 'normal' | 'comfortable';
   pageLayout?: 'single' | 'multi';
   sectionOrder?: string[];
+  themeMode?: 'light' | 'dark' | 'auto';
 }
 
 export interface CVResponse {

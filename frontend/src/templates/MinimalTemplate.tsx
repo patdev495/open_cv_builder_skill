@@ -1,4 +1,5 @@
 import { User, Briefcase, GraduationCap, FolderGit2, Wrench, Award, Languages, ExternalLink } from 'lucide-react';
+import { ProjectEmbed } from '../components/ProjectEmbed';
 import type { TemplateProps } from './types';
 
 export default function MinimalTemplate({ cvData, activeColor, t }: TemplateProps) {
@@ -124,6 +125,7 @@ export default function MinimalTemplate({ cvData, activeColor, t }: TemplateProp
                             <p className="text-xs leading-relaxed text-slate-655 text-justify mt-0.5 whitespace-pre-line print:text-black">
                               {proj.description}
                             </p>
+                            <ProjectEmbed embedUrl={proj.embedUrl} projectName={proj.name} />
                           </div>
                         ))}
                       </div>

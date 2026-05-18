@@ -1,7 +1,7 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { 
   FileText, Save, Edit3, Eye, Printer, Lock, Globe, Plus, Trash2, Sparkles, Loader2, AlertCircle, CheckCircle2,
-  User, Briefcase, GraduationCap, FolderGit2, Wrench, Award, Layers
+  User, Briefcase, GraduationCap, FolderGit2, Wrench, Award, Layers, BarChart3, Sun, Moon
 } from 'lucide-react';
 import { COLOR_MAP, FONT_MAP, DENSITY_MAP } from './constants';
 import { useCVEditor } from './hooks/useCVEditor';
@@ -14,7 +14,9 @@ import { ProjectsForm } from './editor/ProjectsForm';
 import { SkillsForm } from './editor/SkillsForm';
 import { ExtraForm } from './editor/ExtraForm';
 import { LayoutForm } from './editor/LayoutForm';
+import { AnalyticsDashboard } from './components/AnalyticsDashboard';
 import TemplateRenderer from './templates/TemplateRenderer';
+import { API_BASE_URL } from './services/api';
 
 // ==========================================
 // 2. React main App component
@@ -43,7 +45,167 @@ function App() {
 
   const [activeTab, setActiveTab] = useState<string>("personal");
 
-  const triggerPrint = () => window.print();
+  const [sysDark, setSysDark] = useState<boolean>(
+    typeof window !== 'undefined' ? window.matchMedia('(prefers-color-scheme: dark)').matches : false
+  );
+
+  // Track system preference changes
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+    const media = window.matchMedia('(prefers-color-scheme: dark)');
+    const listener = (e: MediaQueryListEvent) => setSysDark(e.matches);
+    media.addEventListener('change', listener);
+    return () => media.removeEventListener('change', listener);
+  }, []);
+
+  const isDark = cvData.themeMode === 'dark' || (cvData.themeMode === 'auto' && sysDark);
+
+  // Client-side analytics tracking hook
+  useEffect(() => {
+    if (!slug || typeof window === 'undefined') return;
+
+    const width = window.innerWidth;
+    const device = width < 768 ? 'mobile' : width < 1024 ? 'tablet' : 'desktop';
+    let country = 'Vietnam';
+    let city = 'Hanoi';
+
+    const sendEvent = async (eventType: string, section?: string, duration?: number) => {
+      try {
+        await fetch(`${API_BASE_URL}/cvs/${slug}/analytics`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            event_type: eventType,
+            section: section || null,
+            duration: duration || null,
+            device,
+            country,
+            city
+          })
+        });
+      } catch (err) {
+        console.error('Failed to log analytics event', err);
+      }
+    };
+
+    // Retrieve Geo location
+    const fetchGeoAndInit = async () => {
+      try {
+        const res = await fetch('https://ipapi.co/json/');
+        if (res.ok) {
+          const data = await res.json();
+          country = data.country_name || 'Vietnam';
+          city = data.city || 'Hanoi';
+        }
+      } catch {}
+      sendEvent('view');
+    };
+    fetchGeoAndInit();
+
+    // Hover engagement tracker
+    let activeSec: string | null = null;
+    let entryTime = Date.now();
+
+    const handleMouseOver = (e: MouseEvent) => {
+      const target = e.target as HTMLElement;
+      const previewContainer = document.getElementById('cv-preview-sheet');
+      if (!previewContainer) return;
+
+      let current: HTMLElement | null = target;
+      let secName: string | null = null;
+
+      while (current && current !== previewContainer) {
+        if (current.hasAttribute('data-section')) {
+          secName = current.getAttribute('data-section');
+          break;
+        }
+        if (current.id) {
+          secName = current.id;
+          break;
+        }
+        current = current.parentElement;
+      }
+
+      if (!secName) {
+        const headers = Array.from(previewContainer.querySelectorAll('h3, h2, h1'));
+        let minDistance = Infinity;
+        let nearestHeader: Element | null = null;
+        for (const h of headers) {
+          const rect = h.getBoundingClientRect();
+          const targetRect = target.getBoundingClientRect();
+          const distance = Math.abs(rect.top - targetRect.top);
+          if (distance < minDistance) {
+            minDistance = distance;
+            nearestHeader = h;
+          }
+        }
+        if (nearestHeader) {
+          const text = (nearestHeader.textContent || '').toLowerCase();
+          if (text.includes('kinh nghiệm') || text.includes('experience') || text.includes('work')) secName = 'experience';
+          else if (text.includes('dự án') || text.includes('project')) secName = 'projects';
+          else if (text.includes('học vấn') || text.includes('education')) secName = 'education';
+          else if (text.includes('kỹ năng') || text.includes('skills') || text.includes('skill')) secName = 'skills';
+          else if (text.includes('tóm tắt') || text.includes('summary') || text.includes('profile')) secName = 'summary';
+          else if (text.includes('chứng chỉ') || text.includes('certificate')) secName = 'certificates';
+          else if (text.includes('ngoại ngữ') || text.includes('language')) secName = 'languages';
+        }
+      }
+
+      if (secName && secName !== activeSec) {
+        if (activeSec) {
+          const elapsed = (Date.now() - entryTime) / 1000;
+          if (elapsed > 0.5) sendEvent('hover', activeSec, elapsed);
+        }
+        activeSec = secName;
+        entryTime = Date.now();
+      }
+    };
+
+    const handleMouseLeave = () => {
+      if (activeSec) {
+        const elapsed = (Date.now() - entryTime) / 1000;
+        if (elapsed > 0.5) sendEvent('hover', activeSec, elapsed);
+        activeSec = null;
+      }
+    };
+
+    // Attach listeners
+    const interval = setInterval(() => {
+      const previewContainer = document.getElementById('cv-preview-sheet');
+      if (previewContainer) {
+        clearInterval(interval);
+        previewContainer.addEventListener('mouseover', handleMouseOver);
+        previewContainer.addEventListener('mouseleave', handleMouseLeave);
+      }
+    }, 100);
+
+    return () => {
+      clearInterval(interval);
+      const previewContainer = document.getElementById('cv-preview-sheet');
+      if (previewContainer) {
+        previewContainer.removeEventListener('mouseover', handleMouseOver);
+        previewContainer.removeEventListener('mouseleave', handleMouseLeave);
+      }
+    };
+  }, [slug]);
+
+  const triggerPrint = () => {
+    if (slug) {
+      const width = window.innerWidth;
+      const device = width < 768 ? 'mobile' : width < 1024 ? 'tablet' : 'desktop';
+      fetch(`${API_BASE_URL}/cvs/${slug}/analytics`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          event_type: 'export',
+          device,
+          country: 'Vietnam',
+          city: 'Hanoi'
+        })
+      }).catch(() => {});
+    }
+    window.print();
+  };
 
 
   const activeColor = COLOR_MAP[(cvData.themeColor || 'indigo') as keyof typeof COLOR_MAP] || COLOR_MAP.indigo;
@@ -106,7 +268,19 @@ function App() {
                   {t('viewPublic')}
                 </button>
               )}
-
+              {/* Theme Mode Toggle Button */}
+              <button
+                type="button"
+                onClick={() => dispatch({ type: 'SET_THEME_MODE', payload: isDark ? 'light' : 'dark' })}
+                className="p-2 bg-slate-800/80 hover:bg-slate-700 active:scale-95 text-slate-300 hover:text-white rounded-xl border border-slate-700 transition-all cursor-pointer flex items-center justify-center print:hidden mr-1"
+                title={isDark ? (language === 'vi' ? 'Chế độ sáng' : 'Light Mode') : (language === 'vi' ? 'Chế độ tối' : 'Dark Mode')}
+              >
+                {isDark ? (
+                  <Sun className="h-4 w-4 text-amber-400 fill-amber-400" />
+                ) : (
+                  <Moon className="h-4 w-4 text-purple-400 fill-purple-400" />
+                )}
+              </button>
 
               {/* Language Toggle Selector */}
               <div className="flex bg-slate-800/80 p-0.5 rounded-xl border border-slate-700 select-none mr-1 print:hidden">
@@ -370,6 +544,29 @@ function App() {
                     </div>
                   </div>
 
+                  {/* Theme Mode Selector */}
+                  <div className="sm:col-span-3">
+                    <label className="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2">
+                      {t('defaultThemeMode')}
+                    </label>
+                    <div className="flex gap-2">
+                      {([['light', t('themeModeLight')], ['dark', t('themeModeDark')], ['auto', t('themeModeAuto')]]).map(([val, label]) => (
+                        <button
+                          key={val}
+                          type="button"
+                          onClick={() => dispatch({ type: 'SET_THEME_MODE', payload: val as 'light' | 'dark' | 'auto' })}
+                          className={`flex-1 py-2 px-2 text-xs font-bold rounded-xl border transition-all cursor-pointer truncate ${
+                            (cvData.themeMode || 'light') === val
+                              ? 'bg-purple-600 border-purple-500 text-white shadow-lg shadow-purple-900/30'
+                              : 'bg-slate-950/60 border-slate-800 text-slate-400 hover:border-slate-600'
+                          }`}
+                        >
+                          {label}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+
                 </div>
 
                 {/* Actions Grid */}
@@ -403,7 +600,7 @@ function App() {
             <div className="flex-1 bg-slate-900/40 backdrop-blur-md rounded-2xl border border-slate-800/80 shadow-xl overflow-hidden flex flex-col">
               
               {/* Tab Selector Header */}
-              <div className="grid grid-cols-4 border-b border-slate-800/80 bg-slate-900/60">
+              <div className="grid grid-cols-3 sm:grid-cols-5 border-b border-slate-800/80 bg-slate-900/60">
                 {[
                   { id: 'personal', name: t('personalInfo'), icon: User },
                   { id: 'summary', name: t('summary'), icon: FileText },
@@ -412,7 +609,8 @@ function App() {
                   { id: 'projects', name: t('projects'), icon: FolderGit2 },
                   { id: 'skills', name: t('skills'), icon: Wrench },
                   { id: 'extra', name: t('languages'), icon: Award },
-                  { id: 'layout', name: language === 'vi' ? 'Bố cục' : 'Layout', icon: Layers }
+                  { id: 'layout', name: language === 'vi' ? 'Bố cục' : 'Layout', icon: Layers },
+                  { id: 'analytics', name: language === 'vi' ? 'Thống kê' : 'Stats', icon: BarChart3 }
                 ].map((tab) => {
                   const Icon = tab.icon;
                   return (
@@ -474,6 +672,11 @@ function App() {
                   <LayoutForm />
                 )}
 
+                {/* AnalyticsDashboard */}
+                {activeTab === 'analytics' && (
+                  <AnalyticsDashboard />
+                )}
+
 
               </div>
             </div>
@@ -514,14 +717,147 @@ function App() {
                 Using deep Tailwind vector printer styles.
                 ==========================================================
             */}
-            <div className={`w-[210mm] bg-white text-slate-800 ${activeDensity.paperPadding} shadow-2xl flex flex-col relative transition-all duration-300 print:shadow-none print:w-full print:bg-white print:text-black ${activeFont} ${
-              (cvData.pageLayout || 'multi') === 'single'
-                ? 'min-h-[297mm] max-h-[297mm] overflow-hidden print:overflow-visible print:max-h-none print:min-h-0'
-                : 'min-h-[297mm] overflow-visible'
-            } ${
-              template === 'modern' ? `border-t-[6px] ${activeColor.border}` : ''
-            }`}>
+            <div
+              id="cv-preview-sheet"
+              className={`w-[210mm] transition-all duration-300 print:shadow-none print:w-full print:!bg-white print:!text-black ${activeFont} ${
+                isDark
+                  ? 'dark bg-slate-900 text-slate-100 border border-slate-800 shadow-indigo-950/20'
+                  : 'bg-white text-slate-800'
+              } ${activeDensity.paperPadding} shadow-2xl flex flex-col relative ${
+                (cvData.pageLayout || 'multi') === 'single'
+                  ? 'min-h-[297mm] max-h-[297mm] overflow-hidden print:overflow-visible print:max-h-none print:min-h-0'
+                  : 'min-h-[297mm] overflow-visible'
+              } ${
+                template === 'modern' ? `border-t-[6px] ${activeColor.border} print:border-t-0` : ''
+              }`}
+            >
               <style>{`
+                /* ==========================================================================
+                   SCREEN STYLES (Only active on monitors - will be ignored when printing)
+                   ========================================================================== */
+                @media screen {
+                  /* Screen Dark Mode overrides when .dark class is active on #cv-preview-sheet */
+                  #cv-preview-sheet.dark {
+                    background-color: #0f172a !important;
+                    color: #f1f5f9 !important;
+                    border-color: #1e293b !important;
+                  }
+                  #cv-preview-sheet.dark h1,
+                  #cv-preview-sheet.dark h2,
+                  #cv-preview-sheet.dark h3,
+                  #cv-preview-sheet.dark h4,
+                  #cv-preview-sheet.dark h5,
+                  #cv-preview-sheet.dark h6,
+                  #cv-preview-sheet.dark .text-slate-900,
+                  #cv-preview-sheet.dark .text-slate-950,
+                  #cv-preview-sheet.dark .text-slate-850 {
+                    color: #ffffff !important;
+                  }
+                  #cv-preview-sheet.dark p,
+                  #cv-preview-sheet.dark span,
+                  #cv-preview-sheet.dark div,
+                  #cv-preview-sheet.dark .text-slate-800,
+                  #cv-preview-sheet.dark .text-slate-700,
+                  #cv-preview-sheet.dark .text-slate-705,
+                  #cv-preview-sheet.dark .text-slate-650,
+                  #cv-preview-sheet.dark .text-slate-655,
+                  #cv-preview-sheet.dark .text-slate-600 {
+                    color: #e2e8f0 !important;
+                  }
+                  #cv-preview-sheet.dark .text-slate-500,
+                  #cv-preview-sheet.dark .text-slate-550,
+                  #cv-preview-sheet.dark .text-slate-400 {
+                    color: #94a3b8 !important;
+                  }
+
+                  /* Deep target white/light cards inside skills list and flip to dark slate */
+                  #cv-preview-sheet.dark .bg-slate-50,
+                  #cv-preview-sheet.dark .bg-slate-100,
+                  #cv-preview-sheet.dark .bg-slate-200,
+                  #cv-preview-sheet.dark .bg-white {
+                    background-color: #1e293b !important;
+                    color: #f1f5f9 !important;
+                  }
+
+                  /* Target date pills and badges (e.g. 02/2024 - 03/2026) */
+                  #cv-preview-sheet.dark .bg-slate-50.text-slate-500,
+                  #cv-preview-sheet.dark .bg-slate-100.text-slate-600,
+                  #cv-preview-sheet.dark [class*="bg-slate-"].text-\[10px\],
+                  #cv-preview-sheet.dark .text-slate-400.bg-slate-100,
+                  #cv-preview-sheet.dark .text-[10px].bg-slate-100,
+                  #cv-preview-sheet.dark .font-mono.bg-slate-100,
+                  #cv-preview-sheet.dark .bg-slate-100 {
+                    background-color: #1e293b !important;
+                    color: #cbd5e1 !important; /* Premium light slate text */
+                    border: 1px solid #334155 !important;
+                  }
+
+                  /* Target skill tag pills inside cards */
+                  #cv-preview-sheet.dark .bg-white.text-slate-700,
+                  #cv-preview-sheet.dark .bg-white.text-slate-800,
+                  #cv-preview-sheet.dark .border-slate-200 {
+                    background-color: #0f172a !important;
+                    color: #f1f5f9 !important;
+                    border-color: #334155 !important;
+                  }
+
+                  /* Direct overrides for color-specific technology pills in dark mode */
+                  #cv-preview-sheet.dark .bg-indigo-50,
+                  #cv-preview-sheet.dark .bg-emerald-50,
+                  #cv-preview-sheet.dark .bg-rose-50,
+                  #cv-preview-sheet.dark .bg-amber-50 {
+                    background-color: #1e293b !important;
+                    border: 1px solid #334155 !important;
+                  }
+                  #cv-preview-sheet.dark .bg-indigo-50.text-indigo-700 {
+                    color: #818cf8 !important; /* Premium light indigo */
+                  }
+                  #cv-preview-sheet.dark .bg-emerald-50.text-emerald-700 {
+                    color: #34d399 !important; /* Premium light emerald */
+                  }
+                  #cv-preview-sheet.dark .bg-rose-50.text-rose-700 {
+                    color: #fb7185 !important; /* Premium light rose */
+                  }
+                  #cv-preview-sheet.dark .bg-amber-50.text-amber-700,
+                  #cv-preview-sheet.dark .bg-amber-50.text-amber-900 {
+                    color: #fbbf24 !important; /* Premium light amber */
+                  }
+                  #cv-preview-sheet.dark .bg-slate-100.text-slate-700 {
+                    background-color: #1e293b !important;
+                    color: #cbd5e1 !important;
+                    border-color: #334155 !important;
+                  }
+
+                  #cv-preview-sheet.dark .border-slate-200,
+                  #cv-preview-sheet.dark .border-slate-300,
+                  #cv-preview-sheet.dark .border-slate-100 {
+                    border-color: #1e293b !important;
+                  }
+                  
+                  #cv-preview-sheet.dark a {
+                    color: #a78bfa !important;
+                  }
+
+                  /* Fix headings inside custom skill grid containers */
+                  #cv-preview-sheet.dark .bg-slate-50 div,
+                  #cv-preview-sheet.dark .bg-slate-50 span,
+                  #cv-preview-sheet.dark .bg-white div,
+                  #cv-preview-sheet.dark .bg-white span,
+                  #cv-preview-sheet.dark .bg-indigo-50 div,
+                  #cv-preview-sheet.dark .bg-indigo-50 span,
+                  #cv-preview-sheet.dark .bg-emerald-50 div,
+                  #cv-preview-sheet.dark .bg-emerald-50 span,
+                  #cv-preview-sheet.dark .bg-rose-50 div,
+                  #cv-preview-sheet.dark .bg-rose-50 span,
+                  #cv-preview-sheet.dark .bg-amber-50 div,
+                  #cv-preview-sheet.dark .bg-amber-50 span {
+                    color: #ffffff !important;
+                  }
+                }
+
+                /* ==========================================================================
+                   GLOBAL PRINT STYLES (Enforces a pure, high-contrast, black-on-white sheet)
+                   ========================================================================== */
                 @media print {
                   @page {
                     margin: 0;
@@ -529,9 +865,107 @@ function App() {
                   }
                   body {
                     margin: 0;
-                    background: white;
+                    background: white !important;
+                    color: black !important;
                     -webkit-print-color-adjust: exact;
                     print-color-adjust: exact;
+                  }
+                  /* Completely strip dark backgrounds, forcing a clean white sheet */
+                  #cv-preview-sheet,
+                  #cv-preview-sheet.dark,
+                  .dark, .bg-slate-900, .bg-slate-950 {
+                    background: white !important;
+                    background-color: white !important;
+                    color: #0f172a !important;
+                    box-shadow: none !important;
+                    border: none !important;
+                  }
+                  
+                  /* Enforce absolute dark text for high legibility */
+                  #cv-preview-sheet h1,
+                  #cv-preview-sheet h2,
+                  #cv-preview-sheet h3,
+                  #cv-preview-sheet h4,
+                  #cv-preview-sheet h5,
+                  #cv-preview-sheet h6,
+                  #cv-preview-sheet.dark h1,
+                  #cv-preview-sheet.dark h2,
+                  #cv-preview-sheet.dark h3,
+                  #cv-preview-sheet.dark h4,
+                  #cv-preview-sheet.dark h5,
+                  #cv-preview-sheet.dark h6 {
+                    color: #000000 !important;
+                  }
+                  #cv-preview-sheet p,
+                  #cv-preview-sheet span,
+                  #cv-preview-sheet div,
+                  #cv-preview-sheet.dark p,
+                  #cv-preview-sheet.dark span,
+                  #cv-preview-sheet.dark div {
+                    color: #1e293b !important;
+                  }
+                  
+                  /* Clean light card styling for skill grids */
+                  #cv-preview-sheet .bg-slate-50,
+                  #cv-preview-sheet .bg-slate-100,
+                  #cv-preview-sheet .bg-slate-200,
+                  #cv-preview-sheet .bg-white,
+                  #cv-preview-sheet.dark .bg-slate-50,
+                  #cv-preview-sheet.dark .bg-slate-100,
+                  #cv-preview-sheet.dark .bg-slate-200,
+                  #cv-preview-sheet.dark .bg-white {
+                    background-color: #f8fafc !important; /* light slate-50 */
+                    color: #0f172a !important;
+                    border: 1px solid #cbd5e1 !important;
+                  }
+                  
+                  /* Dynamic technology tag restore to light mode colors */
+                  #cv-preview-sheet .bg-indigo-50,
+                  #cv-preview-sheet .bg-emerald-50,
+                  #cv-preview-sheet .bg-rose-50,
+                  #cv-preview-sheet .bg-amber-50,
+                  #cv-preview-sheet.dark .bg-indigo-50,
+                  #cv-preview-sheet.dark .bg-emerald-50,
+                  #cv-preview-sheet.dark .bg-rose-50,
+                  #cv-preview-sheet.dark .bg-amber-50 {
+                    background-color: #f1f5f9 !important; /* extremely soft light slate */
+                    border: 1px solid #cbd5e1 !important;
+                  }
+
+                  #cv-preview-sheet .text-indigo-700,
+                  #cv-preview-sheet .text-emerald-700,
+                  #cv-preview-sheet .text-rose-700,
+                  #cv-preview-sheet .text-amber-700,
+                  #cv-preview-sheet .text-amber-900,
+                  #cv-preview-sheet .text-slate-700,
+                  #cv-preview-sheet.dark .text-indigo-700,
+                  #cv-preview-sheet.dark .text-emerald-700,
+                  #cv-preview-sheet.dark .text-rose-700,
+                  #cv-preview-sheet.dark .text-amber-700,
+                  #cv-preview-sheet.dark .text-amber-900,
+                  #cv-preview-sheet.dark .text-slate-700 {
+                    color: #334155 !important;
+                  }
+
+                  /* Restore dates/badges styles to light */
+                  #cv-preview-sheet .bg-slate-50.text-slate-500,
+                  #cv-preview-sheet .bg-slate-100.text-slate-600,
+                  #cv-preview-sheet .bg-slate-100,
+                  #cv-preview-sheet.dark .bg-slate-50.text-slate-500,
+                  #cv-preview-sheet.dark .bg-slate-100.text-slate-600,
+                  #cv-preview-sheet.dark .bg-slate-100 {
+                    background-color: #f1f5f9 !important;
+                    color: #475569 !important;
+                    border: 1px solid #cbd5e1 !important;
+                  }
+                  
+                  #cv-preview-sheet iframe,
+                  #cv-preview-sheet button,
+                  #cv-preview-sheet .print-hide,
+                  #cv-preview-sheet.dark iframe,
+                  #cv-preview-sheet.dark button,
+                  #cv-preview-sheet.dark .print-hide {
+                    display: none !important;
                   }
                 }
               `}</style>

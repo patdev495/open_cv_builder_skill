@@ -1,4 +1,4 @@
-from fastapi import FastAPI, Depends, HTTPException, status
+from fastapi import FastAPI, Depends, HTTPException, status, Request
 from fastapi.middleware.cors import CORSMiddleware
 from sqlmodel import Session
 from contextlib import asynccontextmanager
@@ -8,7 +8,7 @@ from dotenv import load_dotenv
 load_dotenv()
 
 from app.database import create_db_and_tables, get_session
-from app.models import CVCreate, CVUpdate, CVResponse
+from app.models import CVCreate, CVUpdate, CVResponse, AnalyticsEvent
 from app.auth import verify_passcode
 import app.crud as crud
 from app.routers.ai import router as ai_router
@@ -114,3 +114,33 @@ def verify_cv_passcode(slug: str, payload: dict, db: Session = Depends(get_sessi
         )
     
     return {"status": "success", "message": "Mật mã chính xác."}
+
+@app.post("/api/cvs/{slug}/analytics")
+def log_cv_analytics(slug: str, event: AnalyticsEvent, db: Session = Depends(get_session)):
+    """
+    Endpoint to receive and log anonymous viewer engagement events.
+    """
+    crud.create_analytics_log(db, slug, event)
+    return {"status": "success"}
+
+@app.get("/api/cvs/{slug}/analytics-dashboard")
+def get_cv_analytics_report(slug: str, passcode: str, db: Session = Depends(get_session)):
+    """
+    Endpoint to fetch aggregated analytics summary for a CV.
+    Requires validating the correct passcode.
+    """
+    db_cv = crud.get_cv_by_slug(db, slug)
+    if not db_cv:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Không tìm thấy CV với đường dẫn này."
+        )
+    
+    # Authenticate via Passcode
+    if not verify_passcode(passcode, db_cv.passcode_hash):
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Mật mã xác thực không chính xác để xem thống kê."
+        )
+    
+    return crud.get_cv_analytics_summary(db, slug)

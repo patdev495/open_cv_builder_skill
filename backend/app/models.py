@@ -39,6 +39,7 @@ class ProjectItem(BaseModel):
     description: str
     technologies: List[str] = []
     url: Optional[str] = None
+    embedUrl: Optional[str] = None
 
 class SkillGroup(BaseModel):
     category: str
@@ -68,6 +69,7 @@ class CVSchema(BaseModel):
     layoutDensity: Optional[str] = "normal"
     pageLayout: Optional[str] = "single"
     sectionOrder: Optional[List[str]] = None
+    themeMode: Optional[str] = "light"
 
 
 # ==========================================
@@ -104,4 +106,30 @@ class CVResponse(BaseModel):
     slug: str
     template: str
     cv_data: CVSchema
+
+
+# ==========================================
+# 4. Analytics Database & Ingestion Models
+# ==========================================
+
+class CVAnalytics(SQLModel, table=True):
+    __tablename__ = "cv_analytics"
+    id: Optional[int] = Field(default=None, primary_key=True)
+    slug: str = Field(index=True)
+    timestamp: float = Field(index=True)
+    event_type: str = Field(index=True)  # "view", "hover", "click", "export"
+    section: Optional[str] = None        # "experience", "projects", etc.
+    duration: Optional[float] = 0.0      # duration in seconds (for hover)
+    device: Optional[str] = None          # "mobile", "desktop", "tablet"
+    country: Optional[str] = None         # geo region
+    city: Optional[str] = None
+
+class AnalyticsEvent(BaseModel):
+    event_type: str
+    section: Optional[str] = None
+    duration: Optional[float] = 0.0
+    device: Optional[str] = None
+    country: Optional[str] = None
+    city: Optional[str] = None
+
 
