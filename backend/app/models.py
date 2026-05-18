@@ -70,6 +70,9 @@ class CVSchema(BaseModel):
     pageLayout: Optional[str] = "single"
     sectionOrder: Optional[List[str]] = None
     themeMode: Optional[str] = "light"
+    sectionGap: Optional[int] = None
+    pagePadding: Optional[int] = None
+    translated_data: Optional[dict] = None
 
 
 # ==========================================

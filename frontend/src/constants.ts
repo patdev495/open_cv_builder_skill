@@ -95,6 +95,8 @@ export const DEFAULT_CV: CVSchema = {
   themeColor: "indigo",
   fontFamily: "sans",
   layoutDensity: "normal",
+  sectionGap: 24,
+  pagePadding: 15,
   pageLayout: "multi",
   themeMode: "light"
 };

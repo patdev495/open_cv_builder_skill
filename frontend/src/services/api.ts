@@ -75,6 +75,23 @@ export async function verifyPasscode(slug: string, passcode: string): Promise<bo
   return response.ok;
 }
 
+export async function translateCV(cvData: CVSchema): Promise<CVSchema> {
+  const cleanCvData = cleanClientIds(cvData);
+  const response = await fetch(`${API_BASE_URL}/ai/translate-cv`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      cv_data: cleanCvData
+    }),
+  });
+  
+  if (!response.ok) {
+    const errData = await response.json().catch(() => ({}));
+    throw new Error(errData.detail || 'Lỗi khi dịch CV.');
+  }
+  return response.json();
+}
+
 /**
  * Strips client-side unique IDs (used for React key lists) 
  * so the backend receives clean Pydantic-compatible objects.

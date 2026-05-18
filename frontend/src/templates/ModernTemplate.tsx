@@ -12,35 +12,35 @@ export default function ModernTemplate({ cvData, activeColor, t }: TemplateProps
                         <img 
                           src={cvData.personalInfo.avatar} 
                           alt="Avatar" 
-                          className="w-16 h-16 rounded-full object-cover border-2 border-slate-200 print:border-slate-800" 
+                          className="w-16 h-16 rounded-full object-cover border-2 border-slate-200 dark:border-slate-700 print:border-slate-800 dark:border-slate-400" 
                         />
                       )}
                       <div>
-                        <h1 className="text-3xl font-extrabold tracking-tight text-slate-900 leading-tight m-0 print:text-black">
+                        <h1 className="text-3xl font-extrabold tracking-tight text-slate-900 dark:text-slate-100 leading-tight m-0 print:text-black">
                           {cvData.personalInfo.fullName || "HỌ VÀ TÊN"}
                         </h1>
-                        <p className={`${activeColor.primary} font-bold text-sm tracking-wider uppercase mt-1 print:text-slate-800`}>
+                        <p className={`${activeColor.primary} font-bold text-sm tracking-wider uppercase mt-1 print:text-slate-800 dark:text-slate-200`}>
                           {cvData.personalInfo.title || "VỊ TRÍ ỨNG TUYỂN"}
                         </p>
                       </div>
                     </div>
-                    <div className="flex flex-col gap-1 text-slate-550 text-xs text-right sm:items-end font-medium print:text-slate-700 print:items-end print:text-right">
+                    <div className="flex flex-col gap-1 text-slate-500 dark:text-slate-400 text-xs text-right sm:items-end font-medium print:text-slate-700 dark:text-slate-300 print:items-end print:text-right">
                       <div>{cvData.personalInfo.email}</div>
                       {cvData.personalInfo.phone && <div>{cvData.personalInfo.phone}</div>}
                       {cvData.personalInfo.location && <div>{cvData.personalInfo.location}</div>}
                       <div className="flex flex-wrap gap-2 mt-1 sm:justify-end print:justify-end">
                         {cvData.personalInfo.website && (
-                          <a href={cvData.personalInfo.website} target="_blank" rel="noopener noreferrer" className="font-mono hover:underline text-slate-550 print:text-slate-700">
+                          <a href={cvData.personalInfo.website} target="_blank" rel="noopener noreferrer" className="font-mono hover:underline text-slate-500 dark:text-slate-400 print:text-slate-700 dark:text-slate-300">
                             {cvData.personalInfo.website.replace(/^https?:\/\//, '')}
                           </a>
                         )}
                         {cvData.personalInfo.github && (
-                          <a href={cvData.personalInfo.github} target="_blank" rel="noopener noreferrer" className="font-mono hover:underline text-slate-550 print:text-slate-700">
+                          <a href={cvData.personalInfo.github} target="_blank" rel="noopener noreferrer" className="font-mono hover:underline text-slate-500 dark:text-slate-400 print:text-slate-700 dark:text-slate-300">
                             github.com/{cvData.personalInfo.github.split('/').pop()}
                           </a>
                         )}
                         {cvData.personalInfo.linkedin && (
-                          <a href={cvData.personalInfo.linkedin} target="_blank" rel="noopener noreferrer" className="font-mono hover:underline text-slate-550 print:text-slate-700">
+                          <a href={cvData.personalInfo.linkedin} target="_blank" rel="noopener noreferrer" className="font-mono hover:underline text-slate-500 dark:text-slate-400 print:text-slate-700 dark:text-slate-300">
                             linkedin.com/in/{cvData.personalInfo.linkedin.split('/').pop()}
                           </a>
                         )}
@@ -66,7 +66,7 @@ export default function ModernTemplate({ cvData, activeColor, t }: TemplateProps
                                 </h3>
                                 {cvData.skills.map((grp) => (
                                   <div key={grp.id} className="flex flex-col gap-1">
-                                    <span className="text-xs font-bold text-slate-800">{grp.category}</span>
+                                    <span className="text-xs font-bold text-slate-800 dark:text-slate-200">{grp.category}</span>
                                     <div className="flex flex-wrap gap-1.5">
                                       {grp.skills.filter(Boolean).map((s, i) => (
                                         <span key={i} className={`${activeColor.pill} px-2 py-0.5 rounded text-[11px] font-medium`}>
@@ -88,9 +88,9 @@ export default function ModernTemplate({ cvData, activeColor, t }: TemplateProps
                                 </h3>
                                 <div className="flex flex-col gap-1">
                                   {cvData.languages.map((l) => (
-                                    <div key={l.id} className="flex justify-between text-xs font-medium text-slate-750">
-                                      <span className="font-semibold text-slate-800">{l.name}</span>
-                                      <span className="text-slate-500 font-mono text-[10px] print:text-slate-800">{l.level}</span>
+                                    <div key={l.id} className="flex justify-between text-xs font-medium text-slate-700 dark:text-slate-300">
+                                      <span className="font-semibold text-slate-800 dark:text-slate-200">{l.name}</span>
+                                      <span className="text-slate-500 dark:text-slate-400 font-mono text-[10px] print:text-slate-800 dark:text-slate-200">{l.level}</span>
                                     </div>
                                   ))}
                                 </div>
@@ -106,8 +106,8 @@ export default function ModernTemplate({ cvData, activeColor, t }: TemplateProps
                                 </h3>
                                 {cvData.certificates.map((c) => (
                                   <div key={c.id} className="text-xs flex flex-col gap-0.5">
-                                    <span className="font-bold text-slate-850 leading-snug">{c.name}</span>
-                                    <span className="text-[10px] text-slate-550 font-medium">{c.issuer} ({c.date})</span>
+                                    <span className="font-bold text-slate-800 dark:text-slate-200 leading-snug">{c.name}</span>
+                                    <span className="text-[10px] text-slate-500 dark:text-slate-400 font-medium">{c.issuer} ({c.date})</span>
                                   </div>
                                 ))}
                               </div>
@@ -131,7 +131,7 @@ export default function ModernTemplate({ cvData, activeColor, t }: TemplateProps
                                   <User className="h-3.5 w-3.5 stroke-[2.5]" />
                                   {t('summaryUpper')}
                                 </h3>
-                                <p className="text-xs leading-relaxed text-slate-700 font-medium text-justify">{cvData.summary}</p>
+                                <p className="text-xs leading-relaxed text-slate-700 dark:text-slate-300 font-medium text-justify">{cvData.summary}</p>
                               </div>
                             );
                           }
@@ -146,13 +146,13 @@ export default function ModernTemplate({ cvData, activeColor, t }: TemplateProps
                                   <div key={exp.id} className="flex flex-col gap-1 break-inside-avoid">
                                     <div className="flex justify-between items-start text-xs">
                                       <div>
-                                        <span className="font-extrabold text-slate-900">{exp.company}</span>
+                                        <span className="font-extrabold text-slate-900 dark:text-slate-100">{exp.company}</span>
                                         <span className="text-slate-400 mx-1.5">•</span>
                                         <span className={`font-semibold ${activeColor.primary} print:text-black`}>{exp.position}</span>
                                       </div>
-                                      <span className="text-[10px] font-mono font-bold text-slate-400 print:text-slate-850">{exp.startDate} - {exp.endDate || 'Hiện tại'}</span>
+                                      <span className="text-[10px] font-mono font-bold text-slate-400 print:text-slate-800 dark:text-slate-200">{exp.startDate} - {exp.endDate || 'Hiện tại'}</span>
                                     </div>
-                                    <p className="text-xs leading-relaxed text-slate-655 font-medium whitespace-pre-line mt-1 print:text-slate-950">
+                                    <p className="text-xs leading-relaxed text-slate-600 dark:text-slate-400 font-medium whitespace-pre-line mt-1 print:text-slate-950">
                                       {exp.description}
                                     </p>
                                   </div>
@@ -171,7 +171,7 @@ export default function ModernTemplate({ cvData, activeColor, t }: TemplateProps
                                   <div key={proj.id} className="flex flex-col gap-1 break-inside-avoid">
                                     <div className="flex justify-between items-center text-xs">
                                       <div>
-                                        <span className="font-extrabold text-slate-900">{proj.name}</span>
+                                        <span className="font-extrabold text-slate-900 dark:text-slate-100">{proj.name}</span>
                                         {proj.url && (
                                           <a
                                             href={proj.url}
@@ -184,9 +184,9 @@ export default function ModernTemplate({ cvData, activeColor, t }: TemplateProps
                                           </a>
                                         )}
                                         <span className="text-slate-400 mx-1.5">•</span>
-                                        <span className="text-[10px] text-slate-550 font-semibold italic">{proj.role}</span>
+                                        <span className="text-[10px] text-slate-500 dark:text-slate-400 font-semibold italic">{proj.role}</span>
                                       </div>
-                                      <span className="text-[10px] font-mono font-bold text-slate-400 print:text-slate-850">{proj.startDate}</span>
+                                      <span className="text-[10px] font-mono font-bold text-slate-400 print:text-slate-800 dark:text-slate-200">{proj.startDate}</span>
                                     </div>
                                     {proj.technologies.filter(Boolean).length > 0 && (
                                       <div className="flex flex-wrap gap-1 mt-0.5">
@@ -197,7 +197,7 @@ export default function ModernTemplate({ cvData, activeColor, t }: TemplateProps
                                         ))}
                                       </div>
                                     )}
-                                    <p className="text-xs leading-relaxed text-slate-655 font-medium whitespace-pre-line mt-1 print:text-slate-950">
+                                    <p className="text-xs leading-relaxed text-slate-600 dark:text-slate-400 font-medium whitespace-pre-line mt-1 print:text-slate-950">
                                       {proj.description}
                                     </p>
                                     <ProjectEmbed embedUrl={proj.embedUrl} projectName={proj.name} />
@@ -216,11 +216,11 @@ export default function ModernTemplate({ cvData, activeColor, t }: TemplateProps
                                 {cvData.education.map((edu) => (
                                   <div key={edu.id} className="flex flex-col gap-0.5 text-xs break-inside-avoid">
                                     <div className="flex justify-between items-start">
-                                      <span className="font-extrabold text-slate-900">{edu.institution}</span>
-                                      <span className="text-[10px] font-mono font-bold text-slate-400 print:text-slate-850">{edu.startDate} - {edu.endDate || 'Hiện tại'}</span>
+                                      <span className="font-extrabold text-slate-900 dark:text-slate-100">{edu.institution}</span>
+                                      <span className="text-[10px] font-mono font-bold text-slate-400 print:text-slate-800 dark:text-slate-200">{edu.startDate} - {edu.endDate || 'Hiện tại'}</span>
                                     </div>
-                                    <div className="text-slate-600 font-semibold print:text-slate-900">{edu.degree}</div>
-                                    {edu.description && <p className="text-[11px] text-slate-500 italic mt-0.5">{edu.description}</p>}
+                                    <div className="text-slate-600 dark:text-slate-400 font-semibold print:text-slate-900 dark:text-slate-100">{edu.degree}</div>
+                                    {edu.description && <p className="text-[11px] text-slate-500 dark:text-slate-400 italic mt-0.5">{edu.description}</p>}
                                   </div>
                                 ))}
                               </div>

@@ -60,6 +60,10 @@ _Avoid_: Pageview counter, web tracker, visitor logs
 Cơ chế tự động ẩn các vùng dữ liệu (Sections) hoặc trường thông tin (Fields) trên bản xem trước **Live Preview** và tài liệu **Export** khi dữ liệu tương ứng bị bỏ trống trong trình soạn thảo, giúp tối ưu hóa diện tích hiển thị mà không cần các nút bật/tắt thủ công.
 _Avoid_: Visibility filter, manual toggling, explicit display settings
 
+**Multilingual Sync** (Đồng bộ Đa Ngôn Ngữ):
+Cơ chế lưu trữ và hiển thị các bản dịch song hành của một **CV** trong cùng một **CV Schema** (thông qua `translated_data`). Người dùng có thể dùng AI dịch 1-click toàn bộ CV, và nhà tuyển dụng có thể chuyển đổi ngôn ngữ hiển thị tức thì trên **Interactive Portfolio**.
+_Avoid_: Translation split, duplicate CV, localized clone
+
 ## Relationships
 
 - A **CV** is represented by a single **CV Schema**
@@ -76,6 +80,8 @@ _Avoid_: Visibility filter, manual toggling, explicit display settings
 - An **Interactive Portfolio** in Dark Mode transforms the simulated A4 container into a borderless, glassmorphic web dashboard, automatically reverting to a standard light A4 template upon **Export**
 - An **Interactive Portfolio** renders a **Project Embed** dynamically when a project's `embedUrl` is provided inside the **CV Schema**
 - An **Interactive Portfolio** anonymously logs viewer behaviors (such as read duration, section focus, click interactions) into **Engagement Analytics** to provide real-time performance feedback to the CV creator
+- An **Interactive Portfolio** supports **Multilingual Sync**, displaying a language toggle next to the theme switcher only if translated data is populated within the **CV Schema**
+- An **Interactive Portfolio** when **Exported** respects the actively toggled language, generating the static PDF document in that exact selected language version
 
 
 

@@ -82,7 +82,11 @@ describe('AIEnhancer Component', () => {
     removeCertificate: vi.fn(),
     addLanguage: vi.fn(),
     removeLanguage: vi.fn(),
-  };
+    editingLanguage: 'vi',
+    setEditingLanguage: vi.fn(),
+    isTranslating: false,
+    handleTranslateCV: vi.fn(),
+  } as any;
 
   beforeEach(() => {
     vi.clearAllMocks();

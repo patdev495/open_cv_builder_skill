@@ -12,17 +12,17 @@ export default function ClassicTemplate({ cvData, activeColor, t }: TemplateProp
                        <img 
                          src={cvData.personalInfo.avatar} 
                          alt="Avatar" 
-                         className="w-16 h-16 rounded-full object-cover border border-slate-300" 
+                         className="w-16 h-16 rounded-full object-cover border border-slate-300 dark:border-slate-600" 
                        />
                      )}
                      <div className="text-center sm:text-left flex flex-col gap-1 print:text-left">
-                       <h1 className="text-3xl font-extrabold tracking-wide text-slate-950 uppercase m-0 print:text-black">
+                       <h1 className="text-3xl font-extrabold tracking-wide text-slate-950 dark:text-slate-50 uppercase m-0 print:text-black">
                          {cvData.personalInfo.fullName || "HỌ VÀ TÊN"}
                        </h1>
                        <p className={`font-bold text-xs tracking-widest uppercase ${activeColor.primary}`}>
                          {cvData.personalInfo.title || "VỊ TRÍ ỨNG TUYỂN"}
                        </p>
-                       <div className="flex flex-wrap justify-center sm:justify-start gap-x-3 gap-y-1 text-slate-650 text-xs font-mono mt-2 print:text-black print:justify-start print:flex-wrap">
+                       <div className="flex flex-wrap justify-center sm:justify-start gap-x-3 gap-y-1 text-slate-600 dark:text-slate-400 text-xs font-mono mt-2 print:text-black print:justify-start print:flex-wrap">
                          <span>{cvData.personalInfo.email}</span>
                          {cvData.personalInfo.phone && <span>• {cvData.personalInfo.phone}</span>}
                          {cvData.personalInfo.location && <span>• {cvData.personalInfo.location}</span>}
@@ -62,7 +62,7 @@ export default function ClassicTemplate({ cvData, activeColor, t }: TemplateProp
                                <User className="h-3.5 w-3.5 stroke-[2.5]" />
                                {t('summaryUpper')}
                              </h3>
-                             <p className="text-xs leading-relaxed text-slate-700 italic text-justify">{cvData.summary}</p>
+                             <p className="text-xs leading-relaxed text-slate-700 dark:text-slate-300 italic text-justify">{cvData.summary}</p>
                            </div>
                          );
                        }
@@ -76,8 +76,8 @@ export default function ClassicTemplate({ cvData, activeColor, t }: TemplateProp
                              {cvData.experience.map((exp) => (
                                <div key={exp.id} className="flex flex-col gap-0.5">
                                  <div className="flex justify-between items-center text-xs font-bold">
-                                   <span className="text-slate-900 font-extrabold">{exp.company} — <span className={`italic font-normal ${activeColor.primary}`}>{exp.position}</span></span>
-                                   <span className="text-[10px] font-mono text-slate-500 print:text-black">{exp.startDate} – {exp.endDate || 'Hiện tại'}</span>
+                                   <span className="text-slate-900 dark:text-slate-100 font-extrabold">{exp.company} — <span className={`italic font-normal ${activeColor.primary}`}>{exp.position}</span></span>
+                                   <span className="text-[10px] font-mono text-slate-500 dark:text-slate-400 print:text-black">{exp.startDate} – {exp.endDate || 'Hiện tại'}</span>
                                  </div>
                                  <p className="text-xs leading-relaxed text-slate-705 whitespace-pre-line mt-1 print:text-black">
                                    {exp.description}
@@ -97,7 +97,7 @@ export default function ClassicTemplate({ cvData, activeColor, t }: TemplateProp
                              {cvData.projects.map((proj) => (
                                <div key={proj.id} className="flex flex-col gap-0.5">
                                  <div className="flex justify-between items-center text-xs font-bold">
-                                   <span className="text-slate-900 font-extrabold">
+                                   <span className="text-slate-900 dark:text-slate-100 font-extrabold">
                                      {proj.name}
                                      {proj.url && (
                                        <a
@@ -113,10 +113,10 @@ export default function ClassicTemplate({ cvData, activeColor, t }: TemplateProp
                                      {" — "}
                                      <span className="font-normal italic text-[11px]">{proj.role}</span>
                                    </span>
-                                   <span className="text-[10px] font-mono text-slate-500 print:text-black">{proj.startDate}</span>
+                                   <span className="text-[10px] font-mono text-slate-500 dark:text-slate-400 print:text-black">{proj.startDate}</span>
                                  </div>
                                  {proj.technologies.filter(Boolean).length > 0 && (
-                                   <span className="text-[10px] text-slate-550 font-semibold">Công nghệ: {proj.technologies.filter(Boolean).join(", ")}</span>
+                                   <span className="text-[10px] text-slate-500 dark:text-slate-400 font-semibold">Công nghệ: {proj.technologies.filter(Boolean).join(", ")}</span>
                                  )}
                                  <p className="text-xs leading-relaxed text-slate-705 whitespace-pre-line mt-0.5 print:text-black">
                                    {proj.description}
@@ -137,11 +137,11 @@ export default function ClassicTemplate({ cvData, activeColor, t }: TemplateProp
                              {cvData.education.map((edu) => (
                                <div key={edu.id} className="flex flex-col gap-0.5 text-xs">
                                  <div className="flex justify-between items-start font-bold">
-                                   <span className="text-slate-900 font-extrabold">{edu.institution}</span>
-                                   <span className="text-[10px] font-mono text-slate-500 print:text-black">{edu.startDate} – {edu.endDate || 'Hiện tại'}</span>
+                                   <span className="text-slate-900 dark:text-slate-100 font-extrabold">{edu.institution}</span>
+                                   <span className="text-[10px] font-mono text-slate-500 dark:text-slate-400 print:text-black">{edu.startDate} – {edu.endDate || 'Hiện tại'}</span>
                                  </div>
-                                 <div className="text-slate-655 italic print:text-black">{edu.degree}</div>
-                                 {edu.description && <p className="text-[10px] text-slate-500 mt-0.5">{edu.description}</p>}
+                                 <div className="text-slate-600 dark:text-slate-400 italic print:text-black">{edu.degree}</div>
+                                 {edu.description && <p className="text-[10px] text-slate-500 dark:text-slate-400 mt-0.5">{edu.description}</p>}
                                </div>
                              ))}
                            </div>
@@ -157,8 +157,8 @@ export default function ClassicTemplate({ cvData, activeColor, t }: TemplateProp
                              <div className="flex flex-col gap-1 text-xs">
                                {cvData.skills.map((grp) => (
                                  <div key={grp.id} className="leading-snug">
-                                   <span className="font-bold text-slate-850">{grp.category}: </span>
-                                   <span className="text-slate-700">{grp.skills.filter(Boolean).join(", ")}</span>
+                                   <span className="font-bold text-slate-800 dark:text-slate-200">{grp.category}: </span>
+                                   <span className="text-slate-700 dark:text-slate-300">{grp.skills.filter(Boolean).join(", ")}</span>
                                  </div>
                                ))}
                              </div>
@@ -174,7 +174,7 @@ export default function ClassicTemplate({ cvData, activeColor, t }: TemplateProp
                              </h3>
                              {cvData.certificates.map((c) => (
                                <div key={c.id} className="text-xs text-slate-755">
-                                 <span className="font-bold text-slate-900">{c.name}</span> <span className="text-[10px] text-slate-550">({c.date})</span>
+                                 <span className="font-bold text-slate-900 dark:text-slate-100">{c.name}</span> <span className="text-[10px] text-slate-500 dark:text-slate-400">({c.date})</span>
                                </div>
                              ))}
                            </div>
@@ -190,7 +190,7 @@ export default function ClassicTemplate({ cvData, activeColor, t }: TemplateProp
                              <div className="text-xs text-slate-755 flex flex-col gap-0.5">
                                {cvData.languages.map((l) => (
                                  <div key={l.id}>
-                                   <span className="font-bold text-slate-900">{l.name}</span>: {l.level}
+                                   <span className="font-bold text-slate-900 dark:text-slate-100">{l.name}</span>: {l.level}
                                  </div>
                                ))}
                              </div>

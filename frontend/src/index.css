@@ -1,4 +1,5 @@
 @import "tailwindcss";
+@variant dark (&:where(.dark, .dark *));
 @import url('https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@300;400;500;600;700&family=Lora:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Outfit:wght@300;400;500;600;700;800&family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap');
 
 /* Base Tailwind v4 configurations and customizations can be defined here */
@@ -29,14 +30,33 @@
   #root,
   .min-h-screen,
   main,
-  section,
+  section {
+    overflow: visible !important;
+    height: auto !important;
+    min-height: 0 !important;
+    max-height: none !important;
+    box-shadow: none !important;
+    border: none !important;
+    border-radius: 0 !important;
+    outline: none !important;
+    background-color: white !important;
+    background-image: none !important;
+  }
+
+  /* Ensure all intermediate div wrappers don't collapse content to zero height */
   div {
     overflow: visible !important;
     height: auto !important;
     min-height: 0 !important;
     max-height: none !important;
     box-shadow: none !important;
-    border-color: transparent !important;
+  }
+
+  /* Kill all backdrop-filter / mix-blend-mode — they crash Windows XPS print renderer */
+  * {
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+    mix-blend-mode: normal !important;
   }
 
   /* Prevent headings and sections titles from sitting alone at the bottom of a page */
@@ -100,6 +120,11 @@
   transition: all 0.3s ease !important;
 }
 
+.dark .glass-sidebar {
+  background-color: rgba(15, 23, 42, 0.45) !important;
+  border: 1px solid rgba(51, 65, 85, 0.35) !important;
+}
+
 /* Perfect print adjustments for premium layouts */
 @media print {
   .w-\[210mm\] h3::after {
@@ -143,3 +168,43 @@
 .font-sans, .font-serif, .font-mono {
   font-family: inherit !important;
 }
+
+/* ========================================================
+   DYNAMIC SPACING ENGINE
+   ======================================================== */
+.cv-document {
+  padding: var(--cv-page-padding, 15mm) !important;
+  transition: padding 0.4s cubic-bezier(0.16, 1, 0.3, 1) !important;
+}
+
+.cv-document .gap-6,
+.cv-document .gap-5,
+.cv-document .gap-4,
+.cv-document .pb-6,
+.cv-document .glass-sidebar {
+  transition: gap 0.4s cubic-bezier(0.16, 1, 0.3, 1), padding 0.4s cubic-bezier(0.16, 1, 0.3, 1), padding-bottom 0.4s cubic-bezier(0.16, 1, 0.3, 1) !important;
+}
+
+.cv-document .gap-6 {
+  gap: var(--cv-section-gap, 24px) !important;
+}
+
+.cv-document .gap-5 {
+  gap: calc(var(--cv-section-gap, 24px) * 0.8) !important;
+}
+
+.cv-document .gap-4 {
+  gap: calc(var(--cv-section-gap, 24px) * 0.65) !important;
+}
+
+.cv-document .pb-6 {
+  padding-bottom: var(--cv-section-gap, 24px) !important;
+}
+
+/* Perfect print support for custom page padding */
+@media print {
+  .cv-document {
+    padding: 0 !important; /* Let @page margin handle it on printer paper */
+  }
+}
+

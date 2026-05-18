@@ -142,7 +142,18 @@ export const TRANSLATIONS = {
     defaultThemeMode: "Chế độ giao diện mặc định",
     themeModeLight: "Giao diện Sáng (Light)",
     themeModeDark: "Giao diện Tối (Dark)",
-    themeModeAuto: "Tự động theo hệ thống (System)"
+    themeModeAuto: "Tự động theo hệ thống (System)",
+    pageBoundary: "Hết Trang",
+    toPage: "Sang Trang",
+    pageLimitExceeded: "Quá giới hạn 1 Trang A4!",
+    totalPages: "Số trang:",
+    pagesUnit: "trang",
+    fixedLayout: "Cố định",
+    contentTooLongSingle: "Nội dung quá dài cho 1 trang A4!",
+    originalMode: "Bản Gốc (Original)",
+    translatedMode: "Bản Dịch",
+    verifyPasscode: "Nhập Mật Mã (Passcode)",
+    verifyDesc: "Vui lòng nhập mật mã để truy cập."
   },
   en: {
     title: "CV BUILDER PRO",
@@ -287,6 +298,17 @@ export const TRANSLATIONS = {
     defaultThemeMode: "Default Theme Mode",
     themeModeLight: "Light Theme",
     themeModeDark: "Dark Theme",
-    themeModeAuto: "System Default (Auto)"
+    themeModeAuto: "System Default (Auto)",
+    pageBoundary: "End of Page",
+    toPage: "Start of Page",
+    pageLimitExceeded: "Page 1 Limit Exceeded!",
+    totalPages: "Pages:",
+    pagesUnit: "pages",
+    fixedLayout: "Fixed",
+    contentTooLongSingle: "Content too long for 1 page!",
+    originalMode: "Original Version",
+    translatedMode: "Translated",
+    verifyPasscode: "Enter Passcode",
+    verifyDesc: "Please enter your passcode to access."
   }
 };

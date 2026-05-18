@@ -11,16 +11,16 @@ export default function MinimalTemplate({ cvData, activeColor, t }: TemplateProp
                       <img 
                         src={cvData.personalInfo.avatar} 
                         alt="Avatar" 
-                        className="w-20 h-20 rounded-full object-cover border border-slate-300 mb-2" 
+                        className="w-20 h-20 rounded-full object-cover border border-slate-300 dark:border-slate-600 mb-2" 
                       />
                     )}
-                    <h1 className="text-3.5xl font-light tracking-wide text-slate-900 uppercase font-serif">
+                    <h1 className="text-3.5xl font-light tracking-wide text-slate-900 dark:text-slate-100 uppercase font-serif">
                       {cvData.personalInfo.fullName || "HỌ VÀ TÊN"}
                     </h1>
                     <p className={`${activeColor.primary} font-semibold text-xs tracking-widest uppercase font-serif`}>
                       {cvData.personalInfo.title || "VỊ TRÍ ỨNG TUYỂN"}
                     </p>
-                    <div className="flex flex-wrap justify-center gap-x-6 gap-y-1 text-slate-500 text-xs font-mono mt-1 print:text-black print:justify-center print:flex-wrap">
+                    <div className="flex flex-wrap justify-center gap-x-6 gap-y-1 text-slate-500 dark:text-slate-400 text-xs font-mono mt-1 print:text-black print:justify-center print:flex-wrap">
                       <span>{cvData.personalInfo.email}</span>
                       {cvData.personalInfo.phone && <span>• {cvData.personalInfo.phone}</span>}
                       {cvData.personalInfo.location && <span>• {cvData.personalInfo.location}</span>}
@@ -58,7 +58,7 @@ export default function MinimalTemplate({ cvData, activeColor, t }: TemplateProp
                         {t('summaryUpper')}
                       </h3>
                       <div className={`w-8 h-0.5 ${activeColor.bg} mx-auto mb-1`}></div>
-                      <p className="text-xs leading-relaxed text-slate-700 text-center max-w-xl mx-auto italic">
+                      <p className="text-xs leading-relaxed text-slate-700 dark:text-slate-300 text-center max-w-xl mx-auto italic">
                         "{cvData.summary}"
                       </p>
                     </div>
@@ -77,13 +77,13 @@ export default function MinimalTemplate({ cvData, activeColor, t }: TemplateProp
                           <div key={exp.id} className="flex flex-col gap-1">
                             <div className="flex justify-between items-baseline text-xs">
                               <div>
-                                <span className="font-bold text-slate-900 font-serif text-sm">{exp.company}</span>
+                                <span className="font-bold text-slate-900 dark:text-slate-100 font-serif text-sm">{exp.company}</span>
                                 <span className="mx-2 text-slate-450">•</span>
-                                <span className="text-slate-655 font-medium italic">{exp.position}</span>
+                                <span className="text-slate-600 dark:text-slate-400 font-medium italic">{exp.position}</span>
                               </div>
                               <span className="text-[10px] font-mono text-slate-400 print:text-black">{exp.startDate} – {exp.endDate || 'Hiện tại'}</span>
                             </div>
-                            <p className="text-xs leading-relaxed text-slate-655 text-justify mt-0.5 whitespace-pre-line print:text-black">
+                            <p className="text-xs leading-relaxed text-slate-600 dark:text-slate-400 text-justify mt-0.5 whitespace-pre-line print:text-black">
                               {exp.description}
                             </p>
                           </div>
@@ -105,7 +105,7 @@ export default function MinimalTemplate({ cvData, activeColor, t }: TemplateProp
                           <div key={proj.id} className="flex flex-col gap-1">
                             <div className="flex justify-between items-baseline text-xs">
                               <div>
-                                <span className="font-bold text-slate-900 font-serif text-sm">{proj.name}</span>
+                                <span className="font-bold text-slate-900 dark:text-slate-100 font-serif text-sm">{proj.name}</span>
                                 {proj.url && (
                                   <a
                                     href={proj.url}
@@ -118,11 +118,11 @@ export default function MinimalTemplate({ cvData, activeColor, t }: TemplateProp
                                   </a>
                                 )}
                                 <span className="mx-2 text-slate-450">•</span>
-                                <span className="text-slate-500 font-medium italic text-[11px]">{proj.role}</span>
+                                <span className="text-slate-500 dark:text-slate-400 font-medium italic text-[11px]">{proj.role}</span>
                               </div>
                               <span className="text-[10px] font-mono text-slate-400 print:text-black">{proj.startDate}</span>
                             </div>
-                            <p className="text-xs leading-relaxed text-slate-655 text-justify mt-0.5 whitespace-pre-line print:text-black">
+                            <p className="text-xs leading-relaxed text-slate-600 dark:text-slate-400 text-justify mt-0.5 whitespace-pre-line print:text-black">
                               {proj.description}
                             </p>
                             <ProjectEmbed embedUrl={proj.embedUrl} projectName={proj.name} />
@@ -133,7 +133,7 @@ export default function MinimalTemplate({ cvData, activeColor, t }: TemplateProp
                   )}
 
                   {/* Grid elements at bottom */}
-                  <div className="grid grid-cols-2 gap-8 border-t border-slate-100 pt-4 print:border-slate-350">
+                  <div className="grid grid-cols-2 gap-8 border-t border-slate-100 dark:border-slate-800 dark:border-slate-400 pt-4 print:border-slate-350">
                     
                     {/* Left Grid: Education & Certs */}
                     <div className="flex flex-col gap-5">
@@ -147,10 +147,10 @@ export default function MinimalTemplate({ cvData, activeColor, t }: TemplateProp
                           {cvData.education.map((edu) => (
                             <div key={edu.id} className="flex flex-col gap-0.5 text-xs">
                               <div className="flex justify-between items-start font-bold">
-                                <span className="text-slate-900 font-serif">{edu.institution}</span>
+                                <span className="text-slate-900 dark:text-slate-100 font-serif">{edu.institution}</span>
                                 <span className="text-[9px] font-mono text-slate-400 print:text-black">{edu.startDate} – {edu.endDate || 'Hiện tại'}</span>
                               </div>
-                              <div className="text-slate-500 font-medium italic">{edu.degree}</div>
+                              <div className="text-slate-500 dark:text-slate-400 font-medium italic">{edu.degree}</div>
                             </div>
                           ))}
                         </div>
@@ -165,8 +165,8 @@ export default function MinimalTemplate({ cvData, activeColor, t }: TemplateProp
                           </h3>
                           {cvData.certificates.map((c) => (
                             <div key={c.id} className="text-xs text-slate-770 leading-snug">
-                              <span className="font-bold text-slate-900 font-serif">{c.name}</span>
-                              <span className="text-[10px] text-slate-550 block">{c.issuer} ({c.date})</span>
+                              <span className="font-bold text-slate-900 dark:text-slate-100 font-serif">{c.name}</span>
+                              <span className="text-[10px] text-slate-500 dark:text-slate-400 block">{c.issuer} ({c.date})</span>
                             </div>
                           ))}
                         </div>
@@ -185,8 +185,8 @@ export default function MinimalTemplate({ cvData, activeColor, t }: TemplateProp
                           <div className="flex flex-col gap-2 text-xs">
                             {cvData.skills.map((grp) => (
                               <div key={grp.id} className="leading-relaxed">
-                                <span className="font-bold text-slate-900 font-serif block">{grp.category}</span>
-                                <span className="text-slate-655">{grp.skills.filter(Boolean).join(", ")}</span>
+                                <span className="font-bold text-slate-900 dark:text-slate-100 font-serif block">{grp.category}</span>
+                                <span className="text-slate-600 dark:text-slate-400">{grp.skills.filter(Boolean).join(", ")}</span>
                               </div>
                             ))}
                           </div>
@@ -203,8 +203,8 @@ export default function MinimalTemplate({ cvData, activeColor, t }: TemplateProp
                           <div className="text-xs flex flex-col gap-1">
                             {cvData.languages.map((l) => (
                               <div key={l.id} className="flex justify-between">
-                                <span className="font-bold text-slate-900 font-serif">{l.name}</span>
-                                <span className="text-slate-500 font-mono text-[10px] print:text-black">{l.level}</span>
+                                <span className="font-bold text-slate-900 dark:text-slate-100 font-serif">{l.name}</span>
+                                <span className="text-slate-500 dark:text-slate-400 font-mono text-[10px] print:text-black">{l.level}</span>
                               </div>
                             ))}
                           </div>

@@ -72,9 +72,12 @@ export interface CVSchema {
   themeColor?: string;
   fontFamily?: string;
   layoutDensity?: 'compact' | 'normal' | 'comfortable';
+  sectionGap?: number;
+  pagePadding?: number;
   pageLayout?: 'single' | 'multi';
   sectionOrder?: string[];
   themeMode?: 'light' | 'dark' | 'auto';
+  translated_data?: Record<string, CVSchema>;
 }
 
 export interface CVResponse {

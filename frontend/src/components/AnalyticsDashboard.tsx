@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useCVEditorContext } from '../context/CVEditorContext';
-import { Eye, Printer, Clock, BarChart3, Globe, Smartphone, RefreshCw, AlertCircle } from 'lucide-react';
+import { Eye, Printer, Clock, BarChart3, Globe, Smartphone, RefreshCw, AlertCircle, Lock } from 'lucide-react';
 import { API_BASE_URL } from '../services/api';
 
 interface AnalyticsData {
@@ -13,31 +13,51 @@ interface AnalyticsData {
 }
 
 export function AnalyticsDashboard() {
-  const { slug, passcode, language } = useCVEditorContext();
+  const { slug, passcode, setPasscode, language } = useCVEditorContext();
   const [data, setData] = useState<AnalyticsData | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
+  const [inputCode, setInputCode] = useState<string>('');
+  const [showAuthForm, setShowAuthForm] = useState<boolean>(false);
 
-  const fetchAnalytics = async () => {
+  const fetchAnalytics = async (codeToUse: string) => {
     if (!slug) return;
     setIsLoading(true);
     setError(null);
     try {
-      const res = await fetch(`${API_BASE_URL}/cvs/${slug}/analytics-dashboard?passcode=${encodeURIComponent(passcode)}`);
+      const res = await fetch(`${API_BASE_URL}/cvs/${slug}/analytics-dashboard?passcode=${encodeURIComponent(codeToUse)}`);
+      if (res.status === 401) {
+        throw new Error('401');
+      }
       if (!res.ok) {
         throw new Error(language === 'vi' ? 'Không thể tải báo cáo. Vui lòng thử lại.' : 'Failed to load report. Please try again.');
       }
       const json = await res.json();
       setData(json);
+      // Sync successfully validated passcode to global editor context
+      if (setPasscode) {
+        setPasscode(codeToUse);
+      }
+      setShowAuthForm(false);
     } catch (err: any) {
-      setError(err.message || 'Error fetching stats');
+      if (err.message === '401') {
+        setError(language === 'vi' ? 'Mật mã bảo vệ không chính xác.' : 'Incorrect protection passcode.');
+        setShowAuthForm(true);
+      } else {
+        setError(err.message || 'Error fetching stats');
+      }
     } finally {
       setIsLoading(false);
     }
   };
 
   useEffect(() => {
-    fetchAnalytics();
+    if (passcode) {
+      fetchAnalytics(passcode);
+    } else {
+      setShowAuthForm(true);
+      setIsLoading(false);
+    }
   }, [slug, passcode]);
 
   if (isLoading) {
@@ -49,13 +69,62 @@ export function AnalyticsDashboard() {
     );
   }
 
+  if (showAuthForm) {
+    return (
+      <div className="bg-slate-950/40 p-6 rounded-2xl border border-slate-850 max-w-sm mx-auto my-6 text-center space-y-4">
+        <div className="bg-purple-900/20 border border-purple-500/20 w-12 h-12 rounded-full flex items-center justify-center mx-auto text-purple-400">
+          <Lock className="h-5 w-5" />
+        </div>
+        <div>
+          <h3 className="text-sm font-bold text-slate-200">
+            {language === 'vi' ? 'Mật mã Bảo vệ CV' : 'CV Protection Passcode'}
+          </h3>
+          <p className="text-xs text-slate-500 mt-1 leading-relaxed">
+            {language === 'vi' 
+              ? 'Vui lòng nhập mật mã bảo vệ của CV này để mở khóa xem Báo cáo Thống kê Tương tác.'
+              : 'Please enter the protection passcode of this CV to unlock the Interaction Analytics Report.'}
+          </p>
+        </div>
+        <form 
+          onSubmit={(e) => {
+            e.preventDefault();
+            if (inputCode.trim()) {
+              fetchAnalytics(inputCode.trim());
+            }
+          }}
+          className="space-y-3"
+        >
+          <input
+            type="password"
+            value={inputCode}
+            onChange={(e) => setInputCode(e.target.value)}
+            placeholder={language === 'vi' ? 'Nhập mật mã của bạn...' : 'Enter passcode...'}
+            className="w-full bg-slate-950 border border-slate-700 rounded-xl px-3.5 py-2 focus:border-purple-500 focus:ring-1 focus:ring-purple-500 outline-none transition-all text-xs font-semibold text-center tracking-widest"
+            required
+          />
+          {error && (
+            <p className="text-[10px] font-bold text-rose-400 animate-pulse">
+              {error}
+            </p>
+          )}
+          <button
+            type="submit"
+            className="w-full bg-purple-600 hover:bg-purple-500 active:bg-purple-700 text-white font-bold py-2 px-4 rounded-xl text-xs flex items-center justify-center gap-1.5 transition-all shadow-lg shadow-purple-900/20 cursor-pointer"
+          >
+            {language === 'vi' ? 'Xác thực & Xem Thống kê' : 'Verify & Open Stats'}
+          </button>
+        </form>
+      </div>
+    );
+  }
+
   if (error || !data) {
     return (
       <div className="bg-rose-500/10 border border-rose-500/20 p-6 rounded-2xl flex flex-col items-center gap-3 text-center">
         <AlertCircle className="h-8 w-8 text-rose-400" />
         <p className="text-sm font-bold text-rose-300">{error || (language === 'vi' ? 'Lỗi tải dữ liệu' : 'Data Load Error')}</p>
         <button
-          onClick={fetchAnalytics}
+          onClick={() => passcode ? fetchAnalytics(passcode) : setShowAuthForm(true)}
           className="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-xs font-bold text-slate-200 rounded-xl transition-all border border-slate-700 cursor-pointer"
         >
           {language === 'vi' ? 'Thử lại' : 'Retry'}
@@ -103,7 +172,7 @@ export function AnalyticsDashboard() {
           </p>
         </div>
         <button
-          onClick={fetchAnalytics}
+          onClick={() => fetchAnalytics(passcode)}
           className="p-2 bg-slate-900 border border-slate-800 hover:bg-slate-800 text-slate-400 hover:text-white rounded-xl transition-all cursor-pointer flex items-center gap-1.5 text-xs font-semibold"
           title={language === 'vi' ? 'Làm mới' : 'Refresh stats'}
         >
