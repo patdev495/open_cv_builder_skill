@@ -30,26 +30,26 @@ export default function CreativeTemplate({ cvData, activeColor, t }: TemplatePro
                        {cvData.personalInfo.phone && <div>{cvData.personalInfo.phone}</div>}
                        {cvData.personalInfo.location && <div>{cvData.personalInfo.location}</div>}
                        <div className="flex flex-wrap gap-2 mt-1 md:justify-end print:justify-end">
-                         {cvData.personalInfo.github && (
-                           <a 
-                             href={cvData.personalInfo.github} 
-                             target="_blank" 
-                             rel="noopener noreferrer" 
-                             className="bg-white dark:bg-slate-900/50/15 hover:bg-white dark:bg-slate-900/50/20 text-white px-2 py-0.5 rounded text-[10px] font-bold border border-white/10 print:bg-slate-50 dark:bg-slate-800/50 print:border-slate-300 dark:border-slate-600 print:text-black transition-colors"
-                           >
-                             github.com/{cvData.personalInfo.github.split('/').pop()}
-                           </a>
-                         )}
-                         {cvData.personalInfo.linkedin && (
-                           <a 
-                             href={cvData.personalInfo.linkedin} 
-                             target="_blank" 
-                             rel="noopener noreferrer" 
-                             className="bg-white dark:bg-slate-900/50/15 hover:bg-white dark:bg-slate-900/50/20 text-white px-2 py-0.5 rounded text-[10px] font-bold border border-white/10 print:bg-slate-50 dark:bg-slate-800/50 print:border-slate-300 dark:border-slate-600 print:text-black transition-colors"
-                           >
-                             linkedin.com/in/{cvData.personalInfo.linkedin.split('/').pop()}
-                           </a>
-                         )}
+                          {cvData.personalInfo.github && (
+                            <a 
+                              href={cvData.personalInfo.github} 
+                              target="_blank" 
+                              rel="noopener noreferrer" 
+                              className={`bg-white hover:bg-slate-100 ${activeColor.primary} px-2 py-0.5 rounded text-[10px] font-bold border border-white/20 print:bg-slate-50 print:border-slate-300 print:text-black transition-colors`}
+                            >
+                              github.com/{cvData.personalInfo.github.split('/').pop()}
+                            </a>
+                          )}
+                          {cvData.personalInfo.linkedin && (
+                            <a 
+                              href={cvData.personalInfo.linkedin} 
+                              target="_blank" 
+                              rel="noopener noreferrer" 
+                              className={`bg-white hover:bg-slate-100 ${activeColor.primary} px-2 py-0.5 rounded text-[10px] font-bold border border-white/20 print:bg-slate-50 print:border-slate-300 print:text-black transition-colors`}
+                            >
+                              linkedin.com/in/{cvData.personalInfo.linkedin.split('/').pop()}
+                            </a>
+                          )}
                        </div>
                      </div>
                    </div>
