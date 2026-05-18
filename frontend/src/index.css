@@ -138,3 +138,8 @@
 .font-fira {
   font-family: 'Fira Code', monospace !important;
 }
+
+/* Force hardcoded template classes to inherit the smart root typography */
+.font-sans, .font-serif, .font-mono {
+  font-family: inherit !important;
+}
