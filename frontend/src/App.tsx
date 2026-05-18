@@ -395,6 +395,12 @@ const COLOR_MAP = {
   }
 };
 
+const DENSITY_MAP = {
+  compact: { paperPadding: "p-[10mm]", printMargin: "10mm" },
+  normal: { paperPadding: "p-[15mm]", printMargin: "15mm" },
+  comfortable: { paperPadding: "p-[20mm]", printMargin: "20mm" }
+};
+
 const FONT_MAP = {
   inter: "font-inter",
   outfit: "font-outfit",
@@ -721,6 +727,7 @@ function App() {
 
   const activeColor = COLOR_MAP[(cvData.themeColor || 'indigo') as keyof typeof COLOR_MAP] || COLOR_MAP.indigo;
   const activeFont = FONT_MAP[(cvData.fontFamily || 'sans') as keyof typeof FONT_MAP] || FONT_MAP.sans;
+  const activeDensity = DENSITY_MAP[(cvData.layoutDensity || 'normal') as keyof typeof DENSITY_MAP] || DENSITY_MAP.normal;
 
   return (
     <div className="min-h-screen bg-slate-950 text-slate-100 flex flex-col font-sans antialiased selection:bg-purple-600 selection:text-white">
@@ -945,8 +952,8 @@ function App() {
                   </div>
                 </div>
 
-                {/* Style Customization (Color & Font Selection) */}
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-1 border-t border-slate-800/80 pt-4">
+                {/* Style Customization (Color, Font & Density) */}
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mt-1 border-t border-slate-800/80 pt-4">
                   
                   {/* Theme Color Selector */}
                   <div>
@@ -975,6 +982,22 @@ function App() {
                         />
                       ))}
                     </div>
+                  </div>
+
+                  {/* Layout Density Selector */}
+                  <div>
+                    <label className="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2">
+                      {language === 'vi' ? 'Căn lề (Density)' : 'Layout Density'}
+                    </label>
+                    <select
+                      value={cvData.layoutDensity || 'normal'}
+                      onChange={(e) => setCvData({ ...cvData, layoutDensity: e.target.value as any })}
+                      className="w-full bg-slate-950/60 border border-slate-800 focus:border-purple-500 rounded-xl px-3 py-1.5 text-xs text-slate-200 focus:outline-none transition-colors"
+                    >
+                      <option value="compact">{language === 'vi' ? 'Nhỏ (Gọn gàng)' : 'Compact'}</option>
+                      <option value="normal">{language === 'vi' ? 'Vừa (Tiêu chuẩn)' : 'Normal'}</option>
+                      <option value="comfortable">{language === 'vi' ? 'Lớn (Thoải mái)' : 'Comfortable'}</option>
+                    </select>
                   </div>
 
                   {/* Font Family Selector */}
@@ -1821,9 +1844,10 @@ function App() {
                 Using deep Tailwind vector printer styles.
                 ==========================================================
             */}
-            <div className={`w-[210mm] min-h-[297mm] bg-white text-slate-800 p-[15mm] shadow-2xl flex flex-col relative overflow-hidden print:overflow-visible transition-all duration-300 print:shadow-none print:p-0 print:w-full print:min-h-0 print:bg-white print:text-black ${activeFont} ${
+            <div className={`w-[210mm] min-h-[297mm] bg-white text-slate-800 ${activeDensity.paperPadding} shadow-2xl flex flex-col relative overflow-hidden print:overflow-visible transition-all duration-300 print:shadow-none print:p-0 print:w-full print:min-h-0 print:bg-white print:text-black ${activeFont} ${
               template === 'modern' ? `border-t-[6px] ${activeColor.border}` : ''
             }`}>
+              <style>{`@media print { @page { margin: ${activeDensity.printMargin}; } }`}</style>
               
               {/* ========================================================
                   TEMPLATE 1: MODERN MINIMALIST (Default Modern)

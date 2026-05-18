@@ -70,6 +70,7 @@ export interface CVSchema {
   languages: LanguageItem[];
   themeColor?: string;
   fontFamily?: string;
+  layoutDensity?: 'compact' | 'normal' | 'comfortable';
 }
 
 export interface CVResponse {

@@ -24,6 +24,10 @@ _Avoid_: Style, skin, theme, layout
 Bộ phông chữ kỹ thuật số được chọn lọc kỹ lưỡng từ Google Fonts (bao gồm: *Inter, Outfit, Lora, Playfair Display, JetBrains Mono, Fira Code*) và áp dụng động lên **Template** để thay đổi sắc thái hiển thị của **CV**.
 _Avoid_: Font, font family, text style
 
+**Layout Density** (Mật độ bố cục):
+Tỷ lệ khoảng cách lề ngoài (margin) và khoảng trống giữa các đoạn văn (inner spacing) bên trong một **Template**. Được chia thành 3 cấp độ: `compact` (Nhỏ/Dày đặc), `normal` (Tiêu chuẩn), và `comfortable` (Rộng rãi).
+_Avoid_: Margin, padding, spacing
+
 **Export**:
 Hành động chuyển đổi **CV** từ giao diện web động thành một định dạng tài liệu tĩnh (ví dụ: PDF) thông qua cơ chế in của trình duyệt để người dùng tải về.
 _Avoid_: Download, print, generate PDF
