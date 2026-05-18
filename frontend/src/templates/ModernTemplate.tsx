@@ -48,10 +48,10 @@ export default function ModernTemplate({ cvData, activeColor, t }: TemplateProps
                   </div>
 
                   {/* Body Content splits into two columns if needed, but linear modern is beautiful */}
-                  <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                  <div className="grid grid-cols-1 md:grid-cols-3 print:grid-cols-3 gap-6">
                     
                     {/* Left narrow sidebar with Glassmorphism */}
-                    <div className="md:col-span-1 flex flex-col gap-6 glass-sidebar">
+                    <div className="md:col-span-1 print:col-span-1 flex flex-col gap-6 glass-sidebar">
                       {(() => {
                         const order = cvData.sectionOrder || ['summary', 'experience', 'projects', 'education', 'skills', 'certificates', 'languages'];
                         const sidebarSections = order.filter(sec => ['skills', 'languages', 'certificates'].includes(sec));
@@ -118,7 +118,7 @@ export default function ModernTemplate({ cvData, activeColor, t }: TemplateProps
                     </div>
 
                     {/* Right wide main column */}
-                    <div className="md:col-span-2 flex flex-col gap-6">
+                    <div className="md:col-span-2 print:col-span-2 flex flex-col gap-6">
                       {(() => {
                         const order = cvData.sectionOrder || ['summary', 'experience', 'projects', 'education', 'skills', 'certificates', 'languages'];
                         const mainSections = order.filter(sec => ['summary', 'experience', 'projects', 'education'].includes(sec));
