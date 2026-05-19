@@ -419,14 +419,14 @@ export default function TechProTemplate({ cvData, activeColor, t }: TemplateProp
               if (sec === 'skills' && cvData.skills.length > 0) {
                 const skillsTitle = cvData.sectionSettings?.skills?.title || t('skillsUpper');
                 return (
-                  <div key={sec} className="flex flex-col gap-3 break-inside-avoid">
+                  <div key={sec} className="flex flex-col gap-3">
                     <h3 className={`text-xs font-bold uppercase tracking-wider ${activeColor.primary} pb-0.5 border-l-2 ${accentBorder} pl-2 flex items-center gap-1.5 print:text-black`}>
                       <Wrench className="h-3.5 w-3.5 stroke-[2.5]" />
                       <span>{skillsTitle}</span>
                     </h3>
                     <div className="flex flex-col gap-3">
                       {cvData.skills.map((grp) => (
-                        <div key={grp.id} className="p-3 rounded-2xl bg-slate-55/50 dark:bg-slate-900/30 border border-slate-100/50 dark:border-slate-850/50 flex flex-col gap-1.5 print:bg-transparent print:border-0 print:p-0">
+                        <div key={grp.id} className="p-3 rounded-2xl bg-slate-55/50 dark:bg-slate-900/30 border border-slate-100/50 dark:border-slate-850/50 flex flex-col gap-1.5 print:bg-transparent print:border-0 print:p-0 break-inside-avoid">
                           <span className="text-xs font-extrabold text-slate-800 dark:text-slate-200 print:text-black">{grp.category}</span>
                           <div className="flex flex-wrap gap-1.5">
                             {grp.skills.filter(Boolean).map((s, i) => (
@@ -461,7 +461,7 @@ export default function TechProTemplate({ cvData, activeColor, t }: TemplateProp
               if (sec === 'certificates' && cvData.certificates.length > 0) {
                 const certTitle = cvData.sectionSettings?.certificates?.title || t('certificatesUpper');
                 return (
-                  <div key={sec} className="flex flex-col gap-3 break-inside-avoid">
+                  <div key={sec} className="flex flex-col gap-3">
                     <h3 className={`text-xs font-bold uppercase tracking-wider ${activeColor.primary} pb-0.5 border-l-2 ${accentBorder} pl-2 flex items-center gap-1.5 print:text-black`}>
                       <Award className="h-3.5 w-3.5 stroke-[2.5]" />
                       <span>{certTitle}</span>
@@ -480,7 +480,7 @@ export default function TechProTemplate({ cvData, activeColor, t }: TemplateProp
               if (sec === 'languages' && cvData.languages.length > 0) {
                 const langTitle = cvData.sectionSettings?.languages?.title || t('languagesUpper');
                 return (
-                  <div key={sec} className="flex flex-col gap-2 break-inside-avoid">
+                  <div key={sec} className="flex flex-col gap-2">
                     <h3 className={`text-xs font-bold uppercase tracking-wider ${activeColor.primary} pb-0.5 border-l-2 ${accentBorder} pl-2 flex items-center gap-1.5 print:text-black`}>
                       <Languages className="h-3.5 w-3.5 stroke-[2.5]" />
                       <span>{langTitle}</span>

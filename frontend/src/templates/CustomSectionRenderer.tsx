@@ -16,7 +16,7 @@ export default function CustomSectionRenderer({ section, activeColor }: CustomSe
   const layout = section.layoutStyle || 'timeline';
 
   return (
-    <div className="flex flex-col gap-4 break-inside-avoid">
+    <div className="flex flex-col gap-4">
       {/* Section Title */}
       <h3 className={`text-xs font-bold uppercase tracking-wider ${activeColor.primary} pb-1 font-mono flex items-center gap-1.5 print:text-black border-b border-slate-100 dark:border-slate-800/40 print:border-slate-200`}>
         <Sparkles className="h-3.5 w-3.5 stroke-[2.5]" />
