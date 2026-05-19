@@ -5,44 +5,6 @@ export function LayoutForm() {
   const { cvData, dispatch, language, handleAutoFit } = useCVEditorContext() as any;
   return (
                   <div className="flex flex-col gap-6">
-                    {/* Page Layout Style Selector */}
-                    <div className="border-b border-slate-800 pb-4">
-                      <h3 className="text-sm font-bold text-slate-300 flex items-center gap-2 mb-2">
-                        <Layers className="h-4 w-4 text-purple-400" />
-                        {language === 'vi' ? 'Định dạng Trang (Page Layout)' : 'Page Layout Style'}
-                      </h3>
-                      <div className="grid grid-cols-2 gap-3 mt-3">
-                        <button
-                          type="button"
-                          onClick={() => dispatch({ type: 'SET_PAGE_LAYOUT', payload: 'single' })}
-                          className={`px-4 py-3 rounded-xl border text-xs font-bold transition-all cursor-pointer flex flex-col items-center gap-1.5 ${
-                            cvData.pageLayout === 'single'
-                              ? 'bg-purple-600/20 border-purple-500 text-purple-300 shadow-lg'
-                              : 'bg-slate-950/40 border-slate-850 text-slate-400 hover:border-slate-800 hover:text-slate-200'
-                          }`}
-                        >
-                          <span>{language === 'vi' ? 'Cố định 1 Trang (Single Page)' : 'Single Page (Fixed)'}</span>
-                          <span className="text-[10px] font-normal text-slate-500">
-                            {language === 'vi' ? 'Ép nội dung gọn trong 1 trang A4' : 'Fit content inside a single A4'}
-                          </span>
-                        </button>
-                        <button
-                          type="button"
-                          onClick={() => dispatch({ type: 'SET_PAGE_LAYOUT', payload: 'multi' })}
-                          className={`px-4 py-3 rounded-xl border text-xs font-bold transition-all cursor-pointer flex flex-col items-center gap-1.5 ${
-                            cvData.pageLayout !== 'single'
-                              ? 'bg-purple-600/20 border-purple-500 text-purple-300 shadow-lg'
-                              : 'bg-slate-950/40 border-slate-850 text-slate-400 hover:border-slate-800 hover:text-slate-200'
-                          }`}
-                        >
-                          <span>{language === 'vi' ? 'Đa Trang (Multi Page)' : 'Multi Page (Auto Split)'}</span>
-                          <span className="text-[10px] font-normal text-slate-500">
-                            {language === 'vi' ? 'Tự động ngắt trang khi viết dài' : 'Auto split pages for long text'}
-                          </span>
-                        </button>
-                      </div>
-                    </div>
-
                     {/* Typography / Font Family Selector */}
                     <div className="border-b border-slate-800 pb-5">
                       <h3 className="text-sm font-bold text-slate-300 flex items-center gap-2 mb-3">
@@ -90,17 +52,15 @@ export function LayoutForm() {
                           {language === 'vi' ? 'Tinh chỉnh Khoảng cách' : 'Spacing Micro-adjustment'}
                         </h3>
                         {/* Auto-fit Button */}
-                        {cvData.pageLayout !== 'single' && (
-                          <button
-                            type="button"
-                            onClick={handleAutoFit}
-                            className="flex items-center gap-1 px-2.5 py-1 bg-purple-600/30 hover:bg-purple-600/50 text-purple-300 hover:text-white border border-purple-500/30 rounded-lg text-[10px] font-bold transition-all cursor-pointer shadow-sm"
-                            title={language === 'vi' ? 'Tự động co giãn vừa khít trang chẵn' : 'Auto scale to fit page perfectly'}
-                          >
-                            <Sparkles className="h-3 w-3 text-purple-300 animate-pulse" />
-                            {language === 'vi' ? 'Tự động vừa trang' : 'Auto-fit Page'}
-                          </button>
-                        )}
+                        <button
+                          type="button"
+                          onClick={handleAutoFit}
+                          className="flex items-center gap-1 px-2.5 py-1 bg-purple-600/30 hover:bg-purple-600/50 text-purple-300 hover:text-white border border-purple-500/30 rounded-lg text-[10px] font-bold transition-all cursor-pointer shadow-sm"
+                          title={language === 'vi' ? 'Tự động co giãn vừa khít trang chẵn' : 'Auto scale to fit page perfectly'}
+                        >
+                          <Sparkles className="h-3 w-3 text-purple-300 animate-pulse" />
+                          {language === 'vi' ? 'Tự động vừa trang' : 'Auto-fit Page'}
+                        </button>
                       </div>
 
                       <div className="space-y-4">

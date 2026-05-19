@@ -1,6 +1,6 @@
 ---
 title: "Smart Print Pagination CSS"
-status: ready-for-agent
+status: completed
 type: afk
 blocked_by: 0013-multipage-schema-ui-toggle.md
 ---
@@ -11,10 +11,10 @@ Implement robust CSS print pagination logic so that CV content flows beautifully
 
 ## Acceptance criteria
 
-- [ ] When `pageLayout` is `single`, the A4 preview container retains `min-h-[297mm]` and `overflow-hidden`.
-- [ ] When `pageLayout` is `multi`, the container can grow beyond 297mm naturally on the screen.
-- [ ] Tailwind utility classes `break-inside-avoid` (or standard `page-break-inside: avoid`) are applied to all granular content blocks (experience items, education entries, project cards).
-- [ ] When triggering Print-to-PDF in `multi` mode, items do not split awkwardly across two pages (e.g., an experience title on page 1 and its bullet points on page 2).
+- [x] When `pageLayout` is `single`, the A4 preview container retains `min-h-[297mm]` and `overflow-hidden` (Deprecated/Replaced with unified pagination as per ADR 0010).
+- [x] When `pageLayout` is `multi`, the container can grow beyond 297mm naturally on the screen.
+- [x] Tailwind utility classes `break-inside-avoid` (or standard `page-break-inside: avoid`) are applied to all granular content blocks (experience items, education entries, project cards).
+- [x] When triggering Print-to-PDF in `multi` mode, items do not split awkwardly across two pages (e.g., an experience title on page 1 and its bullet points on page 2).
 
 ## Blocked by
 

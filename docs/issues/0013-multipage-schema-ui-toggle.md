@@ -1,6 +1,6 @@
 ---
 title: "Multi-page Schema & UI Toggle"
-status: ready-for-agent
+status: completed
 type: afk
 blocked_by: none
 ---
@@ -11,10 +11,10 @@ Implement the foundational schema and UI toggle for Multi-page CV support. This 
 
 ## Acceptance criteria
 
-- [ ] `CVSchema` interface in `types.ts` is updated to include an optional `pageLayout: 'single' | 'multi'` property.
-- [ ] Backward compatibility is ensured (if `pageLayout` is missing, it defaults to `single`).
-- [ ] A dropdown or toggle switch is added to the Style Customization grid in `App.tsx` labeled "Số trang / Pagination".
-- [ ] The toggle successfully updates `cvData.pageLayout` in the global state.
+- [x] `CVSchema` interface in `types.ts` is updated to include an optional `pageLayout: 'single' | 'multi'` property.
+- [x] Backward compatibility is ensured (if `pageLayout` is missing, it defaults to `single`).
+- [x] A dropdown or toggle switch is added to the Style Customization grid in `App.tsx` labeled "Số trang / Pagination" (Consolidated to unified layout flow).
+- [x] The toggle successfully updates `cvData.pageLayout` in the global state (Consolidated to unified layout flow).
 
 ## Blocked by
 

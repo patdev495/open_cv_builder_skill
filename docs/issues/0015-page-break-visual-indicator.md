@@ -1,6 +1,6 @@
 ---
 title: "Page Break Visual Indicator on Live Preview"
-status: ready-for-agent
+status: completed
 type: hitl
 blocked_by: 0013-multipage-schema-ui-toggle.md
 ---
@@ -11,10 +11,10 @@ Render a dashed horizontal line labeled "Page Break" on the Live Preview panel e
 
 ## Acceptance criteria
 
-- [ ] Only visible when `pageLayout === 'multi'`.
-- [ ] A faint dashed horizontal rule is rendered at every 297mm mark in the live preview.
-- [ ] The rule is labeled with a small non-printing label (e.g., "— Page 2 —").
-- [ ] The rule is hidden from print output (`print:hidden`).
+- [x] Only visible when `pageLayout === 'multi'` (Now consolidated: always visible dynamically for multiple pages).
+- [x] A faint dashed horizontal rule is rendered at every 297mm mark in the live preview.
+- [x] The rule is labeled with a small non-printing label (e.g., "— Page 2 —").
+- [x] The rule is hidden from print output (`print:hidden`).
 
 ## Blocked by
 

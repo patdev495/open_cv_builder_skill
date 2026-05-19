@@ -473,7 +473,7 @@ export function EditorWorkspace({ onExit, initialPasscode = '' }: { onExit: () =
                   const printableHeight = 1123 - 2 * padPx;
                   const totalContentSpace = Math.max(0, contentHeight - 2 * padPx);
                   
-                  const isSinglePage = cvData.pageLayout === 'single';
+                  const isSinglePage = false;
                   const pageCount = isSinglePage ? 1 : (Math.ceil(totalContentSpace / printableHeight) || 1);
 
                   return (
@@ -497,7 +497,7 @@ export function EditorWorkspace({ onExit, initialPasscode = '' }: { onExit: () =
                   const printableHeight = 1123 - 2 * padPx;
                   const totalContentSpace = Math.max(0, contentHeight - 2 * padPx);
                   
-                  const isSinglePage = cvData.pageLayout === 'single';
+                  const isSinglePage = false;
                   const pageCount = isSinglePage ? 1 : (Math.ceil(totalContentSpace / printableHeight) || 1);
                   const displayHeight = isSinglePage ? Math.max(1123, contentHeight) : padPx + pageCount * printableHeight + padPx;
 
