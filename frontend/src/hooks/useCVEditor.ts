@@ -22,8 +22,8 @@ export interface CVEditorState {
   setPasscode: (p: string) => void;
 
   isLoading: boolean;
-  statusMessage: { type: 'success' | 'error'; text: string } | null;
-  setStatusMessage: (m: { type: 'success' | 'error'; text: string } | null) => void;
+  statusMessage: { type: 'success' | 'error'; text: string; link?: string } | null;
+  setStatusMessage: (m: { type: 'success' | 'error'; text: string; link?: string } | null) => void;
   isViewOnly: boolean; // Renamed conceptually: is this an existing CV on the server?
 
   language: 'vi' | 'en';
@@ -80,7 +80,7 @@ export function useCVEditor(initialPasscode: string = ''): CVEditorState {
 
   const [passcode, setPasscode] = useState<string>(initialPasscode);
   const [isLoading, setIsLoading] = useState<boolean>(false);
-  const [statusMessage, setStatusMessage] = useState<{ type: 'success' | 'error'; text: string } | null>(null);
+  const [statusMessage, setStatusMessage] = useState<{ type: 'success' | 'error'; text: string; link?: string } | null>(null);
   const [isViewOnly, setIsViewOnly] = useState<boolean>(false);
 
   useEffect(() => {
@@ -137,6 +137,33 @@ export function useCVEditor(initialPasscode: string = ''): CVEditorState {
     setIsLoading(true);
     setStatusMessage(null);
     const targetSlug = inputSlug.trim().toLowerCase();
+    const targetUrl = `${window.location.origin}/${targetSlug}`;
+
+    // Open a blank new tab immediately during the click event to bypass popup blockers
+    const newWindow = window.open('', '_blank');
+    if (newWindow) {
+      newWindow.document.write(`
+        <html>
+          <head>
+            <title>Đang xuất bản CV... | CV Builder Pro</title>
+            <meta charset="utf-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+          </head>
+          <body style="font-family: system-ui, -apple-system, sans-serif; display: flex; align-items: center; justify-content: center; height: 100vh; background: #0b0f19; color: #f1f5f9; margin: 0; overflow: hidden;">
+            <div style="text-align: center; padding: 32px; border-radius: 24px; background: rgba(30, 41, 59, 0.45); border: 1px solid rgba(255, 255, 255, 0.08); backdrop-filter: blur(20px); max-width: 360px; width: 90%; box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5); box-sizing: border-box;">
+              <div style="border: 4px solid rgba(168, 85, 247, 0.1); border-top-color: #a855f7; border-radius: 50%; width: 56px; height: 56px; margin: 0 auto 24px; animation: spin 1s cubic-bezier(0.68, -0.55, 0.27, 1.55) infinite; box-shadow: 0 0 20px rgba(168, 85, 247, 0.35);"></div>
+              <p style="font-size: 18px; font-weight: 700; margin: 0 0 10px; background: linear-gradient(to right, #c084fc, #818cf8); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">Đang xuất bản CV...</p>
+              <p style="font-size: 13px; color: #94a3b8; margin: 0; line-height: 1.6;">Hệ thống đang lưu trữ dữ liệu và chuẩn bị hồ sơ tương tác của bạn.</p>
+            </div>
+            <style>
+              @keyframes spin { to { transform: rotate(360deg); } }
+            </style>
+          </body>
+        </html>
+      `);
+      newWindow.document.close();
+    }
+
     const cleanedCvData: CVSchema = {
       ...cvData,
       projects: cvData.projects.map(p => ({ ...p, technologies: p.technologies.filter(Boolean) })),
@@ -146,14 +173,35 @@ export function useCVEditor(initialPasscode: string = ''): CVEditorState {
     try {
       if (isViewOnly) {
         await api.updateCV(targetSlug, passcode, template, cleanedCvData);
-        setStatusMessage({ type: 'success', text: t('successUpdate') });
+        if (newWindow) {
+          newWindow.location.href = targetUrl;
+        }
+        setStatusMessage({
+          type: 'success',
+          text: language === 'vi' 
+            ? 'Cập nhật CV thành công! Đã tự động mở trang CV mới của bạn.' 
+            : 'CV updated successfully! Automatically opened your public CV.',
+          link: targetUrl
+        });
       } else {
         await api.createCV(targetSlug, passcode, template, cleanedCvData);
-        setStatusMessage({ type: 'success', text: 'CV được tạo thành công!' });
+        if (newWindow) {
+          newWindow.location.href = targetUrl;
+        }
+        setStatusMessage({
+          type: 'success',
+          text: language === 'vi' 
+            ? 'Đăng ký & Xuất bản CV thành công! Đã tự động mở trang CV mới của bạn.' 
+            : 'CV registered & published successfully! Automatically opened your public CV.',
+          link: targetUrl
+        });
         setSlug(targetSlug);
         setIsViewOnly(true); 
       }
     } catch (err: any) {
+      if (newWindow) {
+        newWindow.close();
+      }
       setStatusMessage({ type: 'error', text: err.message || 'Lỗi khi lưu CV.' });
     } finally {
       setIsLoading(false);

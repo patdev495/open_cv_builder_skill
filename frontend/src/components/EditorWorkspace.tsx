@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
-import { FileText, Save, Globe, Sun, Moon, AlertCircle, CheckCircle2, Loader2, Sparkles, User, Briefcase, GraduationCap, FolderGit2, Wrench, Award, Layers, BarChart3, ChevronLeft } from 'lucide-react';
+import { FileText, Save, Globe, Sun, Moon, AlertCircle, CheckCircle2, Loader2, Sparkles, User, Briefcase, GraduationCap, FolderGit2, Wrench, Award, Layers, BarChart3, ChevronLeft, Copy, ExternalLink } from 'lucide-react';
 import { useCVEditor } from '../hooks/useCVEditor';
 import { CVEditorContext } from '../context/CVEditorContext';
 import { PersonalInfoForm } from '../editor/PersonalInfoForm';
@@ -597,11 +597,66 @@ export function EditorWorkspace({ onExit, initialPasscode = '' }: { onExit: () =
 
         {/* Status Toasts */}
         {statusMessage && (
-          <div className={`fixed top-20 right-4 z-50 p-4 rounded-xl shadow-2xl flex items-start gap-3 max-w-sm transform transition-all duration-300 ${
-            statusMessage.type === 'success' ? 'bg-emerald-900/90 border border-emerald-500/30' : 'bg-rose-900/90 border border-rose-500/30'
+          <div className={`fixed top-20 right-4 z-50 p-4 rounded-xl shadow-2xl flex flex-col gap-3 max-w-sm w-full transform transition-all duration-300 ${
+            statusMessage.type === 'success' 
+              ? 'bg-slate-900/95 border border-emerald-500/30 shadow-emerald-950/20 text-slate-100' 
+              : 'bg-rose-900/90 border border-rose-500/30 text-white'
           }`}>
-            {statusMessage.type === 'success' ? <CheckCircle2 className="h-5 w-5 text-emerald-400 mt-0.5" /> : <AlertCircle className="h-5 w-5 text-rose-400 mt-0.5" />}
-            <p className="text-sm font-medium text-white">{statusMessage.text}</p>
+            <div className="flex items-start gap-3">
+              {statusMessage.type === 'success' ? (
+                <CheckCircle2 className="h-5 w-5 text-emerald-400 mt-0.5 shrink-0" />
+              ) : (
+                <AlertCircle className="h-5 w-5 text-rose-400 mt-0.5 shrink-0" />
+              )}
+              <div className="flex-1 min-w-0">
+                <p className="text-sm font-medium text-white break-words">{statusMessage.text}</p>
+                
+                {statusMessage.link && (
+                  <div className="mt-3 space-y-2">
+                    <div className="bg-slate-950/80 rounded-lg p-2 border border-slate-800/85 flex items-center justify-between gap-2">
+                      <a 
+                        href={statusMessage.link} 
+                        target="_blank" 
+                        rel="noopener noreferrer"
+                        className="text-xs text-emerald-400 hover:text-emerald-300 font-mono underline truncate flex items-center gap-1.5"
+                      >
+                        <Globe className="h-3.5 w-3.5 shrink-0 text-emerald-400" />
+                        <span className="truncate">{statusMessage.link}</span>
+                      </a>
+                    </div>
+                    <div className="flex gap-2">
+                      <button 
+                        type="button"
+                        onClick={() => {
+                          navigator.clipboard.writeText(statusMessage.link || '');
+                          const oldText = statusMessage.text;
+                          setStatusMessage({
+                            ...statusMessage,
+                            text: language === 'vi' ? 'Đã sao chép liên kết!' : 'Link copied to clipboard!'
+                          });
+                          setTimeout(() => {
+                            setStatusMessage(statusMessage ? { ...statusMessage, text: oldText } : null);
+                          }, 2000);
+                        }}
+                        className="flex-1 flex items-center justify-center gap-1.5 px-2.5 py-1.5 bg-slate-800 hover:bg-slate-700 active:scale-95 text-slate-300 rounded-lg border border-slate-700 text-xs font-semibold transition-all cursor-pointer"
+                      >
+                        <Copy className="h-3.5 w-3.5 text-slate-400" />
+                        <span>{language === 'vi' ? 'Sao chép' : 'Copy'}</span>
+                      </button>
+                      <a 
+                        href={statusMessage.link}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="flex-1 flex items-center justify-center gap-1.5 px-2.5 py-1.5 bg-emerald-600/20 hover:bg-emerald-600/30 active:scale-95 text-emerald-400 rounded-lg border border-emerald-500/20 text-xs font-semibold transition-all text-center"
+                      >
+                        <ExternalLink className="h-3.5 w-3.5 text-emerald-400" />
+                        <span>{language === 'vi' ? 'Truy cập' : 'Open Link'}</span>
+                      </a>
+                    </div>
+                  </div>
+                )}
+              </div>
+            </div>
           </div>
         )}
       </div>

@@ -15,7 +15,7 @@ export interface UsePasscodeVerifyResult {
     t: (key: any) => string,
     setIsLoading: (v: boolean) => void,
     setIsEditMode: (v: boolean) => void,
-    setStatusMessage: (msg: { type: 'success' | 'error'; text: string } | null) => void
+    setStatusMessage: (msg: { type: 'success' | 'error'; text: string; link?: string } | null) => void
   ) => Promise<void>;
 }
 
@@ -30,7 +30,7 @@ export function usePasscodeVerify(): UsePasscodeVerifyResult {
     t: (key: any) => string,
     setIsLoading: (v: boolean) => void,
     setIsEditMode: (v: boolean) => void,
-    setStatusMessage: (msg: { type: 'success' | 'error'; text: string } | null) => void
+    setStatusMessage: (msg: { type: 'success' | 'error'; text: string; link?: string } | null) => void
   ) => {
     if (!verifyPasscodeVal.trim()) {
       setVerifyError(t('errorPasscodeRequired'));
