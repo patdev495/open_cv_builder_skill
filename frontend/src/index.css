@@ -1,5 +1,5 @@
 @import "tailwindcss";
-@variant dark (&:where(.dark, .dark *));
+@custom-variant dark (&:where(.dark, .dark *));
 @import url('https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@300;400;500;600;700&family=Lora:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Outfit:wght@300;400;500;600;700;800&family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap');
 
 /* Base Tailwind v4 configurations and customizations can be defined here */
@@ -8,8 +8,10 @@
    PREMIUM PRINT ENGINE STYLES (@media print)
    ======================================================== */
 @media print {
+
   /* Force clean white background and clear text colors */
-  html, body {
+  html,
+  body {
     background-color: white !important;
     background-image: none !important;
     color: black !important;
@@ -60,7 +62,12 @@
   }
 
   /* Prevent headings and sections titles from sitting alone at the bottom of a page */
-  h1, h2, h3, h4, h5, h6 {
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
     page-break-after: avoid !important;
     break-after: avoid !important;
   }
@@ -129,7 +136,8 @@
 @media print {
   .w-\[210mm\] h3::after {
     background: currentColor !important;
-    width: 60px !important; /* Keep it elegant and clean when printing */
+    width: 60px !important;
+    /* Keep it elegant and clean when printing */
   }
 
   .glass-sidebar {
@@ -148,24 +156,31 @@
 .font-inter {
   font-family: 'Inter', sans-serif !important;
 }
+
 .font-outfit {
   font-family: 'Outfit', sans-serif !important;
 }
+
 .font-lora {
   font-family: 'Lora', serif !important;
 }
+
 .font-playfair {
   font-family: 'Playfair Display', serif !important;
 }
+
 .font-jetbrains {
   font-family: 'JetBrains Mono', monospace !important;
 }
+
 .font-fira {
   font-family: 'Fira Code', monospace !important;
 }
 
 /* Force hardcoded template classes to inherit the smart root typography */
-.font-sans, .font-serif, .font-mono {
+.font-sans,
+.font-serif,
+.font-mono {
   font-family: inherit !important;
 }
 
@@ -204,7 +219,7 @@
 /* Perfect print support for custom page padding */
 @media print {
   .cv-document {
-    padding: 0 !important; /* Let @page margin handle it on printer paper */
+    padding: 0 !important;
+    /* Let @page margin handle it on printer paper */
   }
 }
-

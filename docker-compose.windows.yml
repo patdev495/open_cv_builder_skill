@@ -1,0 +1,27 @@
+services:
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: cv-builder-backend
+    restart: always
+    environment:
+      - DATABASE_URL=sqlite:////var/lib/cv-builder/cv_builder.db
+    volumes:
+      # Lưu trữ cơ sở dữ liệu SQLite tại thư mục dự án tương đối trên Windows/WSL2
+      - ./data/db:/var/lib/cv-builder
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+      args:
+        - VITE_API_BASE_URL=/api
+    container_name: cv-builder-frontend
+    restart: always
+    ports:
+      # CẤU HÌNH CỔNG TIẾP NHẬN: Bạn có thể đổi số "8080" phía trước thành bất kỳ cổng nào
+      # bạn muốn chạy trên máy Windows (Ví dụ: "8888:80", "80:80", v.v.)
+      - "8080:80"
+    depends_on:
+      - backend
