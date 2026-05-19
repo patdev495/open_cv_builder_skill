@@ -152,6 +152,58 @@ export function InteractivePortfolio({
     );
   }
 
+  // Render 404 Error State (CV Not Found)
+  if (statusMessage && statusMessage.type === 'error') {
+    return (
+      <div className="min-h-screen bg-slate-950 text-slate-100 flex flex-col font-sans antialiased selection:bg-purple-600 selection:text-white transition-colors duration-300 relative overflow-hidden flex items-center justify-center p-4">
+        {/* Subtle background glow */}
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(99,102,241,0.06),transparent_50%)] pointer-events-none"></div>
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_bottom_left,rgba(168,85,247,0.06),transparent_50%)] pointer-events-none"></div>
+
+        {/* Top Right Language Switch */}
+        <div className="fixed top-6 right-6 z-50">
+          <button
+            onClick={() => setLanguage(language === 'vi' ? 'en' : 'vi')}
+            className="flex items-center justify-center px-3 py-1.5 bg-slate-900/60 backdrop-blur-md hover:bg-slate-800 text-slate-300 hover:text-white rounded-xl border border-slate-700/50 shadow-lg transition-all cursor-pointer font-bold text-xs"
+          >
+            {language === 'vi' ? 'EN' : 'VI'}
+          </button>
+        </div>
+
+        {/* Error Card */}
+        <div className="relative max-w-md w-full bg-slate-900/60 backdrop-blur-md border border-slate-800 p-8 rounded-2xl shadow-2xl text-center space-y-6">
+          <div className="mx-auto w-16 h-16 bg-rose-500/10 rounded-2xl flex items-center justify-center border border-rose-500/20 shadow-lg shadow-rose-900/10">
+            <AlertCircle className="h-8 w-8 text-rose-500" />
+          </div>
+
+          <div className="space-y-2">
+            <h1 className="text-2xl font-extrabold bg-gradient-to-r from-rose-400 to-amber-200 bg-clip-text text-transparent">
+              {t('cvNotFound')}
+            </h1>
+            <p className="text-sm text-slate-400 leading-relaxed">
+              {t('cvNotFoundDesc')}
+            </p>
+          </div>
+
+          <div className="flex flex-col sm:flex-row gap-3 pt-2">
+            <button
+              onClick={() => window.location.href = '/'}
+              className="flex-1 px-5 py-3 bg-purple-600 hover:bg-purple-700 active:scale-95 text-white text-sm font-bold rounded-xl transition-all shadow-lg shadow-purple-600/20 cursor-pointer"
+            >
+              {t('createNewCV')}
+            </button>
+            <button
+              onClick={() => window.location.reload()}
+              className="px-5 py-3 bg-slate-800 hover:bg-slate-700 active:scale-95 text-slate-300 hover:text-white text-sm font-semibold rounded-xl border border-slate-700 transition-all cursor-pointer"
+            >
+              {t('tryAgain')}
+            </button>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen bg-slate-950 text-slate-100 font-sans antialiased selection:bg-purple-600 selection:text-white transition-colors duration-300 relative overflow-x-hidden print:!bg-white print:!text-black print:!overflow-visible print:!static print:!min-h-0">
       {/* Premium subtle background glow effect (mesh/radial gradient) — hidden on print to prevent XPS renderer crash */}
