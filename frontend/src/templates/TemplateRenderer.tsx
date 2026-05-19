@@ -4,6 +4,7 @@ import ClassicTemplate from './ClassicTemplate';
 import CreativeTemplate from './CreativeTemplate';
 import ExecutiveTemplate from './ExecutiveTemplate';
 import MinimalTemplate from './MinimalTemplate';
+import TechProTemplate from './TechProTemplate';
 
 interface RendererProps extends TemplateProps {
   templateId: string;
@@ -16,6 +17,7 @@ export default function TemplateRenderer({ templateId, ...props }: RendererProps
     case 'creative': return <CreativeTemplate {...props} />;
     case 'executive': return <ExecutiveTemplate {...props} />;
     case 'minimal': return <MinimalTemplate {...props} />;
+    case 'techpro': return <TechProTemplate {...props} />;
     default: return <ModernTemplate {...props} />;
   }
 }

@@ -414,7 +414,7 @@ export function EditorWorkspace({ onExit, initialPasscode = '' }: { onExit: () =
                 </div>
 
                 <div className="flex bg-slate-800/80 backdrop-blur-md rounded-xl p-1.5 shadow-lg border border-slate-700/50">
-                  {(['modern', 'classic', 'creative', 'executive', 'minimal'] as const).map((temp) => (
+                  {(['modern', 'classic', 'creative', 'executive', 'minimal', 'techpro'] as const).map((temp) => (
                     <button
                       key={temp}
                       type="button"
