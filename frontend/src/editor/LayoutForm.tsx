@@ -127,7 +127,7 @@ export function LayoutForm() {
                           languages: { nameVi: 'Ngoại ngữ', nameEn: 'Languages', icon: Languages }
                         };
 
-                        return order.map((sec, idx) => {
+                        return (order as string[]).map((sec: string, idx: number) => {
                           const meta = SECTION_META[sec as keyof typeof SECTION_META];
                           if (!meta) return null;
                           const IconComp = meta.icon;

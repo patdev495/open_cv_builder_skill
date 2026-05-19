@@ -13,12 +13,20 @@ Ngrok cung cấp cho mọi tài khoản miễn phí 1 subdomain tĩnh cố đị
 3. Tại đây, bạn sẽ thấy Ngrok cung cấp sẵn một tên miền miễn phí dạng `ten-mien-cua-ban.ngrok-free.app`. Hãy nhấn **Create Domain** để kích hoạt nó.
 4. Copy lại tên miền tĩnh này của bạn.
 
-### Bước 2: Tải và cài đặt Ngrok trên Windows
-1. Tải Ngrok cho Windows tại [Ngrok Download](https://ngrok.com/download).
-2. Giải nén và lưu tệp `ngrok.exe` vào một thư mục dễ nhớ (ví dụ: `C:\ngrok\`).
-3. Liên kết tài khoản Ngrok của bạn (chạy lệnh này trong PowerShell - lấy mã Token trong trang chủ Ngrok Dashboard của bạn):
-   ```powershell
-   C:\ngrok\ngrok.exe config add-authtoken <MÃ_AUTHTOKEN_CỦA_BẠN>
+### Bước 2: Cài đặt và cấu hình Ngrok trực tiếp trong WSL2 (Ubuntu)
+Chạy toàn bộ Ngrok ngay trong môi trường WSL2 giúp bạn quản lý tất cả dịch vụ (Docker, Git, Ngrok) trên một cửa sổ dòng lệnh duy nhất cực kỳ tiện lợi:
+
+1. Thêm khóa bảo mật và kho lưu trữ chính thức của Ngrok vào Ubuntu trong WSL2:
+   ```bash
+   curl -s https://ngrok-agent.s3.amazonaws.com/ngrok.asc | sudo tee /etc/apt/trusted.gpg.d/ngrok.asc >/dev/null && echo "deb https://ngrok-agent.s3.amazonaws.com buster main" | sudo tee /etc/apt/sources.list.d/ngrok.list && sudo apt update
+   ```
+2. Cài đặt Ngrok bằng APT:
+   ```bash
+   sudo apt install ngrok -y
+   ```
+3. Liên kết tài khoản Ngrok của bạn (lấy mã Token trong trang chủ Ngrok Dashboard):
+   ```bash
+   ngrok config add-authtoken <MÃ_AUTHTOKEN_CỦA_BẠN>
    ```
 
 ---
@@ -47,11 +55,11 @@ Chúng ta sử dụng tệp cấu hình chuyên dụng [docker-compose.windows.y
 
 ## 🌐 MỞ CỔNG RA INTERNET BẰNG NGROK
 
-### Bước 4: Khởi chạy Ngrok trên máy Windows Host
-1. Mở cửa sổ **PowerShell** trên máy Windows Server (máy thật).
+### Bước 4: Khởi chạy Ngrok trực tiếp trong WSL2
+1. Mở thêm 1 tab terminal **WSL2 (Ubuntu)** mới hoặc sử dụng các công cụ quản lý phiên như `screen`/`tmux`.
 2. Chạy lệnh sau để tạo đường hầm bảo mật HTTPS trỏ thẳng tới tên miền tĩnh của bạn (thay `ten-mien-cua-ban.ngrok-free.app` bằng tên miền thật bạn đã lấy ở Bước 1):
-   ```powershell
-   C:\ngrok\ngrok.exe http --domain=ten-mien-cua-ban.ngrok-free.app 8080
+   ```bash
+   ngrok http --domain=ten-mien-cua-ban.ngrok-free.app 8080
    ```
 3. Cửa sổ Ngrok sẽ hiển thị trạng thái `Online`. Lúc này:
    * **Địa chỉ truy cập Internet:** `https://ten-mien-cua-ban.ngrok-free.app`
