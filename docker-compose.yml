@@ -7,6 +7,7 @@ services:
     restart: always
     environment:
       - DATABASE_URL=sqlite:////var/lib/cv-builder/cv_builder.db
+      - GEMINI_API_KEY=${GEMINI_API_KEY}
     volumes:
       # Mount host path for SQLite database persistence
       - /var/lib/cv-builder:/var/lib/cv-builder
