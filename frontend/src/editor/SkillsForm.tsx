@@ -1,5 +1,6 @@
 import { Plus, Trash2 } from 'lucide-react';
 import { useCVEditorContext } from '../context/CVEditorContext';
+import { SectionSettingsControl } from '../components/SectionSettingsControl';
 
 export function SkillsForm() {
   const { cvData, dispatch, t, addSkill, removeSkill } = useCVEditorContext();
@@ -15,6 +16,10 @@ export function SkillsForm() {
                         <Plus className="h-3.5 w-3.5" /> Thêm nhóm
                       </button>
                     </div>
+
+                    <SectionSettingsControl
+                      sectionId="skills"
+                    />
 
                     {cvData.skills.length === 0 ? (
                       <p className="text-xs text-slate-500 italic text-center py-6">{t('emptySkills')}</p>

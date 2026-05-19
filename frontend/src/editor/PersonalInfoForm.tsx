@@ -1,8 +1,27 @@
-import { User, Camera } from 'lucide-react';
+import { User, Camera, Plus, Trash2 } from 'lucide-react';
 import { useCVEditorContext } from '../context/CVEditorContext';
 
 export function PersonalInfoForm() {
   const { cvData, dispatch, t, handleAvatarUpload, handleAvatarDelete } = useCVEditorContext();
+  const customLinks = cvData.personalInfo.customLinks || [];
+
+  const handleAddLink = () => {
+    const newLinks = [...customLinks, { id: `link-${Date.now()}`, label: '', url: '', icon: '' }];
+    dispatch({ type: 'UPDATE_PERSONAL_INFO', payload: { customLinks: newLinks } });
+  };
+
+  const handleUpdateLink = (id: string, field: string, value: string) => {
+    const newLinks = customLinks.map(link => 
+      link.id === id ? { ...link, [field]: value } : link
+    );
+    dispatch({ type: 'UPDATE_PERSONAL_INFO', payload: { customLinks: newLinks } });
+  };
+
+  const handleRemoveLink = (id: string) => {
+    const newLinks = customLinks.filter(link => link.id !== id);
+    dispatch({ type: 'UPDATE_PERSONAL_INFO', payload: { customLinks: newLinks } });
+  };
+
   return (
                   <div className="flex flex-col gap-4">
                     <h3 className="text-sm font-bold text-slate-300 mb-2">{t('personalInfo')}</h3>
@@ -122,6 +141,103 @@ export function PersonalInfoForm() {
                           className="w-full bg-slate-950/60 border border-slate-800 focus:border-purple-500 rounded-xl px-3 py-2 text-sm text-slate-200 focus:outline-none"
                         />
                       </div>
+                    </div>
+
+                    {/* Custom contact links section */}
+                    <div className="mt-6 pt-6 border-t border-slate-800/80">
+                      <div className="flex justify-between items-center mb-4">
+                        <h4 className="text-xs font-bold text-slate-300 uppercase tracking-wider">
+                          {t('customLinks' as any)}
+                        </h4>
+                        <button
+                          type="button"
+                          onClick={handleAddLink}
+                          className="text-xs font-bold text-purple-400 hover:text-purple-300 flex items-center gap-1 cursor-pointer bg-slate-850 hover:bg-slate-800 px-2.5 py-1.5 rounded-lg border border-slate-800"
+                        >
+                          <Plus className="h-3 w-3" /> {t('addCustomLink' as any)}
+                        </button>
+                      </div>
+
+                      {customLinks.length === 0 ? (
+                        <p className="text-[11px] text-slate-500 italic py-2">
+                          Chưa có liên kết tùy chỉnh nào được thêm.
+                        </p>
+                      ) : (
+                        <div className="flex flex-col gap-3">
+                          {customLinks.map((link) => (
+                            <div
+                              key={link.id}
+                              className="grid grid-cols-1 sm:grid-cols-4 gap-2 bg-slate-950/40 p-3 rounded-lg border border-slate-850 relative group"
+                            >
+                              <div className="sm:col-span-1">
+                                <label className="block text-[9px] font-bold uppercase tracking-wider text-slate-550 mb-1">
+                                  {t('linkTitle' as any)}
+                                </label>
+                                <input
+                                  type="text"
+                                  value={link.label}
+                                  onChange={(e) => handleUpdateLink(link.id, 'label', e.target.value)}
+                                  placeholder="e.g. Portfolio"
+                                  className="w-full bg-slate-950/60 border border-slate-850 focus:border-purple-500 rounded px-2 py-1 text-xs text-slate-200 focus:outline-none"
+                                />
+                              </div>
+
+                              <div className="sm:col-span-2">
+                                <label className="block text-[9px] font-bold uppercase tracking-wider text-slate-550 mb-1">
+                                  {t('linkUrl' as any)}
+                                </label>
+                                <input
+                                  type="text"
+                                  value={link.url}
+                                  onChange={(e) => handleUpdateLink(link.id, 'url', e.target.value)}
+                                  placeholder="https://..."
+                                  className="w-full bg-slate-950/60 border border-slate-850 focus:border-purple-500 rounded px-2 py-1 text-xs text-slate-200 focus:outline-none"
+                                />
+                              </div>
+
+                              <div className="sm:col-span-1 flex gap-2 items-end">
+                                <div className="flex-1">
+                                  <label className="block text-[9px] font-bold uppercase tracking-wider text-slate-550 mb-1">
+                                    {t('linkIcon' as any)}
+                                  </label>
+                                  <select
+                                    value={link.icon || ''}
+                                    onChange={(e) => handleUpdateLink(link.id, 'icon', e.target.value)}
+                                    className="w-full bg-slate-950/60 border border-slate-850 focus:border-purple-500 rounded px-2 py-1 text-xs text-slate-200 focus:outline-none"
+                                  >
+                                    <option value="">{t('iconPlaceholder' as any)}</option>
+                                    <option value="globe">Globe</option>
+                                    <option value="github">GitHub</option>
+                                    <option value="linkedin">LinkedIn</option>
+                                    <option value="facebook">Facebook</option>
+                                    <option value="instagram">Instagram</option>
+                                    <option value="twitter">Twitter</option>
+                                    <option value="youtube">YouTube</option>
+                                    <option value="mail">Mail</option>
+                                    <option value="phone">Phone</option>
+                                    <option value="map-pin">MapPin</option>
+                                    <option value="link">Link</option>
+                                    <option value="award">Award</option>
+                                    <option value="book-open">Book</option>
+                                    <option value="graduation-cap">Academic</option>
+                                    <option value="briefcase">Work</option>
+                                    <option value="code">Code</option>
+                                  </select>
+                                </div>
+
+                                <button
+                                  type="button"
+                                  onClick={() => handleRemoveLink(link.id)}
+                                  className="text-slate-500 hover:text-rose-400 p-1.5 hover:bg-slate-900 rounded cursor-pointer transition-colors"
+                                  title="Xóa liên kết"
+                                >
+                                  <Trash2 className="h-3.5 w-3.5" />
+                                </button>
+                              </div>
+                            </div>
+                          ))}
+                        </div>
+                      )}
                     </div>
                   </div>
   );

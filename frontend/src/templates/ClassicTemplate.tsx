@@ -2,12 +2,227 @@ import { User, Briefcase, GraduationCap, FolderGit2, Wrench, Award, Languages, E
 import { ProjectEmbed } from '../components/ProjectEmbed';
 import type { TemplateProps } from './types';
 import CustomSectionRenderer from './CustomSectionRenderer';
+import LayoutSectionRenderer from './LayoutSectionRenderer';
+import { CustomLinksRenderer } from './TemplateHelpers';
 
 export default function ClassicTemplate({ cvData, activeColor, t }: TemplateProps) {
+  
+  const renderExperienceItem = (exp: any, layout: 'timeline' | 'cards' | 'text', hiddenFields: string[]) => {
+    const hideRole = hiddenFields.includes('role');
+    
+    if (layout === 'cards') {
+      return (
+        <div key={exp.id} className="p-3 bg-slate-50/50 dark:bg-slate-900/40 rounded-lg border border-slate-200 dark:border-slate-800 flex flex-col gap-1 break-inside-avoid">
+          <div className="flex justify-between items-start text-xs font-bold">
+            <span className="text-slate-900 dark:text-slate-100 font-extrabold">{exp.company}</span>
+            <span className="text-[10px] font-mono text-slate-500 dark:text-slate-400 print:text-black">{exp.startDate} – {exp.endDate || 'Hiện tại'}</span>
+          </div>
+          {!hideRole && (
+            <span className={`text-[11px] font-semibold ${activeColor.primary} print:text-black leading-snug`}>
+              {exp.position}
+            </span>
+          )}
+          <p className="text-xs leading-relaxed text-slate-700 dark:text-slate-400 whitespace-pre-line mt-1 print:text-black">
+            {exp.description}
+          </p>
+        </div>
+      );
+    }
+
+    if (layout === 'text') {
+      return (
+        <div key={exp.id} className="flex flex-col gap-0.5 break-inside-avoid">
+          <div className="flex justify-between items-baseline text-xs font-bold">
+            <span>
+              {exp.company}
+              {!hideRole && <span className="font-normal text-slate-500"> ({exp.position})</span>}
+            </span>
+            <span className="text-[10px] font-mono text-slate-500 dark:text-slate-400 print:text-black">{exp.startDate} – {exp.endDate || 'Hiện tại'}</span>
+          </div>
+          <p className="text-xs leading-relaxed text-slate-700 dark:text-slate-400 whitespace-pre-line mt-0.5 print:text-black">
+            {exp.description}
+          </p>
+        </div>
+      );
+    }
+
+    // Default timeline
+    return (
+      <div key={exp.id} className="flex flex-col gap-0.5 break-inside-avoid">
+        <div className="flex justify-between items-center text-xs font-bold">
+          <span className="text-slate-900 dark:text-slate-100 font-extrabold">
+            {exp.company}
+            {!hideRole && (
+              <>
+                {" — "}
+                <span className={`italic font-normal ${activeColor.primary}`}>{exp.position}</span>
+              </>
+            )}
+          </span>
+          <span className="text-[10px] font-mono text-slate-500 dark:text-slate-400 print:text-black">{exp.startDate} – {exp.endDate || 'Hiện tại'}</span>
+        </div>
+        <p className="text-xs leading-relaxed text-slate-705 whitespace-pre-line mt-1 print:text-black">
+          {exp.description}
+        </p>
+      </div>
+    );
+  };
+
+  const renderProjectItem = (proj: any, layout: 'timeline' | 'cards' | 'text', hiddenFields: string[]) => {
+    const hideRole = hiddenFields.includes('role');
+    const hideUrl = hiddenFields.includes('url');
+    const hideTech = hiddenFields.includes('technologies');
+    const hideEmbed = hiddenFields.includes('embed');
+
+    if (layout === 'cards') {
+      return (
+        <div key={proj.id} className="p-3 bg-slate-55/30 dark:bg-slate-900/20 rounded-xl border border-slate-100 dark:border-slate-800/60 flex flex-col gap-1 break-inside-avoid">
+          <div className="flex justify-between items-start text-xs font-bold">
+            <span className="text-slate-900 dark:text-slate-100 font-extrabold leading-snug">{proj.name}</span>
+            <span className="text-[10px] font-mono text-slate-500 dark:text-slate-450">{proj.startDate}</span>
+          </div>
+          {!hideRole && (
+            <span className={`text-[11px] font-semibold ${activeColor.primary} print:text-black leading-snug`}>
+              {proj.role}
+            </span>
+          )}
+          {!hideUrl && proj.url && (
+            <a href={proj.url} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-0.5 text-[10px] text-purple-600 hover:text-purple-750 font-semibold hover:underline print:text-black">
+              <ExternalLink className="h-2.5 w-2.5" />
+              {proj.url.replace(/^https?:\/\/(www\.)?/, '').split('/')[0]}
+            </a>
+          )}
+          {!hideTech && proj.technologies.filter(Boolean).length > 0 && (
+            <span className="text-[10px] text-slate-550 dark:text-slate-400 font-semibold">
+              {proj.technologies.filter(Boolean).join(", ")}
+            </span>
+          )}
+          <p className="text-[11px] leading-relaxed text-slate-600 dark:text-slate-400 mt-1 print:text-slate-950 whitespace-pre-line">
+            {proj.description}
+          </p>
+          {!hideEmbed && <ProjectEmbed embedUrl={proj.embedUrl} projectName={proj.name} />}
+        </div>
+      );
+    }
+
+    if (layout === 'text') {
+      return (
+        <div key={proj.id} className="flex flex-col gap-0.5 break-inside-avoid">
+          <div className="flex justify-between items-baseline text-xs font-bold">
+            <span>
+              {proj.name}
+              {!hideRole && <span className="font-normal text-slate-500"> ({proj.role})</span>}
+            </span>
+            <span className="text-[10px] font-mono text-slate-555 dark:text-slate-400 print:text-black">{proj.startDate}</span>
+          </div>
+          {!hideUrl && proj.url && (
+            <a href={proj.url} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-0.5 text-[10px] text-purple-650 hover:underline print:text-black">
+              <ExternalLink className="h-2.5 w-2.5" />
+              {proj.url.replace(/^https?:\/\/(www\.)?/, '').split('/')[0]}
+            </a>
+          )}
+          {!hideTech && proj.technologies.filter(Boolean).length > 0 && (
+            <span className="text-[10px] text-slate-500 dark:text-slate-400">
+              {proj.technologies.filter(Boolean).join(", ")}
+            </span>
+          )}
+          <p className="text-xs leading-relaxed text-slate-700 dark:text-slate-400 whitespace-pre-line mt-0.5 print:text-black">
+            {proj.description}
+          </p>
+          {!hideEmbed && <ProjectEmbed embedUrl={proj.embedUrl} projectName={proj.name} />}
+        </div>
+      );
+    }
+
+    // Default timeline
+    return (
+      <div key={proj.id} className="flex flex-col gap-0.5 break-inside-avoid">
+        <div className="flex justify-between items-center text-xs font-bold">
+          <span className="text-slate-900 dark:text-slate-100 font-extrabold">
+            {proj.name}
+            {!hideUrl && proj.url && (
+              <a
+                href={proj.url}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-0.5 text-[10px] text-indigo-650 hover:underline ml-2 font-normal print:text-black print:no-underline"
+              >
+                <ExternalLink className="h-2.5 w-2.5" />
+                {proj.url.replace(/^https?:\/\/(www\.)?/, '')}
+              </a>
+            )}
+            {!hideRole && (
+              <>
+                {" — "}
+                <span className="font-normal italic text-[11px]">{proj.role}</span>
+              </>
+            )}
+          </span>
+          <span className="text-[10px] font-mono text-slate-500 dark:text-slate-400 print:text-black">{proj.startDate}</span>
+        </div>
+        {!hideTech && proj.technologies.filter(Boolean).length > 0 && (
+          <span className="text-[10px] text-slate-550 dark:text-slate-400 font-semibold">Công nghệ: {proj.technologies.filter(Boolean).join(", ")}</span>
+        )}
+        <p className="text-xs leading-relaxed text-slate-705 whitespace-pre-line mt-0.5 print:text-black">
+          {proj.description}
+        </p>
+        {!hideEmbed && <ProjectEmbed embedUrl={proj.embedUrl} projectName={proj.name} />}
+      </div>
+    );
+  };
+
+  const renderEducationItem = (edu: any, layout: 'timeline' | 'cards' | 'text', hiddenFields: string[]) => {
+    const hideRole = hiddenFields.includes('role');
+
+    if (layout === 'cards') {
+      return (
+        <div key={edu.id} className="p-3 bg-slate-50/50 dark:bg-slate-900/40 rounded-lg border border-slate-200 dark:border-slate-800 flex flex-col gap-1 break-inside-avoid">
+          <div className="flex justify-between items-start text-xs font-bold">
+            <span className="text-slate-900 dark:text-slate-100 font-extrabold">{edu.institution}</span>
+            <span className="text-[10px] font-mono text-slate-550 dark:text-slate-400 print:text-black">{edu.startDate} – {edu.endDate || 'Hiện tại'}</span>
+          </div>
+          {!hideRole && (
+            <div className="text-slate-600 dark:text-slate-400 italic text-[11px]">{edu.degree}</div>
+          )}
+          {edu.description && <p className="text-[10px] text-slate-550 dark:text-slate-400 mt-1">{edu.description}</p>}
+        </div>
+      );
+    }
+
+    if (layout === 'text') {
+      return (
+        <div key={edu.id} className="flex flex-col gap-0.5 text-xs break-inside-avoid">
+          <div className="flex justify-between items-baseline font-bold">
+            <span>
+              {edu.institution}
+              {!hideRole && <span className="font-normal text-slate-550"> ({edu.degree})</span>}
+            </span>
+            <span className="text-[10px] font-mono text-slate-500 dark:text-slate-400 print:text-black">{edu.startDate} – {edu.endDate || 'Hiện tại'}</span>
+          </div>
+          {edu.description && <p className="text-[10px] text-slate-550 dark:text-slate-400 mt-0.5">{edu.description}</p>}
+        </div>
+      );
+    }
+
+    // Default timeline
+    return (
+      <div key={edu.id} className="flex flex-col gap-0.5 text-xs break-inside-avoid">
+        <div className="flex justify-between items-start font-bold">
+          <span className="text-slate-900 dark:text-slate-100 font-extrabold">{edu.institution}</span>
+          <span className="text-[10px] font-mono text-slate-500 dark:text-slate-400 print:text-black">{edu.startDate} – {edu.endDate || 'Hiện tại'}</span>
+        </div>
+        {!hideRole && (
+          <div className="text-slate-660 dark:text-slate-400 italic print:text-black">{edu.degree}</div>
+        )}
+        {edu.description && <p className="text-[10px] text-slate-550 dark:text-slate-400 mt-0.5">{edu.description}</p>}
+      </div>
+    );
+  };
+
   return (
     <div className="flex flex-col flex-1 gap-5 text-sm">
                    
-                    {/* Căn giữa Header */}
+                    {/* Header */}
                    <div className={`flex flex-col sm:flex-row items-center justify-center gap-4 border-b-[3px] ${activeColor.border} pb-4 print:flex-row print:justify-start print:items-center`}>
                      {cvData.personalInfo.avatar && (
                        <img 
@@ -49,10 +264,16 @@ export default function ClassicTemplate({ cvData, activeColor, t }: TemplateProp
                            </span>
                          )}
                        </div>
+                       {/* Render custom contact links */}
+                       <CustomLinksRenderer
+                         customLinks={cvData.personalInfo.customLinks}
+                         className="flex flex-wrap justify-center sm:justify-start gap-x-3 gap-y-1 text-slate-600 dark:text-slate-400 text-xs font-mono mt-1 print:text-black print:justify-start"
+                         itemClassName="hover:underline flex items-center gap-1"
+                       />
                      </div>
                    </div>
 
-                    {/* Dynamic sections in a single vertical stream ordered according to cvData.sectionOrder */}
+                    {/* Dynamic sections */}
                     {(() => {
                       const baseOrder = cvData.sectionOrder || ['summary', 'experience', 'projects', 'education', 'skills', 'certificates', 'languages'];
                       const order = [...baseOrder];
@@ -71,103 +292,72 @@ export default function ClassicTemplate({ cvData, activeColor, t }: TemplateProp
                           }
                         }
                         if (sec === 'summary' && cvData.summary) {
+                          const summaryTitle = cvData.sectionSettings?.summary?.title || t('summaryUpper');
                           return (
-                            <div key={sec} className="flex flex-col gap-1.5">
-                              <h3 className={`text-xs font-extrabold uppercase tracking-wider ${activeColor.primary} pb-0.5 flex items-center gap-1.5`}>
+                            <div key={sec} className="flex flex-col gap-1.5 break-inside-avoid">
+                              <h3 className={`text-xs font-extrabold uppercase tracking-wider ${activeColor.primary} pb-0.5 flex items-center gap-1.5 border-b border-slate-100 dark:border-slate-800/40 print:border-slate-200`}>
                                 <User className="h-3.5 w-3.5 stroke-[2.5]" />
-                                {t('summaryUpper')}
+                                <span>{summaryTitle}</span>
                               </h3>
-                              <p className="text-xs leading-relaxed text-slate-700 dark:text-slate-300 italic text-justify">{cvData.summary}</p>
+                              <p className="text-xs leading-relaxed text-slate-705 dark:text-slate-300 italic text-justify">{cvData.summary}</p>
                             </div>
                           );
                         }
                         if (sec === 'experience' && cvData.experience.length > 0) {
                           return (
-                            <div key={sec} className="flex flex-col gap-3">
-                              <h3 className={`text-xs font-extrabold uppercase tracking-wider ${activeColor.primary} pb-0.5 flex items-center gap-1.5`}>
-                                <Briefcase className="h-3.5 w-3.5 stroke-[2.5]" />
-                                {t('experienceUpper')}
-                              </h3>
-                              {cvData.experience.map((exp) => (
-                                <div key={exp.id} className="flex flex-col gap-0.5">
-                                  <div className="flex justify-between items-center text-xs font-bold">
-                                    <span className="text-slate-900 dark:text-slate-100 font-extrabold">{exp.company} — <span className={`italic font-normal ${activeColor.primary}`}>{exp.position}</span></span>
-                                    <span className="text-[10px] font-mono text-slate-500 dark:text-slate-400 print:text-black">{exp.startDate} – {exp.endDate || 'Hiện tại'}</span>
-                                  </div>
-                                  <p className="text-xs leading-relaxed text-slate-705 whitespace-pre-line mt-1 print:text-black">
-                                    {exp.description}
-                                  </p>
-                                </div>
-                              ))}
-                            </div>
+                            <LayoutSectionRenderer
+                              key={sec}
+                              sectionId="experience"
+                              cvData={cvData}
+                              activeColor={activeColor}
+                              t={t}
+                              defaultTitleKey="experienceUpper"
+                              IconComponent={Briefcase}
+                              items={cvData.experience}
+                              defaultLayoutStyle="timeline"
+                              renderItem={renderExperienceItem}
+                            />
                           );
                         }
                         if (sec === 'projects' && cvData.projects.length > 0) {
                           return (
-                            <div key={sec} className="flex flex-col gap-3">
-                              <h3 className={`text-xs font-extrabold uppercase tracking-wider ${activeColor.primary} pb-0.5 flex items-center gap-1.5`}>
-                                <FolderGit2 className="h-3.5 w-3.5 stroke-[2.5]" />
-                                {t('projectsUpper')}
-                              </h3>
-                              {cvData.projects.map((proj) => (
-                                <div key={proj.id} className="flex flex-col gap-0.5">
-                                  <div className="flex justify-between items-center text-xs font-bold">
-                                    <span className="text-slate-900 dark:text-slate-100 font-extrabold">
-                                      {proj.name}
-                                      {proj.url && (
-                                        <a
-                                          href={proj.url}
-                                          target="_blank"
-                                          rel="noopener noreferrer"
-                                          className="inline-flex items-center gap-0.5 text-[10px] text-indigo-650 hover:underline ml-2 font-normal print:text-black print:no-underline"
-                                        >
-                                          <ExternalLink className="h-2.5 w-2.5" />
-                                          {proj.url.replace(/^https?:\/\/(www\.)?/, '')}
-                                        </a>
-                                      )}
-                                      {" — "}
-                                      <span className="font-normal italic text-[11px]">{proj.role}</span>
-                                    </span>
-                                    <span className="text-[10px] font-mono text-slate-500 dark:text-slate-400 print:text-black">{proj.startDate}</span>
-                                  </div>
-                                  {proj.technologies.filter(Boolean).length > 0 && (
-                                    <span className="text-[10px] text-slate-500 dark:text-slate-400 font-semibold">Công nghệ: {proj.technologies.filter(Boolean).join(", ")}</span>
-                                  )}
-                                  <p className="text-xs leading-relaxed text-slate-705 whitespace-pre-line mt-0.5 print:text-black">
-                                    {proj.description}
-                                  </p>
-                                  <ProjectEmbed embedUrl={proj.embedUrl} projectName={proj.name} />
-                                </div>
-                              ))}
-                            </div>
+                            <LayoutSectionRenderer
+                              key={sec}
+                              sectionId="projects"
+                              cvData={cvData}
+                              activeColor={activeColor}
+                              t={t}
+                              defaultTitleKey="projectsUpper"
+                              IconComponent={FolderGit2}
+                              items={cvData.projects}
+                              defaultLayoutStyle="timeline"
+                              renderItem={renderProjectItem}
+                            />
                           );
                         }
                         if (sec === 'education' && cvData.education.length > 0) {
                           return (
-                            <div key={sec} className="flex flex-col gap-3">
-                              <h3 className={`text-xs font-extrabold uppercase tracking-wider ${activeColor.primary} pb-0.5 flex items-center gap-1.5`}>
-                                <GraduationCap className="h-3.5 w-3.5 stroke-[2.5]" />
-                                {t('educationUpper')}
-                              </h3>
-                              {cvData.education.map((edu) => (
-                                <div key={edu.id} className="flex flex-col gap-0.5 text-xs">
-                                  <div className="flex justify-between items-start font-bold">
-                                    <span className="text-slate-900 dark:text-slate-100 font-extrabold">{edu.institution}</span>
-                                    <span className="text-[10px] font-mono text-slate-500 dark:text-slate-400 print:text-black">{edu.startDate} – {edu.endDate || 'Hiện tại'}</span>
-                                  </div>
-                                  <div className="text-slate-600 dark:text-slate-400 italic print:text-black">{edu.degree}</div>
-                                  {edu.description && <p className="text-[10px] text-slate-500 dark:text-slate-400 mt-0.5">{edu.description}</p>}
-                                </div>
-                              ))}
-                            </div>
+                            <LayoutSectionRenderer
+                              key={sec}
+                              sectionId="education"
+                              cvData={cvData}
+                              activeColor={activeColor}
+                              t={t}
+                              defaultTitleKey="educationUpper"
+                              IconComponent={GraduationCap}
+                              items={cvData.education}
+                              defaultLayoutStyle="timeline"
+                              renderItem={renderEducationItem}
+                            />
                           );
                         }
                         if (sec === 'skills' && cvData.skills.length > 0) {
+                          const skillsTitle = cvData.sectionSettings?.skills?.title || t('skillsUpper');
                           return (
-                            <div key={sec} className="flex flex-col gap-2">
-                              <h3 className={`text-xs font-extrabold uppercase tracking-wider ${activeColor.primary} pb-0.5 flex items-center gap-1.5`}>
+                            <div key={sec} className="flex flex-col gap-2 break-inside-avoid">
+                              <h3 className={`text-xs font-extrabold uppercase tracking-wider ${activeColor.primary} pb-0.5 flex items-center gap-1.5 border-b border-slate-100 dark:border-slate-800/40 print:border-slate-200`}>
                                 <Wrench className="h-3.5 w-3.5 stroke-[2.5]" />
-                                {t('skillsUpper')}
+                                <span>{skillsTitle}</span>
                               </h3>
                               <div className="flex flex-col gap-1 text-xs">
                                 {cvData.skills.map((grp) => (
@@ -181,11 +371,12 @@ export default function ClassicTemplate({ cvData, activeColor, t }: TemplateProp
                           );
                         }
                         if (sec === 'certificates' && cvData.certificates.length > 0) {
+                          const certTitle = cvData.sectionSettings?.certificates?.title || t('certificatesUpper');
                           return (
-                            <div key={sec} className="flex flex-col gap-1">
-                              <h3 className={`text-xs font-extrabold uppercase tracking-wider ${activeColor.primary} pb-0.5 flex items-center gap-1.5`}>
+                            <div key={sec} className="flex flex-col gap-1 break-inside-avoid">
+                              <h3 className={`text-xs font-extrabold uppercase tracking-wider ${activeColor.primary} pb-0.5 flex items-center gap-1.5 border-b border-slate-100 dark:border-slate-800/40 print:border-slate-200`}>
                                 <Award className="h-3.5 w-3.5 stroke-[2.5]" />
-                                {t('certificatesUpper')}
+                                <span>{certTitle}</span>
                               </h3>
                               {cvData.certificates.map((c) => (
                                 <div key={c.id} className="text-xs text-slate-755">
@@ -196,11 +387,12 @@ export default function ClassicTemplate({ cvData, activeColor, t }: TemplateProp
                           );
                         }
                         if (sec === 'languages' && cvData.languages.length > 0) {
+                          const langTitle = cvData.sectionSettings?.languages?.title || t('languagesUpper');
                           return (
-                            <div key={sec} className="flex flex-col gap-1">
-                              <h3 className={`text-xs font-extrabold uppercase tracking-wider ${activeColor.primary} pb-0.5 flex items-center gap-1.5`}>
+                            <div key={sec} className="flex flex-col gap-1 break-inside-avoid">
+                              <h3 className={`text-xs font-extrabold uppercase tracking-wider ${activeColor.primary} pb-0.5 flex items-center gap-1.5 border-b border-slate-100 dark:border-slate-800/40 print:border-slate-200`}>
                                 <Languages className="h-3.5 w-3.5 stroke-[2.5]" />
-                                {t('languagesUpper')}
+                                <span>{langTitle}</span>
                               </h3>
                               <div className="text-xs text-slate-755 flex flex-col gap-0.5">
                                 {cvData.languages.map((l) => (

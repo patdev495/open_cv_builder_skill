@@ -1,3 +1,10 @@
+export interface CustomLink {
+  id: string;
+  label: string;
+  url: string;
+  icon?: string;
+}
+
 export interface PersonalInfo {
   fullName: string;
   title?: string;
@@ -8,6 +15,7 @@ export interface PersonalInfo {
   github?: string;
   linkedin?: string;
   avatar?: string;
+  customLinks?: CustomLink[];
 }
 
 export interface ExperienceItem {
@@ -76,6 +84,13 @@ export interface CustomSection {
   items: CustomSectionItem[];
 }
 
+export interface SectionSetting {
+  id: string;
+  title?: string;
+  layoutStyle?: 'timeline' | 'cards' | 'text' | 'default';
+  hideFields?: string[];
+}
+
 export interface CVSchema {
   personalInfo: PersonalInfo;
   summary?: string;
@@ -94,8 +109,10 @@ export interface CVSchema {
   pageLayout?: 'single' | 'multi';
   sectionOrder?: string[];
   themeMode?: 'light' | 'dark' | 'auto';
+  sectionSettings?: Record<string, SectionSetting>;
   translated_data?: Record<string, CVSchema>;
 }
+
 
 export interface CVResponse {
   slug: string;

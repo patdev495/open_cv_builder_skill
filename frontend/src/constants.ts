@@ -11,7 +11,8 @@ export const DEFAULT_CV: CVSchema = {
     location: "Hà Nội, Việt Nam",
     website: "https://vana.dev",
     github: "https://github.com/nguyenvana",
-    linkedin: "https://linkedin.com/in/nguyenvana"
+    linkedin: "https://linkedin.com/in/nguyenvana",
+    customLinks: []
   },
   summary: "Tôi là một kỹ sư phần mềm Full Stack với hơn 5 năm kinh nghiệm thiết kế và phát triển các hệ thống web quy mô lớn. Đam mê xây dựng các sản phẩm chất lượng cao, tối ưu hiệu năng và mang lại trải nghiệm người dùng tuyệt vời.",
   experience: [
@@ -93,6 +94,7 @@ export const DEFAULT_CV: CVSchema = {
     }
   ],
   customSections: [],
+  sectionSettings: {},
   themeColor: "indigo",
   fontFamily: "sans",
   layoutDensity: "normal",

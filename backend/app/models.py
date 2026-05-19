@@ -1,10 +1,22 @@
-from typing import List, Optional
+from typing import List, Optional, Dict
 from pydantic import BaseModel, ConfigDict
 from sqlmodel import SQLModel, Field, Column, JSON
 
 # ==========================================
 # 1. Pydantic Models for CV Schema (Data)
 # ==========================================
+
+class CustomLink(BaseModel):
+    id: str
+    label: str
+    url: str
+    icon: Optional[str] = None
+
+class SectionSetting(BaseModel):
+    id: str
+    title: Optional[str] = None
+    layoutStyle: Optional[str] = None
+    hideFields: List[str] = []
 
 class PersonalInfo(BaseModel):
     fullName: str
@@ -16,6 +28,8 @@ class PersonalInfo(BaseModel):
     github: Optional[str] = None
     linkedin: Optional[str] = None
     avatar: Optional[str] = None
+    customLinks: Optional[List[CustomLink]] = None
+
 
 class ExperienceItem(BaseModel):
     company: str
@@ -87,7 +101,9 @@ class CVSchema(BaseModel):
     themeMode: Optional[str] = "light"
     sectionGap: Optional[int] = None
     pagePadding: Optional[int] = None
+    sectionSettings: Optional[Dict[str, SectionSetting]] = None
     translated_data: Optional[dict] = None
+
 
 
 # ==========================================

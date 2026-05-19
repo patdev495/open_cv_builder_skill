@@ -1,6 +1,7 @@
 import { Plus, Trash2 } from 'lucide-react';
 import { useCVEditorContext } from '../context/CVEditorContext';
 import { AIEnhancer } from '../components/AIEnhancer';
+import { SectionSettingsControl } from '../components/SectionSettingsControl';
 
 export function ExperienceForm() {
   const { cvData, dispatch, t, addExperience, removeExperience } = useCVEditorContext();
@@ -16,6 +17,11 @@ export function ExperienceForm() {
                         <Plus className="h-3.5 w-3.5" /> {t('addExperience')}
                       </button>
                     </div>
+
+                    <SectionSettingsControl
+                      sectionId="experience"
+                      allowedFields={[{ key: 'role', labelKey: 'hideRole' }]}
+                    />
 
                     {cvData.experience.length === 0 ? (
                       <p className="text-xs text-slate-500 italic text-center py-6">{t('emptyExperience')}</p>

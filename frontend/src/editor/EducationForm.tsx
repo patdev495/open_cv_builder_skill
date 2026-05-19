@@ -1,5 +1,6 @@
 import { Plus, Trash2 } from 'lucide-react';
 import { useCVEditorContext } from '../context/CVEditorContext';
+import { SectionSettingsControl } from '../components/SectionSettingsControl';
 
 export function EducationForm() {
   const { cvData, dispatch, t, addEducation, removeEducation } = useCVEditorContext();
@@ -15,6 +16,11 @@ export function EducationForm() {
                         <Plus className="h-3.5 w-3.5" /> Thêm học vị
                       </button>
                     </div>
+
+                    <SectionSettingsControl
+                      sectionId="education"
+                      allowedFields={[{ key: 'role', labelKey: 'hideRole' }]}
+                    />
 
                     {cvData.education.length === 0 ? (
                       <p className="text-xs text-slate-500 italic text-center py-6">{t('emptyEducation')}</p>

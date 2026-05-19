@@ -1,9 +1,234 @@
-import { Briefcase, GraduationCap, FolderGit2, Wrench, Award, Languages, ExternalLink } from 'lucide-react';
+import { Briefcase, GraduationCap, FolderGit2, Wrench, Award, Languages, ExternalLink, User } from 'lucide-react';
 import { ProjectEmbed } from '../components/ProjectEmbed';
 import type { TemplateProps } from './types';
 import CustomSectionRenderer from './CustomSectionRenderer';
+import LayoutSectionRenderer from './LayoutSectionRenderer';
+import { CustomLinksRenderer } from './TemplateHelpers';
 
 export default function CreativeTemplate({ cvData, activeColor, t }: TemplateProps) {
+  
+  const renderExperienceItem = (exp: any, layout: 'timeline' | 'cards' | 'text', hiddenFields: string[]) => {
+    const hideRole = hiddenFields.includes('role');
+
+    if (layout === 'cards') {
+      return (
+        <div key={exp.id} className="p-3 bg-slate-55/30 dark:bg-slate-900/20 rounded-xl border border-slate-100 dark:border-slate-800/60 flex flex-col gap-1 break-inside-avoid">
+          <div className="flex justify-between items-start text-xs">
+            <span className="font-extrabold text-slate-900 dark:text-slate-100 text-sm leading-snug">{exp.company}</span>
+            <span className="text-[10px] font-mono font-bold bg-slate-100 dark:bg-slate-800/80 text-slate-600 dark:text-slate-400 px-2 py-0.5 rounded print:bg-slate-50">{exp.startDate} – {exp.endDate || 'Hiện tại'}</span>
+          </div>
+          {!hideRole && (
+            <span className={`text-[11px] font-bold ${activeColor.primary} leading-snug`}>
+              {exp.position}
+            </span>
+          )}
+          <p className="text-xs leading-relaxed text-slate-600 dark:text-slate-400 font-medium whitespace-pre-line mt-1 print:text-black">
+            {exp.description}
+          </p>
+        </div>
+      );
+    }
+
+    if (layout === 'text') {
+      return (
+        <div key={exp.id} className="flex flex-col gap-0.5 break-inside-avoid">
+          <div className="flex justify-between items-baseline text-xs">
+            <span className="font-bold text-slate-900 dark:text-slate-100">
+              {exp.company}
+              {!hideRole && <span className="font-normal text-slate-500"> ({exp.position})</span>}
+            </span>
+            <span className="text-[10px] font-mono font-bold text-slate-400">{exp.startDate} – {exp.endDate || 'Hiện tại'}</span>
+          </div>
+          <p className="text-xs leading-relaxed text-slate-600 dark:text-slate-400 font-medium whitespace-pre-line print:text-black mt-0.5">
+            {exp.description}
+          </p>
+        </div>
+      );
+    }
+
+    // Default timeline with left border
+    return (
+      <div key={exp.id} className={`border-l-2 ${activeColor.border} pl-4 py-0.5 flex flex-col gap-1 relative print:!border-slate-300 dark:border-slate-600 break-inside-avoid`}>
+        <div className="flex justify-between items-start text-xs">
+          <div>
+            <span className="font-extrabold text-slate-900 dark:text-slate-100 text-sm">{exp.company}</span>
+            {!hideRole && (
+              <>
+                <span className={`mx-2 ${activeColor.primary}`}>•</span>
+                <span className="font-bold text-slate-800 dark:text-slate-200">{exp.position}</span>
+              </>
+            )}
+          </div>
+          <span className="text-[10px] font-mono font-bold bg-slate-100 dark:bg-slate-800/80 text-slate-600 dark:text-slate-400 px-2 py-0.5 rounded print:bg-slate-50 dark:bg-slate-800/50 print:border print:border-slate-200 dark:border-slate-700">{exp.startDate} – {exp.endDate || 'Hiện tại'}</span>
+        </div>
+        <p className="text-xs leading-relaxed text-slate-600 dark:text-slate-400 font-medium whitespace-pre-line mt-1 print:text-black">
+          {exp.description}
+        </p>
+      </div>
+    );
+  };
+
+  const renderProjectItem = (proj: any, layout: 'timeline' | 'cards' | 'text', hiddenFields: string[]) => {
+    const hideRole = hiddenFields.includes('role');
+    const hideUrl = hiddenFields.includes('url');
+    const hideTech = hiddenFields.includes('technologies');
+    const hideEmbed = hiddenFields.includes('embed');
+
+    if (layout === 'cards') {
+      return (
+        <div key={proj.id} className="p-3 bg-slate-55/30 dark:bg-slate-900/20 rounded-xl border border-slate-100 dark:border-slate-800/60 flex flex-col gap-1 break-inside-avoid">
+          <div className="flex justify-between items-start text-xs">
+            <span className="font-extrabold text-slate-900 dark:text-slate-100 text-sm leading-snug">{proj.name}</span>
+            <span className="text-[10px] font-mono font-bold text-slate-400 print:text-black">{proj.startDate}</span>
+          </div>
+          {!hideRole && (
+            <span className={`text-[11px] font-semibold ${activeColor.primary} leading-snug`}>
+              {proj.role}
+            </span>
+          )}
+          {!hideUrl && proj.url && (
+            <a href={proj.url} target="_blank" rel="noopener noreferrer" className={`inline-flex items-center gap-0.5 text-[10px] ${activeColor.primary} hover:underline font-bold print:text-black`}>
+              <ExternalLink className="h-2.5 w-2.5" />
+              {proj.url.replace(/^https?:\/\/(www\.)?/, '').split('/')[0]}
+            </a>
+          )}
+          {!hideTech && proj.technologies.filter(Boolean).length > 0 && (
+            <div className="flex flex-wrap gap-1 mt-0.5">
+              {proj.technologies.filter(Boolean).map((tech: string, idx: number) => (
+                <span key={idx} className={`${activeColor.pill} rounded px-2 py-0.5 text-[9px] font-bold font-mono`}>
+                  {tech}
+                </span>
+              ))}
+            </div>
+          )}
+          <p className="text-xs leading-relaxed text-slate-600 dark:text-slate-400 font-medium whitespace-pre-line mt-1 print:text-black">
+            {proj.description}
+          </p>
+          {!hideEmbed && <ProjectEmbed embedUrl={proj.embedUrl} projectName={proj.name} />}
+        </div>
+      );
+    }
+
+    if (layout === 'text') {
+      return (
+        <div key={proj.id} className="flex flex-col gap-0.5 break-inside-avoid">
+          <div className="flex justify-between items-baseline text-xs">
+            <span className="font-bold text-slate-900 dark:text-slate-100">
+              {proj.name}
+              {!hideRole && <span className="font-normal text-slate-500"> ({proj.role})</span>}
+            </span>
+            <span className="text-[10px] font-mono font-bold text-slate-400">{proj.startDate}</span>
+          </div>
+          {!hideUrl && proj.url && (
+            <a href={proj.url} target="_blank" rel="noopener noreferrer" className={`inline-flex items-center gap-0.5 text-[10px] ${activeColor.primary} hover:underline font-bold print:text-black`}>
+              <ExternalLink className="h-2.5 w-2.5" />
+              {proj.url.replace(/^https?:\/\/(www\.)?/, '').split('/')[0]}
+            </a>
+          )}
+          {!hideTech && proj.technologies.filter(Boolean).length > 0 && (
+            <span className="text-[10px] text-slate-550 dark:text-slate-400">
+              {proj.technologies.filter(Boolean).join(", ")}
+            </span>
+          )}
+          <p className="text-xs leading-relaxed text-slate-600 dark:text-slate-400 font-medium whitespace-pre-line mt-0.5 print:text-black">
+            {proj.description}
+          </p>
+          {!hideEmbed && <ProjectEmbed embedUrl={proj.embedUrl} projectName={proj.name} />}
+        </div>
+      );
+    }
+
+    // Default timeline with left border
+    return (
+      <div key={proj.id} className={`border-l-2 ${activeColor.border} pl-4 py-0.5 flex flex-col gap-1 print:!border-slate-300 dark:border-slate-600 break-inside-avoid`}>
+        <div className="flex justify-between items-center text-xs">
+          <div>
+            <span className="font-extrabold text-slate-900 dark:text-slate-100 text-sm">{proj.name}</span>
+            {!hideUrl && proj.url && (
+              <a
+                href={proj.url}
+                target="_blank"
+                rel="noopener noreferrer"
+                className={`inline-flex items-center gap-0.5 text-[10px] ${activeColor.primary} hover:underline ml-2 font-bold print:text-black print:no-underline`}
+              >
+                <ExternalLink className="h-2.5 w-2.5" />
+                {proj.url.replace(/^https?:\/\/(www\.)?/, '')}
+              </a>
+            )}
+            {!hideRole && (
+              <>
+                <span className="text-slate-400 mx-1.5">•</span>
+                <span className="text-[10px] text-slate-500 dark:text-slate-400 font-semibold italic">{proj.role}</span>
+              </>
+            )}
+          </div>
+          <span className="text-[10px] font-mono font-bold text-slate-400 print:text-black">{proj.startDate}</span>
+        </div>
+        {!hideTech && proj.technologies.filter(Boolean).length > 0 && (
+          <div className="flex flex-wrap gap-1 mt-0.5">
+            {proj.technologies.filter(Boolean).map((tech: string, idx: number) => (
+              <span key={idx} className={`${activeColor.pill} rounded px-2 py-0.5 text-[9px] font-bold font-mono`}>
+                {tech}
+              </span>
+            ))}
+          </div>
+        )}
+        <p className="text-xs leading-relaxed text-slate-600 dark:text-slate-400 font-medium whitespace-pre-line mt-1 print:text-black">
+          {proj.description}
+        </p>
+        {!hideEmbed && <ProjectEmbed embedUrl={proj.embedUrl} projectName={proj.name} />}
+      </div>
+    );
+  };
+
+  const renderEducationItem = (edu: any, layout: 'timeline' | 'cards' | 'text', hiddenFields: string[]) => {
+    const hideRole = hiddenFields.includes('role');
+
+    if (layout === 'cards') {
+      return (
+        <div key={edu.id} className="p-3 bg-slate-55/30 dark:bg-slate-900/20 rounded-xl border border-slate-100 dark:border-slate-800/60 flex flex-col gap-1 break-inside-avoid">
+          <div className="flex justify-between items-start text-xs">
+            <span className="font-extrabold text-slate-900 dark:text-slate-100 text-sm leading-snug">{edu.institution}</span>
+            <span className="text-[10px] font-mono text-slate-500 dark:text-slate-405">{edu.startDate} – {edu.endDate || 'Hiện tại'}</span>
+          </div>
+          {!hideRole && (
+            <div className="text-slate-700 dark:text-slate-300 font-semibold">{edu.degree}</div>
+          )}
+          {edu.description && <p className="text-[10px] text-slate-550 dark:text-slate-400 italic mt-1">{edu.description}</p>}
+        </div>
+      );
+    }
+
+    if (layout === 'text') {
+      return (
+        <div key={edu.id} className="flex flex-col gap-0.5 text-xs break-inside-avoid">
+          <div className="flex justify-between items-baseline font-bold">
+            <span>
+              {edu.institution}
+              {!hideRole && <span className="font-normal text-slate-500"> ({edu.degree})</span>}
+            </span>
+            <span className="text-[10px] font-mono text-slate-455 dark:text-slate-500">{edu.startDate} – {edu.endDate || 'Hiện tại'}</span>
+          </div>
+          {edu.description && <p className="text-[10px] text-slate-550 dark:text-slate-400 italic mt-0.5">{edu.description}</p>}
+        </div>
+      );
+    }
+
+    // Default timeline
+    return (
+      <div key={edu.id} className="flex flex-col gap-0.5 text-xs break-inside-avoid">
+        <div className="flex justify-between items-start font-bold">
+          <span className="text-slate-900 dark:text-slate-100 font-extrabold">{edu.institution}</span>
+          <span className="text-[10px] font-mono text-slate-500 dark:text-slate-400 print:text-black">{edu.startDate} – {edu.endDate || 'Hiện tại'}</span>
+        </div>
+        {!hideRole && (
+          <div className="text-slate-700 dark:text-slate-300 font-semibold print:text-black">{edu.degree}</div>
+        )}
+        {edu.description && <p className="text-[10px] text-slate-550 dark:text-slate-400 italic mt-0.5">{edu.description}</p>}
+      </div>
+    );
+  };
+
   return (
     <div className="flex flex-col flex-1 gap-6 text-sm">
                    
@@ -26,7 +251,7 @@ export default function CreativeTemplate({ cvData, activeColor, t }: TemplatePro
                           </div>
                         </div>
                       </div>
-                      <div className="flex flex-col gap-1 text-slate-100 text-xs font-mono sm:items-end mt-2 md:mt-0 print:text-black print:items-end print:text-right print:mt-0">
+                      <div className="flex flex-col gap-1 text-slate-105 text-xs font-mono sm:items-end mt-2 md:mt-0 print:text-black print:items-end print:text-right print:mt-0">
                         <div>{cvData.personalInfo.email}</div>
                         {cvData.personalInfo.phone && <div>{cvData.personalInfo.phone}</div>}
                         {cvData.personalInfo.location && <div>{cvData.personalInfo.location}</div>}
@@ -52,10 +277,16 @@ export default function CreativeTemplate({ cvData, activeColor, t }: TemplatePro
                              </a>
                            )}
                         </div>
+                        {/* Custom links rendering in header */}
+                        <CustomLinksRenderer
+                          customLinks={cvData.personalInfo.customLinks}
+                          className="flex flex-wrap gap-2 mt-1 md:justify-end print:justify-end"
+                          itemClassName={`bg-white hover:bg-slate-100 ${activeColor.primary} px-2 py-0.5 rounded text-[10px] font-bold border border-white/20 print:bg-slate-50 print:border-slate-300 print:text-black transition-colors flex items-center gap-1`}
+                        />
                       </div>
                     </div>
 
-                    {/* Dynamic sections in a single vertical stream ordered according to cvData.sectionOrder */}
+                    {/* Dynamic sections */}
                     {(() => {
                       const baseOrder = cvData.sectionOrder || ['summary', 'experience', 'projects', 'education', 'skills', 'certificates', 'languages'];
                       const order = [...baseOrder];
@@ -75,88 +306,70 @@ export default function CreativeTemplate({ cvData, activeColor, t }: TemplatePro
                         }
                         if (sec === 'summary' && cvData.summary) {
                           return (
-                            <div key={sec} className={`${activeColor.lightBg} p-4 rounded-xl border border-slate-200 dark:border-slate-700/40 print:bg-white dark:bg-slate-900/50 print:p-0 print:border-none`}>
-                              <p className="text-xs leading-relaxed text-slate-755 font-medium text-justify">{cvData.summary}</p>
+                            <div key={sec} className={`${activeColor.lightBg} p-4 rounded-xl border border-slate-200 dark:border-slate-700/40 print:bg-white dark:bg-slate-900/50 print:p-0 print:border-none break-inside-avoid`}>
+                              <h4 className={`text-xs font-black uppercase tracking-wider ${activeColor.primary} mb-2 print:text-black flex items-center gap-1.5`}>
+                                <User className="h-3.5 w-3.5 stroke-[2.5]" />
+                                <span>{cvData.sectionSettings?.summary?.title || t('summaryUpper')}</span>
+                              </h4>
+                              <p className="text-xs leading-relaxed text-slate-755 dark:text-slate-300 font-medium text-justify">{cvData.summary}</p>
                             </div>
                           );
                         }
                         if (sec === 'experience' && cvData.experience.length > 0) {
                           return (
-                            <div key={sec} className="flex flex-col gap-4">
-                              <h3 className={`text-xs font-black uppercase tracking-wider ${activeColor.primary} flex items-center gap-1.5`}>
-                                <Briefcase className="h-3.5 w-3.5 stroke-[2.5]" />
-                                {t('experienceUpper')}
-                              </h3>
-                              {cvData.experience.map((exp) => (
-                                <div key={exp.id} className={`border-l-2 ${activeColor.border} pl-4 py-0.5 flex flex-col gap-1 relative print:!border-slate-300 dark:border-slate-600`}>
-                                  <div className="flex justify-between items-start text-xs">
-                                    <div>
-                                      <span className="font-extrabold text-slate-900 dark:text-slate-100 text-sm">{exp.company}</span>
-                                      <span className={`mx-2 ${activeColor.primary}`}>•</span>
-                                      <span className="font-bold text-slate-800 dark:text-slate-200">{exp.position}</span>
-                                    </div>
-                                    <span className="text-[10px] font-mono font-bold bg-slate-100 dark:bg-slate-800/80 text-slate-600 dark:text-slate-400 px-2 py-0.5 rounded print:bg-slate-50 dark:bg-slate-800/50 print:border print:border-slate-200 dark:border-slate-700">{exp.startDate} – {exp.endDate || 'Hiện tại'}</span>
-                                  </div>
-                                  <p className="text-xs leading-relaxed text-slate-600 dark:text-slate-400 font-medium whitespace-pre-line mt-1 print:text-black">
-                                    {exp.description}
-                                  </p>
-                                </div>
-                              ))}
-                            </div>
+                            <LayoutSectionRenderer
+                              key={sec}
+                              sectionId="experience"
+                              cvData={cvData}
+                              activeColor={activeColor}
+                              t={t}
+                              defaultTitleKey="experienceUpper"
+                              IconComponent={Briefcase}
+                              items={cvData.experience}
+                              defaultLayoutStyle="timeline"
+                              renderItem={renderExperienceItem}
+                            />
                           );
                         }
                         if (sec === 'projects' && cvData.projects.length > 0) {
                           return (
-                            <div key={sec} className="flex flex-col gap-4">
-                              <h3 className={`text-xs font-black uppercase tracking-wider ${activeColor.primary} flex items-center gap-1.5`}>
-                                <FolderGit2 className="h-3.5 w-3.5 stroke-[2.5]" />
-                                {t('projectsUpper')}
-                              </h3>
-                              {cvData.projects.map((proj) => (
-                                <div key={proj.id} className={`border-l-2 ${activeColor.border} pl-4 py-0.5 flex flex-col gap-1 print:!border-slate-300 dark:border-slate-600`}>
-                                  <div className="flex justify-between items-center text-xs">
-                                    <div>
-                                      <span className="font-extrabold text-slate-900 dark:text-slate-100 text-sm">{proj.name}</span>
-                                      {proj.url && (
-                                        <a
-                                          href={proj.url}
-                                          target="_blank"
-                                          rel="noopener noreferrer"
-                                          className={`inline-flex items-center gap-0.5 text-[10px] ${activeColor.primary} hover:underline ml-2 font-bold print:text-black print:no-underline`}
-                                        >
-                                          <ExternalLink className="h-2.5 w-2.5" />
-                                          {proj.url.replace(/^https?:\/\/(www\.)?/, '')}
-                                        </a>
-                                      )}
-                                      <span className="text-slate-400 mx-1.5">•</span>
-                                      <span className="text-[10px] text-slate-500 dark:text-slate-400 font-semibold italic">{proj.role}</span>
-                                    </div>
-                                    <span className="text-[10px] font-mono font-bold text-slate-400 print:text-black">{proj.startDate}</span>
-                                  </div>
-                                  {proj.technologies.filter(Boolean).length > 0 && (
-                                    <div className="flex flex-wrap gap-1 mt-0.5">
-                                        {proj.technologies.filter(Boolean).map((tech, idx) => (
-                                          <span key={idx} className={`${activeColor.pill} rounded px-2 py-0.5 text-[9px] font-bold font-mono`}>
-                                            {tech}
-                                          </span>
-                                        ))}
-                                    </div>
-                                  )}
-                                  <p className="text-xs leading-relaxed text-slate-600 dark:text-slate-400 font-medium whitespace-pre-line mt-1 print:text-black">
-                                    {proj.description}
-                                  </p>
-                                  <ProjectEmbed embedUrl={proj.embedUrl} projectName={proj.name} />
-                                </div>
-                              ))}
-                            </div>
+                            <LayoutSectionRenderer
+                              key={sec}
+                              sectionId="projects"
+                              cvData={cvData}
+                              activeColor={activeColor}
+                              t={t}
+                              defaultTitleKey="projectsUpper"
+                              IconComponent={FolderGit2}
+                              items={cvData.projects}
+                              defaultLayoutStyle="timeline"
+                              renderItem={renderProjectItem}
+                            />
+                          );
+                        }
+                        if (sec === 'education' && cvData.education.length > 0) {
+                          return (
+                            <LayoutSectionRenderer
+                              key={sec}
+                              sectionId="education"
+                              cvData={cvData}
+                              activeColor={activeColor}
+                              t={t}
+                              defaultTitleKey="educationUpper"
+                              IconComponent={GraduationCap}
+                              items={cvData.education}
+                              defaultLayoutStyle="timeline"
+                              renderItem={renderEducationItem}
+                            />
                           );
                         }
                         if (sec === 'skills' && cvData.skills.length > 0) {
+                          const skillsTitle = cvData.sectionSettings?.skills?.title || t('skillsUpper');
                           return (
-                            <div key={sec} className="flex flex-col gap-3">
+                            <div key={sec} className="flex flex-col gap-3 break-inside-avoid">
                               <h3 className={`text-xs font-black uppercase tracking-wider ${activeColor.primary} flex items-center gap-1.5`}>
                                 <Wrench className="h-3.5 w-3.5 stroke-[2.5]" />
-                                {t('skillsUpper')}
+                                <span>{skillsTitle}</span>
                               </h3>
                               <div className="grid grid-cols-1 md:grid-cols-3 print:grid-cols-3 gap-3">
                                 {cvData.skills.map((grp) => (
@@ -175,37 +388,18 @@ export default function CreativeTemplate({ cvData, activeColor, t }: TemplatePro
                             </div>
                           );
                         }
-                        if (sec === 'education' && cvData.education.length > 0) {
-                          return (
-                            <div key={sec} className="flex flex-col gap-3">
-                              <h3 className={`text-xs font-black uppercase tracking-wider ${activeColor.primary} flex items-center gap-1.5`}>
-                                <GraduationCap className="h-3.5 w-3.5 stroke-[2.5]" />
-                                {t('educationUpper')}
-                              </h3>
-                              {cvData.education.map((edu) => (
-                                <div key={edu.id} className="flex flex-col gap-0.5 text-xs">
-                                  <div className="flex justify-between items-start font-bold">
-                                    <span className="text-slate-900 dark:text-slate-100 font-extrabold">{edu.institution}</span>
-                                    <span className="text-[10px] font-mono text-slate-500 dark:text-slate-400 print:text-black">{edu.startDate} – {edu.endDate || 'Hiện tại'}</span>
-                                  </div>
-                                  <div className="text-slate-700 dark:text-slate-300 font-semibold print:text-black">{edu.degree}</div>
-                                  {edu.description && <p className="text-[10px] text-slate-500 dark:text-slate-400 italic mt-0.5">{edu.description}</p>}
-                                </div>
-                              ))}
-                            </div>
-                          );
-                        }
                         if (sec === 'certificates' && cvData.certificates.length > 0) {
+                          const certTitle = cvData.sectionSettings?.certificates?.title || t('certificatesUpper');
                           return (
-                            <div key={sec} className="flex flex-col gap-2">
+                            <div key={sec} className="flex flex-col gap-2 break-inside-avoid">
                               <h3 className={`text-xs font-black uppercase tracking-wider ${activeColor.primary} flex items-center gap-1.5`}>
                                 <Award className="h-3.5 w-3.5 stroke-[2.5]" />
-                                {t('certificatesUpper')}
+                                <span>{certTitle}</span>
                               </h3>
                               <div className="flex flex-col gap-1.5 text-xs text-slate-755">
                                 {cvData.certificates.map((c) => (
                                   <div key={c.id} className="leading-snug">
-                                    <span className="font-extrabold text-slate-900 dark:text-slate-100">{c.name}</span> — <span className="text-slate-500 dark:text-slate-400 text-[11px] font-medium">{c.issuer} ({c.date})</span>
+                                    <span className="font-extrabold text-slate-900 dark:text-slate-100">{c.name}</span> — <span className="text-slate-550 dark:text-slate-400 text-[11px] font-medium">{c.issuer} ({c.date})</span>
                                   </div>
                                 ))}
                               </div>
@@ -213,11 +407,12 @@ export default function CreativeTemplate({ cvData, activeColor, t }: TemplatePro
                           );
                         }
                         if (sec === 'languages' && cvData.languages.length > 0) {
+                          const langTitle = cvData.sectionSettings?.languages?.title || t('languagesUpper');
                           return (
-                            <div key={sec} className="flex flex-col gap-2">
+                            <div key={sec} className="flex flex-col gap-2 break-inside-avoid">
                               <h3 className={`text-xs font-black uppercase tracking-wider ${activeColor.primary} flex items-center gap-1.5`}>
                                 <Languages className="h-3.5 w-3.5 stroke-[2.5]" />
-                                {t('languagesUpper')}
+                                <span>{langTitle}</span>
                               </h3>
                               <div className="flex flex-col gap-1 text-xs">
                                 {cvData.languages.map((l) => (

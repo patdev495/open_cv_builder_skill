@@ -3,7 +3,7 @@
  * Implements real-time Structural Mirroring for bilingual editing.
  * Language Agnostic Version: original vs translated.
  */
-import type { CVSchema, ExperienceItem, EducationItem, ProjectItem, SkillGroup, CertificateItem, LanguageItem, PersonalInfo, CustomSectionItem } from '../types';
+import type { CVSchema, ExperienceItem, EducationItem, ProjectItem, SkillGroup, CertificateItem, LanguageItem, PersonalInfo, CustomSectionItem, CustomLink, SectionSetting } from '../types';
 import { DEFAULT_CV } from '../constants';
 
 // ── Action union type ──────────────────────────────────────────────────────
@@ -47,6 +47,7 @@ export type CVActionBase =
   | { type: 'SET_PAGE_LAYOUT'; payload: 'single' | 'multi' }
   | { type: 'SET_SECTION_ORDER'; payload: string[] }
   | { type: 'SET_THEME_MODE'; payload: 'light' | 'dark' | 'auto' }
+  | { type: 'UPDATE_SECTION_SETTING'; id: string; payload: Partial<SectionSetting> }
   // Custom Sections
   | { type: 'ADD_CUSTOM_SECTION'; payload?: { title?: string; layoutStyle?: 'timeline' | 'cards' | 'text' } }
   | { type: 'UPDATE_CUSTOM_SECTION'; id: string; payload: Partial<{ title: string; layoutStyle: 'timeline' | 'cards' | 'text' }> }
@@ -97,6 +98,39 @@ function splitPayload(entityType: string, payload: any) {
   return { content, structural };
 }
 
+function syncCustomLinks(
+  currentOriginal: CustomLink[] = [],
+  currentTranslated: CustomLink[] = [],
+  actionLinks: CustomLink[] = [],
+  mode: 'original' | 'translated'
+): { original: CustomLink[]; translated: CustomLink[] } {
+  if (mode === 'original') {
+    const original = actionLinks;
+    const translated = actionLinks.map(origItem => {
+      const existingTrans = currentTranslated.find(t => t.id === origItem.id);
+      return {
+        id: origItem.id,
+        label: existingTrans ? existingTrans.label : origItem.label,
+        url: origItem.url,
+        icon: origItem.icon
+      };
+    });
+    return { original, translated };
+  } else {
+    const translated = actionLinks;
+    const original = actionLinks.map(transItem => {
+      const existingOrig = currentOriginal.find(o => o.id === transItem.id);
+      return {
+        id: transItem.id,
+        label: existingOrig ? existingOrig.label : transItem.label,
+        url: transItem.url,
+        icon: transItem.icon
+      };
+    });
+    return { original, translated };
+  }
+}
+
 // ── Reducer ────────────────────────────────────────────────────────────────
 
 export function cvDataReducer(state: CVSchema, action: CVAction): CVSchema {
@@ -136,25 +170,73 @@ export function cvDataReducer(state: CVSchema, action: CVAction): CVSchema {
 
     // ── Personal ──────────────────────────────────────────────────────────
     case 'UPDATE_PERSONAL_INFO': {
-      const { content, structural } = splitPayload('personalInfo', action.payload);
+      const { customLinks, ...restPayload } = action.payload;
+      const { content, structural } = splitPayload('personalInfo', restPayload);
       
       let newState = { ...state };
       
       if (isOriginal) {
-        // Original mode: update both content and structural in primary
-        newState.personalInfo = { ...newState.personalInfo, ...action.payload };
-        // Sync structural to Translated
+        newState.personalInfo = { ...newState.personalInfo, ...restPayload };
         if (Object.keys(structural).length > 0) {
           newState.translated_data = syncTrans(trans => ({
             ...trans, personalInfo: { ...trans.personalInfo, ...structural }
           }));
         }
+        
+        if (customLinks !== undefined) {
+          const key = getTransLangKey();
+          const transState = getTransTarget();
+          if (key && transState && newState.translated_data) {
+            const { original, translated } = syncCustomLinks(
+              newState.personalInfo.customLinks || [],
+              transState.personalInfo.customLinks || [],
+              customLinks,
+              'original'
+            );
+            newState.personalInfo.customLinks = original;
+            newState.translated_data = {
+              ...newState.translated_data,
+              [key]: {
+                ...transState,
+                personalInfo: {
+                  ...transState.personalInfo,
+                  customLinks: translated
+                }
+              }
+            };
+          } else {
+            newState.personalInfo.customLinks = customLinks;
+          }
+        }
       } else {
-        // Translated mode: update content in Translated, sync structural to BOTH
         newState.personalInfo = { ...newState.personalInfo, ...structural };
         newState.translated_data = syncTrans(trans => ({
           ...trans, personalInfo: { ...trans.personalInfo, ...structural, ...content }
         }));
+        
+        if (customLinks !== undefined) {
+          const key = getTransLangKey();
+          const transState = getTransTarget();
+          if (key && transState && newState.translated_data) {
+            const { original, translated } = syncCustomLinks(
+              newState.personalInfo.customLinks || [],
+              transState.personalInfo.customLinks || [],
+              customLinks,
+              'translated'
+            );
+            newState.personalInfo.customLinks = original;
+            newState.translated_data = {
+              ...newState.translated_data,
+              [key]: {
+                ...transState,
+                personalInfo: {
+                  ...transState.personalInfo,
+                  customLinks: translated
+                }
+              }
+            };
+          }
+        }
       }
       return newState;
     }
@@ -377,6 +459,53 @@ export function cvDataReducer(state: CVSchema, action: CVAction): CVSchema {
       return { ...state, sectionOrder: action.payload, translated_data: syncTrans(trans => ({ ...trans, sectionOrder: action.payload })) };
     case 'SET_THEME_MODE':
       return { ...state, themeMode: action.payload, translated_data: syncTrans(trans => ({ ...trans, themeMode: action.payload })) };
+
+    case 'UPDATE_SECTION_SETTING': {
+      const { title, ...structural } = action.payload;
+      const currentSetting = state.sectionSettings?.[action.id] || { id: action.id };
+      
+      if (isOriginal) {
+        const updatedSetting = { ...currentSetting, ...action.payload };
+        const sectionSettings = {
+          ...(state.sectionSettings || {}),
+          [action.id]: updatedSetting
+        };
+        
+        return {
+          ...state,
+          sectionSettings,
+          translated_data: syncTrans(trans => {
+            const transSetting = trans.sectionSettings?.[action.id] || { id: action.id };
+            return {
+              ...trans,
+              sectionSettings: {
+                ...(trans.sectionSettings || {}),
+                [action.id]: { ...transSetting, ...structural }
+              }
+            };
+          })
+        };
+      } else {
+        const updatedOriginalSetting = { ...currentSetting, ...structural };
+        return {
+          ...state,
+          sectionSettings: {
+            ...(state.sectionSettings || {}),
+            [action.id]: updatedOriginalSetting
+          },
+          translated_data: syncTrans(trans => {
+            const transSetting = trans.sectionSettings?.[action.id] || { id: action.id };
+            return {
+              ...trans,
+              sectionSettings: {
+                ...(trans.sectionSettings || {}),
+                [action.id]: { ...transSetting, ...structural, ...(title !== undefined ? { title } : {}) }
+              }
+            };
+          })
+        };
+      }
+    }
 
     // ── Custom Sections ──────────────────────────────────────────────────
     case 'ADD_CUSTOM_SECTION': {

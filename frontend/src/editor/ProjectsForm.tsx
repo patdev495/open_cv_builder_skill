@@ -1,6 +1,7 @@
 import { Plus, Trash2 } from 'lucide-react';
 import { useCVEditorContext } from '../context/CVEditorContext';
 import { AIEnhancer } from '../components/AIEnhancer';
+import { SectionSettingsControl } from '../components/SectionSettingsControl';
 
 export function ProjectsForm() {
   const { cvData, dispatch, t, addProject, removeProject } = useCVEditorContext();
@@ -16,6 +17,16 @@ export function ProjectsForm() {
                         <Plus className="h-3.5 w-3.5" /> {t('addProject')}
                       </button>
                     </div>
+
+                    <SectionSettingsControl
+                      sectionId="projects"
+                      allowedFields={[
+                        { key: 'role', labelKey: 'hideRole' },
+                        { key: 'url', labelKey: 'hideUrl' },
+                        { key: 'technologies', labelKey: 'hideTech' },
+                        { key: 'embed', labelKey: 'hideEmbed' }
+                      ]}
+                    />
 
                     {cvData.projects.length === 0 ? (
                       <p className="text-xs text-slate-500 italic text-center py-6">Chưa có thông tin dự án cá nhân.</p>
