@@ -141,6 +141,7 @@ export function useCVEditor(initialPasscode: string = ''): CVEditorState {
     if (isViewOnly) {
       setIsSlugAvailable(null);
       setSlugValidationError(null);
+      setIsCheckingSlug(false);
       return;
     }
 
@@ -148,6 +149,7 @@ export function useCVEditor(initialPasscode: string = ''): CVEditorState {
     if (!trimmed) {
       setIsSlugAvailable(null);
       setSlugValidationError(null);
+      setIsCheckingSlug(false);
       return;
     }
 

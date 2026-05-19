@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Edit3, Printer, AlertCircle, CheckCircle2, Languages } from 'lucide-react';
+import { Edit3, Printer, AlertCircle, CheckCircle2, Languages, FilePlus2 } from 'lucide-react';
 import { useCVViewer } from '../hooks/useCVViewer';
 import { usePasscodeVerify } from '../hooks/usePasscodeVerify';
 import TemplateRenderer from '../templates/TemplateRenderer';
@@ -220,6 +220,14 @@ export function InteractivePortfolio({
           <span className="hidden sm:inline">{t('editCV')}</span>
         </button>
 
+        <a
+          href="/"
+          className="flex items-center gap-2 px-4 py-2 btn-premium-cta active:scale-95 text-white text-sm font-semibold rounded-xl transition-all cursor-pointer"
+        >
+          <FilePlus2 className="h-4 w-4" />
+          <span className="hidden sm:inline">{t('buildOwnCV')}</span>
+        </a>
+
         {/* Public Display Language Toggle */}
         {translationKey && (
           <div className="flex bg-slate-800/80 p-1 rounded-xl w-fit print:hidden backdrop-blur-md border border-slate-700/50 shadow-xl mx-auto">
@@ -287,6 +295,14 @@ export function InteractivePortfolio({
               h-full flex flex-col relative z-10
             `}
           >
+            <style>{`
+              @media print {
+                @page {
+                  size: A4;
+                  margin: ${cvData.pagePadding ?? 15}mm !important;
+                }
+              }
+            `}</style>
             <TemplateRenderer templateId={template || 'modern'} cvData={activeCvData} activeColor={activeColor} t={t} />
           </div>
         </div>

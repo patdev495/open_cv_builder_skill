@@ -154,7 +154,7 @@ export default function TechProTemplate({ cvData, activeColor, t }: TemplateProp
 
     // Default layout style: full timeline-like card
     return (
-      <div key={proj.id} className="flex flex-col gap-2.5 p-3 rounded-2xl bg-slate-50/50 dark:bg-slate-900/30 border border-slate-100/50 dark:border-slate-850/50 break-inside-avoid print:bg-transparent print:border-0 print:p-0">
+      <div key={proj.id} className="flex flex-col gap-2.5 p-3 rounded-2xl bg-slate-50/50 dark:bg-slate-900/30 border border-slate-100/50 dark:border-slate-850/50 break-inside-avoid print:bg-transparent">
         <div className="flex flex-col sm:flex-row sm:justify-between sm:items-start text-xs gap-1">
           <div>
             <span className="font-extrabold text-slate-900 dark:text-slate-100">{proj.name}</span>
@@ -426,7 +426,7 @@ export default function TechProTemplate({ cvData, activeColor, t }: TemplateProp
                     </h3>
                     <div className="flex flex-col gap-3">
                       {cvData.skills.map((grp) => (
-                        <div key={grp.id} className="p-3 rounded-2xl bg-slate-55/50 dark:bg-slate-900/30 border border-slate-100/50 dark:border-slate-850/50 flex flex-col gap-1.5 print:bg-transparent print:border-0 print:p-0 break-inside-avoid">
+                        <div key={grp.id} className="p-3 rounded-2xl bg-slate-55/50 dark:bg-slate-900/30 border border-slate-100/50 dark:border-slate-850/50 flex flex-col gap-1.5 print:bg-transparent break-inside-avoid">
                           <span className="text-xs font-extrabold text-slate-800 dark:text-slate-200 print:text-black">{grp.category}</span>
                           <div className="flex flex-wrap gap-1.5">
                             {grp.skills.filter(Boolean).map((s, i) => (

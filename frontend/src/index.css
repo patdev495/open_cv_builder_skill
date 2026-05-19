@@ -77,24 +77,25 @@
     mix-blend-mode: normal !important;
   }
 
-  /* Prevent headings and sections titles from sitting alone at the bottom of a page */
+  /* Allow headings and sections titles to break naturally to match editor preview exactly */
   h1,
   h2,
   h3,
   h4,
   h5,
   h6 {
-    page-break-after: avoid !important;
-    break-after: avoid !important;
+    page-break-after: auto !important;
+    break-after: auto !important;
   }
 
-  /* Avoid cutting dynamic items (jobs, schools, projects) in half across pages */
+  /* Allow cutting dynamic items in half across pages to match editor preview exactly */
+  .break-inside-avoid,
   .print-avoid-break,
   .experience-item,
   .education-item,
   .project-item {
-    page-break-inside: avoid !important;
-    break-inside: avoid !important;
+    page-break-inside: auto !important;
+    break-inside: auto !important;
   }
 
   /* Standard printer page setup */
@@ -239,3 +240,38 @@
     /* Let @page margin handle it on printer paper */
   }
 }
+
+/* Premium CTA Button styling & prominent animations */
+@keyframes shine-sweep {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+@keyframes pulse-grow {
+  0%, 100% {
+    transform: scale(1);
+    box-shadow: 0 0 8px rgba(244, 63, 94, 0.5), 0 0 12px rgba(245, 158, 11, 0.3);
+  }
+  50% {
+    transform: scale(1.05);
+    box-shadow: 0 0 22px rgba(244, 63, 94, 0.9), 0 0 30px rgba(245, 158, 11, 0.5);
+  }
+}
+
+.btn-premium-cta {
+  background: linear-gradient(270deg, #f59e0b, #f43f5e, #db2777, #f59e0b) !important;
+  background-size: 600% 600% !important;
+  animation: shine-sweep 6s ease infinite, pulse-grow 2s ease-in-out infinite !important;
+  transition: all 0.3s ease !important;
+}
+
+.btn-premium-cta:hover {
+  filter: brightness(1.1) !important;
+}

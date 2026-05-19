@@ -183,7 +183,8 @@ export const TRANSLATIONS = {
     iconPlaceholder: "Tự chọn hoặc để trống",
     draftAlert: "Phát hiện bản nháp có thay đổi chưa được lưu trên Cloud.",
     draftRecover: "Khôi phục bản nháp",
-    draftDiscard: "Xóa bản nháp"
+    draftDiscard: "Xóa bản nháp",
+    buildOwnCV: "Tạo CV cho riêng bạn"
   },
   en: {
     title: "CV BUILDER PRO",
@@ -369,6 +370,7 @@ export const TRANSLATIONS = {
     iconPlaceholder: "Auto or select icon",
     draftAlert: "Unsaved local draft detected.",
     draftRecover: "Recover Draft",
-    draftDiscard: "Discard Draft"
+    draftDiscard: "Discard Draft",
+    buildOwnCV: "Build your own CV"
   }
 };
