@@ -29,6 +29,7 @@ export function EditorWorkspace({ onExit, initialPasscode = '' }: { onExit: () =
   } = editorState;
 
   const [activeTab, setActiveTab] = useState<string>("personal");
+  const [mobileTab, setMobileTab] = useState<'edit' | 'preview'>('edit');
 
   const [sysDark, setSysDark] = useState<boolean>(
     typeof window !== 'undefined' ? window.matchMedia('(prefers-color-scheme: dark)').matches : false
@@ -233,10 +234,10 @@ export function EditorWorkspace({ onExit, initialPasscode = '' }: { onExit: () =
         </header>
 
         {/* Workspace Layout */}
-        <div className="max-w-[1600px] mx-auto w-full flex-1 flex flex-col lg:flex-row gap-6 p-4 sm:p-6 relative">
+        <div className="max-w-[1600px] mx-auto w-full flex-1 flex flex-col lg:flex-row gap-6 p-4 sm:p-6 pb-24 lg:pb-6 relative">
           
           {/* Left Panel: Editor */}
-          <div className="w-full lg:w-[40%] xl:w-[38%] flex flex-col lg:sticky lg:top-24 z-30 space-y-4 h-auto">
+          <div className={`w-full lg:w-[40%] xl:w-[38%] flex flex-col lg:sticky lg:top-24 z-30 space-y-4 h-auto ${mobileTab === 'edit' ? 'block' : 'hidden lg:flex'}`}>
             
             {/* Save Form */}
             <div className="bg-slate-900/60 backdrop-blur-md p-5 rounded-2xl border border-slate-800 shadow-xl flex flex-col gap-4">
@@ -388,7 +389,7 @@ export function EditorWorkspace({ onExit, initialPasscode = '' }: { onExit: () =
           </div>
 
           {/* Right Panel: Live Preview */}
-          <div className="w-full lg:w-[60%] xl:w-[62%]">
+          <div className={`w-full lg:w-[60%] xl:w-[62%] ${mobileTab === 'preview' ? 'block' : 'hidden lg:block'}`}>
             <div className="relative transition-all duration-300 rounded-2xl shadow-2xl border border-slate-700/50 bg-slate-900/50 backdrop-blur-md">
               <div className="absolute top-4 right-4 z-20 flex gap-3">
                 {/* CV Theme Color Picker */}
@@ -564,6 +565,34 @@ export function EditorWorkspace({ onExit, initialPasscode = '' }: { onExit: () =
             </div>
           </div>
 
+        </div>
+
+        {/* Mobile View Toggle Bar */}
+        <div className="lg:hidden fixed bottom-6 left-1/2 -translate-x-1/2 z-50 flex items-center bg-slate-900/80 backdrop-blur-lg rounded-2xl p-1.5 border border-slate-800 shadow-[0_10px_30px_rgba(0,0,0,0.5)] gap-1.5 select-none transition-all duration-300">
+          <button
+            type="button"
+            onClick={() => setMobileTab('edit')}
+            className={`flex items-center justify-center gap-1.5 px-4 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer ${
+              mobileTab === 'edit'
+                ? 'bg-purple-600 text-white shadow-lg shadow-purple-900/40 border border-purple-500/30'
+                : 'border-transparent text-slate-400 hover:text-slate-200 hover:bg-slate-800/40 border'
+            }`}
+          >
+            <span>✏️</span>
+            <span>{language === 'vi' ? 'Soạn thảo' : 'Edit'}</span>
+          </button>
+          <button
+            type="button"
+            onClick={() => setMobileTab('preview')}
+            className={`flex items-center justify-center gap-1.5 px-4 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer ${
+              mobileTab === 'preview'
+                ? 'bg-purple-600 text-white shadow-lg shadow-purple-900/40 border border-purple-500/30'
+                : 'border-transparent text-slate-400 hover:text-slate-200 hover:bg-slate-800/40 border'
+            }`}
+          >
+            <span>👁️</span>
+            <span>{language === 'vi' ? 'Bản in A4' : 'A4 Preview'}</span>
+          </button>
         </div>
 
         {/* Status Toasts */}
