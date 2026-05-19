@@ -26,7 +26,7 @@ Chạy toàn bộ Ngrok ngay trong môi trường WSL2 giúp bạn quản lý t�
    ```
 3. Liên kết tài khoản Ngrok của bạn (lấy mã Token trong trang chủ Ngrok Dashboard):
    ```bash
-   ngrok config add-authtoken <MÃ_AUTHTOKEN_CỦA_BẠN>
+   ngrok config add-authtoken 2jGYwu7Ea43OZJThcIFBFV3kmOH_5D79sTJQ545teoKNWnCHr
    ```
 
 ---
@@ -59,7 +59,7 @@ Chúng ta sử dụng tệp cấu hình chuyên dụng [docker-compose.windows.y
 1. Mở thêm 1 tab terminal **WSL2 (Ubuntu)** mới hoặc sử dụng các công cụ quản lý phiên như `screen`/`tmux`.
 2. Chạy lệnh sau để tạo đường hầm bảo mật HTTPS trỏ thẳng tới tên miền tĩnh của bạn (thay `ten-mien-cua-ban.ngrok-free.app` bằng tên miền thật bạn đã lấy ở Bước 1):
    ```bash
-   ngrok http --domain=ten-mien-cua-ban.ngrok-free.app 8080
+   ngrok http --domain=snaggy-lou-spottable.ngrok-free.dev 8080
    ```
 3. Cửa sổ Ngrok sẽ hiển thị trạng thái `Online`. Lúc này:
    * **Địa chỉ truy cập Internet:** `https://ten-mien-cua-ban.ngrok-free.app`

@@ -43,6 +43,45 @@ export function LayoutForm() {
                       </div>
                     </div>
 
+                    {/* Typography / Font Family Selector */}
+                    <div className="border-b border-slate-800 pb-5">
+                      <h3 className="text-sm font-bold text-slate-300 flex items-center gap-2 mb-3">
+                        <span className="text-purple-400 font-extrabold">Aa</span>
+                        {language === 'vi' ? 'Kiểu chữ (Typography)' : 'Document Typography'}
+                      </h3>
+                      <div className="grid grid-cols-3 gap-2 mt-2">
+                        {[
+                          { id: 'inter', name: 'Inter', desc: 'Sans-serif' },
+                           { id: 'outfit', name: 'Outfit', desc: 'Modern' },
+                           { id: 'lora', name: 'Lora', desc: 'Serif Elegant' },
+                           { id: 'playfair', name: 'Playfair', desc: 'Serif Classic' },
+                           { id: 'jetbrains', name: 'JetBrains', desc: 'Monospace' },
+                           { id: 'fira', name: 'Fira Code', desc: 'Code Mono' },
+                        ].map((font) => {
+                          const isSelected = cvData.fontFamily === font.id || 
+                            (font.id === 'inter' && cvData.fontFamily === 'sans') || 
+                            (font.id === 'lora' && cvData.fontFamily === 'serif') || 
+                            (font.id === 'fira' && cvData.fontFamily === 'mono');
+                          
+                          return (
+                            <button
+                              key={font.id}
+                              type="button"
+                              onClick={() => dispatch({ type: 'SET_FONT_FAMILY', payload: font.id })}
+                              className={`px-3 py-2 rounded-xl border text-xs font-bold transition-all cursor-pointer flex flex-col items-center gap-0.5 ${
+                                isSelected
+                                  ? 'bg-purple-600/20 border-purple-500 text-purple-300 shadow-lg'
+                                  : 'bg-slate-950/40 border-slate-850 text-slate-400 hover:border-slate-800 hover:text-slate-200'
+                              }`}
+                            >
+                              <span className="font-semibold text-[13px]">{font.name}</span>
+                              <span className="text-[9px] font-normal text-slate-500">{font.desc}</span>
+                            </button>
+                          );
+                        })}
+                      </div>
+                    </div>
+
                     {/* Page Spacing & Margin Sliders */}
                     <div className="border-b border-slate-800 pb-5">
                       <div className="flex items-center justify-between mb-3">
