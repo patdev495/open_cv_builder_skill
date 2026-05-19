@@ -11,6 +11,9 @@ export interface CVEditorState {
   slug: string;
   inputSlug: string;
   setInputSlug: (v: string) => void;
+  isSlugAvailable: boolean | null;
+  isCheckingSlug: boolean;
+  slugValidationError: string | null;
 
   cvData: CVSchema;
   dispatch: React.Dispatch<CVAction>;
@@ -128,6 +131,48 @@ export function useCVEditor(initialPasscode: string = ''): CVEditorState {
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [statusMessage, setStatusMessage] = useState<{ type: 'success' | 'error'; text: string; link?: string } | null>(null);
   const [isViewOnly, setIsViewOnly] = useState<boolean>(false);
+
+  const [isSlugAvailable, setIsSlugAvailable] = useState<boolean | null>(null);
+  const [isCheckingSlug, setIsCheckingSlug] = useState<boolean>(false);
+  const [slugValidationError, setSlugValidationError] = useState<string | null>(null);
+
+  // Real-time slug availability check
+  useEffect(() => {
+    if (isViewOnly) {
+      setIsSlugAvailable(null);
+      setSlugValidationError(null);
+      return;
+    }
+
+    const trimmed = inputSlug.trim().toLowerCase();
+    if (!trimmed) {
+      setIsSlugAvailable(null);
+      setSlugValidationError(null);
+      return;
+    }
+
+    setIsCheckingSlug(true);
+    setIsSlugAvailable(null);
+    setSlugValidationError(null);
+
+    const check = setTimeout(async () => {
+      try {
+        const isAvailable = await api.checkSlugAvailable(trimmed);
+        setIsSlugAvailable(isAvailable);
+        if (!isAvailable) {
+          setSlugValidationError(t('slugTaken'));
+        } else {
+          setSlugValidationError(null);
+        }
+      } catch (err) {
+        setIsSlugAvailable(null);
+      } finally {
+        setIsCheckingSlug(false);
+      }
+    }, 500);
+
+    return () => clearTimeout(check);
+  }, [inputSlug, isViewOnly, language]);
 
   useEffect(() => {
     document.title = cvData?.personalInfo?.fullName
@@ -351,6 +396,7 @@ export function useCVEditor(initialPasscode: string = ''): CVEditorState {
 
   return {
     slug, inputSlug, setInputSlug,
+    isSlugAvailable, isCheckingSlug, slugValidationError,
     cvData, dispatch, template, setTemplate, handleTemplateChange,
     passcode, setPasscode,
     isLoading, statusMessage, setStatusMessage, isViewOnly,

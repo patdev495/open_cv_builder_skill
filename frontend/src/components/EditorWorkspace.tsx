@@ -19,6 +19,7 @@ export function EditorWorkspace({ onExit, initialPasscode = '' }: { onExit: () =
   const editorState = useCVEditor(initialPasscode);
   const {
     slug, inputSlug, setInputSlug,
+    isSlugAvailable, isCheckingSlug, slugValidationError,
     cvData, dispatch, template,
     passcode, setPasscode,
     isLoading, statusMessage, setStatusMessage, isViewOnly,
@@ -266,6 +267,24 @@ export function EditorWorkspace({ onExit, initialPasscode = '' }: { onExit: () =
                         disabled={isViewOnly}
                       />
                     </div>
+                    {isCheckingSlug && (
+                      <p className="text-slate-400 text-xs mt-1.5 font-medium flex items-center gap-1.5">
+                        <Loader2 className="h-3 w-3 animate-spin text-purple-400" />
+                        {t('checkingSlug')}
+                      </p>
+                    )}
+                    {slugValidationError && (
+                      <p className="text-rose-400 text-xs mt-1.5 font-medium flex items-center gap-1.5">
+                        <AlertCircle className="h-3.5 w-3.5 text-rose-400" />
+                        {slugValidationError}
+                      </p>
+                    )}
+                    {!isCheckingSlug && !slugValidationError && isSlugAvailable && (
+                      <p className="text-emerald-400 text-xs mt-1.5 font-medium flex items-center gap-1.5">
+                        <CheckCircle2 className="h-3.5 w-3.5 text-emerald-400" />
+                        {t('slugAvailable')}
+                      </p>
+                    )}
                   </div>
                   {!isViewOnly && (
                     <div className="space-y-1.5">
@@ -286,7 +305,11 @@ export function EditorWorkspace({ onExit, initialPasscode = '' }: { onExit: () =
                   <button type="button" onClick={handleClearAll} className="px-4 py-2 bg-slate-800 hover:bg-rose-900/50 hover:text-rose-400 text-slate-400 text-sm font-semibold rounded-xl transition-all cursor-pointer">
                     {t('clearCV')}
                   </button>
-                  <button type="submit" disabled={isLoading} className="flex-1 bg-emerald-600 hover:bg-emerald-500 active:bg-emerald-700 text-white font-bold py-2.5 px-4 rounded-xl flex items-center justify-center gap-2 transition-all shadow-lg shadow-emerald-900/20 disabled:opacity-70 cursor-pointer">
+                  <button
+                    type="submit"
+                    disabled={isLoading || isCheckingSlug || (!isViewOnly && isSlugAvailable === false)}
+                    className="flex-1 bg-emerald-600 hover:bg-emerald-500 active:bg-emerald-700 text-white font-bold py-2.5 px-4 rounded-xl flex items-center justify-center gap-2 transition-all shadow-lg shadow-emerald-900/20 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
+                  >
                     {isLoading ? <Loader2 className="h-4 w-4 animate-spin" /> : <Save className="h-4 w-4" />}
                     <span>{isViewOnly ? t('updateCV') : t('saveAndPublish')}</span>
                   </button>
