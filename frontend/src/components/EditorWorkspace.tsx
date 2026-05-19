@@ -25,7 +25,8 @@ export function EditorWorkspace({ onExit, initialPasscode = '' }: { onExit: () =
     language, setLanguage, t,
     editingMode, setEditingMode,
     isTranslating, handleTranslateCV,
-    handleSave, handleClearAll, handleTemplateChange
+    handleSave, handleClearAll, handleTemplateChange,
+    draftToRecover, handleRecoverDraft, handleDiscardDraft
   } = editorState;
 
   const [activeTab, setActiveTab] = useState<string>("personal");
@@ -325,6 +326,32 @@ export function EditorWorkspace({ onExit, initialPasscode = '' }: { onExit: () =
                   {translationKey ? (language === 'vi' ? '🔄 Dịch lại toàn bộ' : '🔄 Retranslate All') : (language === 'vi' ? '🪄 Dịch AI thông minh' : '🪄 AI Smart Translate')}
                 </button>
               </div>
+              
+              {/* Draft Recovery Banner */}
+              {draftToRecover && (
+                <div className="bg-amber-500/10 border-b border-amber-500/20 px-4 py-3 flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs">
+                  <div className="flex items-center gap-2 text-amber-400 font-medium">
+                    <Sparkles className="h-4 w-4 shrink-0 animate-pulse" />
+                    <span>{t('draftAlert')}</span>
+                  </div>
+                  <div className="flex gap-2 shrink-0">
+                    <button
+                      type="button"
+                      onClick={handleRecoverDraft}
+                      className="px-3 py-1.5 bg-amber-600 hover:bg-amber-500 text-white font-bold rounded-lg transition-all cursor-pointer shadow-sm shadow-amber-900/10"
+                    >
+                      {t('draftRecover')}
+                    </button>
+                    <button
+                      type="button"
+                      onClick={handleDiscardDraft}
+                      className="px-3 py-1.5 bg-slate-800 hover:bg-slate-700 text-slate-300 font-semibold rounded-lg transition-all cursor-pointer border border-slate-700/50"
+                    >
+                      {t('draftDiscard')}
+                    </button>
+                  </div>
+                </div>
+              )}
 
               {/* Tab Selector Header */}
               <div className="flex flex-wrap items-center gap-2 px-4 py-3 bg-slate-950/30 border-b border-slate-800/85 select-none relative">

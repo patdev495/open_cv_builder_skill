@@ -2,7 +2,7 @@
 id: 0010
 title: Seamless Auto-Save Draft Safeguard
 type: AFK
-status: ready-for-agent
+status: completed
 blocked_by: ["#0001"]
 ---
 
@@ -16,9 +16,9 @@ Auto-saves CV draft locally to browser `localStorage` as the user edits, protect
 
 ## Acceptance criteria
 
-- [ ] Edits trigger debounce local storage write (e.g., 500ms).
-- [ ] Page reload fetches draft gracefully.
-- [ ] "Save to Cloud" clears local storage draft successfully.
+- [x] Edits trigger debounce local storage write (e.g., 500ms).
+- [x] Page reload fetches draft gracefully.
+- [x] "Save to Cloud" clears local storage draft successfully.
 
 ## Blocked by
 

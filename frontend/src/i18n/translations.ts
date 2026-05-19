@@ -173,7 +173,10 @@ export const TRANSLATIONS = {
     linkTitle: "Tên nhãn",
     linkUrl: "Đường dẫn liên kết (URL)",
     linkIcon: "Biểu tượng (Icon)",
-    iconPlaceholder: "Tự chọn hoặc để trống"
+    iconPlaceholder: "Tự chọn hoặc để trống",
+    draftAlert: "Phát hiện bản nháp có thay đổi chưa được lưu trên Cloud.",
+    draftRecover: "Khôi phục bản nháp",
+    draftDiscard: "Xóa bản nháp"
   },
   en: {
     title: "CV BUILDER PRO",
@@ -349,6 +352,9 @@ export const TRANSLATIONS = {
     linkTitle: "Label Name",
     linkUrl: "URL Link",
     linkIcon: "Icon Select",
-    iconPlaceholder: "Auto or select icon"
+    iconPlaceholder: "Auto or select icon",
+    draftAlert: "Unsaved local draft detected.",
+    draftRecover: "Recover Draft",
+    draftDiscard: "Discard Draft"
   }
 };

@@ -54,6 +54,9 @@ export interface CVEditorState {
   removeCertificate: (id: string) => void;
   addLanguage: () => void;
   removeLanguage: (id: string) => void;
+  draftToRecover: { cvData: CVSchema; template: string; editingMode: 'original' | 'translated' } | null;
+  handleRecoverDraft: () => void;
+  handleDiscardDraft: () => void;
 }
 
 export function useCVEditor(initialPasscode: string = ''): CVEditorState {
@@ -63,6 +66,49 @@ export function useCVEditor(initialPasscode: string = ''): CVEditorState {
   const [cvData, rawDispatch] = useReducer(cvDataReducer, DEFAULT_CV);
   const [editingMode, setEditingMode] = useState<'original' | 'translated'>('original');
   const [isTranslating, setIsTranslating] = useState<boolean>(false);
+  const [draftToRecover, setDraftToRecover] = useState<{ cvData: CVSchema; template: string; editingMode: 'original' | 'translated' } | null>(null);
+  const [hasResolvedDraft, setHasResolvedDraft] = useState<boolean>(false);
+
+  const checkDraft = (targetSlug: string, currentCv: CVSchema = DEFAULT_CV, currentTemp: string = 'modern') => {
+    try {
+      const key = targetSlug ? `cv_draft_${targetSlug}` : 'cv_draft_new';
+      const saved = localStorage.getItem(key);
+      if (saved) {
+        const parsed = JSON.parse(saved);
+        if (parsed && parsed.cvData) {
+          const isDifferent = JSON.stringify(parsed.cvData) !== JSON.stringify(currentCv) || parsed.template !== currentTemp || parsed.editingMode !== editingMode;
+          if (isDifferent) {
+            setDraftToRecover({ cvData: parsed.cvData, template: parsed.template, editingMode: parsed.editingMode || 'original' });
+            return;
+          }
+        }
+      }
+    } catch (e) {
+      console.error('Error checking local draft:', e);
+    }
+    setHasResolvedDraft(true);
+  };
+
+  const handleRecoverDraft = () => {
+    if (draftToRecover) {
+      dispatch({ type: 'LOAD_CV', payload: draftToRecover.cvData });
+      setTemplate(draftToRecover.template);
+      setEditingMode(draftToRecover.editingMode);
+      setDraftToRecover(null);
+    }
+    setHasResolvedDraft(true);
+  };
+
+  const handleDiscardDraft = () => {
+    try {
+      const key = slug ? `cv_draft_${slug}` : 'cv_draft_new';
+      localStorage.removeItem(key);
+    } catch (e) {
+      console.error(e);
+    }
+    setDraftToRecover(null);
+    setHasResolvedDraft(true);
+  };
 
   const dispatch = (action: CVAction) => {
     rawDispatch({ ...action, _mode: editingMode });
@@ -107,11 +153,13 @@ export function useCVEditor(initialPasscode: string = ''): CVEditorState {
       setTemplate(data.template || 'modern');
       // If we successfully load it, it means it's an existing CV (isViewOnly = true for handleSave)
       setIsViewOnly(true);
+      checkDraft(targetSlug, hydratedData, data.template || 'modern');
     } catch {
       // Not found, so we are creating a new one
       setIsViewOnly(false);
       dispatch({ type: 'LOAD_CV', payload: DEFAULT_CV });
       setStatusMessage({ type: 'success', text: `/${targetSlug} ${t('notExistYet')}` });
+      checkDraft(targetSlug, DEFAULT_CV, 'modern');
     } finally {
       setIsLoading(false);
     }
@@ -125,9 +173,26 @@ export function useCVEditor(initialPasscode: string = ''): CVEditorState {
       loadCVFromServer(path);
     } else {
       setIsViewOnly(false);
+      checkDraft('');
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  // Debounced Auto-save Effect
+  useEffect(() => {
+    if (!hasResolvedDraft) return;
+
+    const handler = setTimeout(() => {
+      try {
+        const key = slug ? `cv_draft_${slug}` : 'cv_draft_new';
+        localStorage.setItem(key, JSON.stringify({ cvData, template, editingMode }));
+      } catch (e) {
+        console.error('Failed to auto-save draft to localStorage:', e);
+      }
+    }, 500);
+
+    return () => clearTimeout(handler);
+  }, [cvData, template, editingMode, hasResolvedDraft, slug]);
 
   const handleSave = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -173,6 +238,9 @@ export function useCVEditor(initialPasscode: string = ''): CVEditorState {
     try {
       if (isViewOnly) {
         await api.updateCV(targetSlug, passcode, template, cleanedCvData);
+        try {
+          localStorage.removeItem(`cv_draft_${targetSlug}`);
+        } catch {}
         if (newWindow) {
           newWindow.location.href = targetUrl;
         }
@@ -185,6 +253,10 @@ export function useCVEditor(initialPasscode: string = ''): CVEditorState {
         });
       } else {
         await api.createCV(targetSlug, passcode, template, cleanedCvData);
+        try {
+          localStorage.removeItem('cv_draft_new');
+          localStorage.removeItem(`cv_draft_${targetSlug}`);
+        } catch {}
         if (newWindow) {
           newWindow.location.href = targetUrl;
         }
@@ -248,6 +320,12 @@ export function useCVEditor(initialPasscode: string = ''): CVEditorState {
       dispatch({ type: 'LOAD_CV', payload: DEFAULT_CV });
       setPasscode('');
       setIsViewOnly(false);
+      try {
+        const key = slug ? `cv_draft_${slug}` : 'cv_draft_new';
+        localStorage.removeItem(key);
+      } catch (e) {
+        console.error(e);
+      }
     }
   };
 
@@ -261,6 +339,7 @@ export function useCVEditor(initialPasscode: string = ''): CVEditorState {
     isTranslating, handleTranslateCV,
     handleSave,
     handleAvatarUpload, handleAvatarDelete, handleClearAll,
+    draftToRecover, handleRecoverDraft, handleDiscardDraft,
     addExperience: () => dispatch({ type: 'ADD_EXPERIENCE' }),
     removeExperience: (id: string) => dispatch({ type: 'REMOVE_EXPERIENCE', id }),
     addEducation: () => dispatch({ type: 'ADD_EDUCATION' }),
