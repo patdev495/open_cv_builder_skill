@@ -100,6 +100,7 @@ export const DEFAULT_CV: CVSchema = {
   layoutDensity: "normal",
   sectionGap: 24,
   pagePadding: 15,
+  fontSize: 0,
   pageLayout: "multi",
   themeMode: "light"
 };

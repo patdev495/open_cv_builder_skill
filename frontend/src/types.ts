@@ -106,6 +106,7 @@ export interface CVSchema {
   layoutDensity?: 'compact' | 'normal' | 'comfortable';
   sectionGap?: number;
   pagePadding?: number;
+  fontSize?: number;
   pageLayout?: 'single' | 'multi';
   sectionOrder?: string[];
   themeMode?: 'light' | 'dark' | 'auto';

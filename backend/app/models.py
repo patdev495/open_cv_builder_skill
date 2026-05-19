@@ -101,6 +101,7 @@ class CVSchema(BaseModel):
     themeMode: Optional[str] = "light"
     sectionGap: Optional[int] = None
     pagePadding: Optional[int] = None
+    fontSize: Optional[int] = None
     sectionSettings: Optional[Dict[str, SectionSetting]] = None
     translated_data: Optional[dict] = None
 

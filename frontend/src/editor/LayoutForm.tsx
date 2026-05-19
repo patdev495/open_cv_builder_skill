@@ -74,7 +74,7 @@ export function LayoutForm() {
                             type="range"
                             min="8"
                             max="32"
-                            step="2"
+                            step="1"
                             value={cvData.sectionGap ?? 24}
                             onChange={(e) => dispatch({ type: 'SET_SECTION_GAP', payload: parseInt(e.target.value) })}
                             className="w-full h-1.5 bg-slate-950 rounded-lg appearance-none cursor-pointer accent-purple-500 border border-slate-850"
@@ -94,6 +94,27 @@ export function LayoutForm() {
                             step="1"
                             value={cvData.pagePadding ?? 15}
                             onChange={(e) => dispatch({ type: 'SET_PAGE_PADDING', payload: parseInt(e.target.value) })}
+                            className="w-full h-1.5 bg-slate-950 rounded-lg appearance-none cursor-pointer accent-purple-500 border border-slate-850"
+                          />
+                        </div>
+
+                        {/* Font Size Adjust Slider */}
+                        <div className="space-y-1.5">
+                          <div className="flex items-center justify-between text-xs">
+                            <span className="font-semibold text-slate-400">{language === 'vi' ? 'Cỡ chữ chung:' : 'General Font Size:'}</span>
+                            <span className="font-mono font-bold text-purple-400">
+                              {(cvData.fontSize ?? 0) === 0 
+                                ? (language === 'vi' ? 'Mặc định' : 'Default') 
+                                : `${(cvData.fontSize ?? 0) > 0 ? '+' : ''}${(cvData.fontSize ?? 0)}px`}
+                            </span>
+                          </div>
+                          <input
+                            type="range"
+                            min="-2"
+                            max="4"
+                            step="1"
+                            value={cvData.fontSize ?? 0}
+                            onChange={(e) => dispatch({ type: 'SET_FONT_SIZE', payload: parseInt(e.target.value) })}
                             className="w-full h-1.5 bg-slate-950 rounded-lg appearance-none cursor-pointer accent-purple-500 border border-slate-850"
                           />
                         </div>

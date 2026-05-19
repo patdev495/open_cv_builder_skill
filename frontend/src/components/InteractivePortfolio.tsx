@@ -287,6 +287,7 @@ export function InteractivePortfolio({
             style={{
               '--cv-section-gap': `${cvData.sectionGap ?? 24}px`,
               '--cv-page-padding': `${cvData.pagePadding ?? 15}mm`,
+              '--cv-font-size-adjust': `${cvData.fontSize ?? 0}px`,
             } as React.CSSProperties}
             className={`
               cv-document

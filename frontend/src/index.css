@@ -233,6 +233,48 @@
   padding-bottom: var(--cv-section-gap, 24px) !important;
 }
 
+/* Dynamic Font Size Adjustment Engine */
+.cv-document {
+  --cv-font-size-adjust: 0px;
+}
+
+.cv-document .text-\[9px\] {
+  font-size: calc(9px + var(--cv-font-size-adjust, 0px)) !important;
+}
+.cv-document .text-\[10px\] {
+  font-size: calc(10px + var(--cv-font-size-adjust, 0px)) !important;
+}
+.cv-document .text-\[11px\] {
+  font-size: calc(11px + var(--cv-font-size-adjust, 0px)) !important;
+}
+.cv-document .text-xs {
+  font-size: calc(12px + var(--cv-font-size-adjust, 0px)) !important;
+}
+.cv-document .text-sm {
+  font-size: calc(14px + var(--cv-font-size-adjust, 0px)) !important;
+}
+.cv-document .text-base {
+  font-size: calc(16px + var(--cv-font-size-adjust, 0px)) !important;
+}
+.cv-document .text-lg {
+  font-size: calc(18px + var(--cv-font-size-adjust, 0px)) !important;
+}
+.cv-document .text-xl {
+  font-size: calc(20px + var(--cv-font-size-adjust, 0px)) !important;
+}
+.cv-document .text-\[22px\] {
+  font-size: calc(22px + var(--cv-font-size-adjust, 0px)) !important;
+}
+.cv-document .text-2xl {
+  font-size: calc(24px + var(--cv-font-size-adjust, 0px)) !important;
+}
+.cv-document .text-3xl {
+  font-size: calc(30px + var(--cv-font-size-adjust, 0px)) !important;
+}
+.cv-document .text-4xl {
+  font-size: calc(36px + var(--cv-font-size-adjust, 0px)) !important;
+}
+
 /* Perfect print support for custom page padding */
 @media print {
   .cv-document {

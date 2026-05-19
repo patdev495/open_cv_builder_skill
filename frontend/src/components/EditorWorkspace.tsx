@@ -157,7 +157,7 @@ export function EditorWorkspace({ onExit, initialPasscode = '' }: { onExit: () =
 
     // Try to shrink section gap first (min limit: 8px)
     if (autoFitRef.current.sectionGap > 8) {
-      autoFitRef.current.sectionGap -= 2;
+      autoFitRef.current.sectionGap -= 1;
       dispatch({ type: 'SET_SECTION_GAP', payload: autoFitRef.current.sectionGap });
       setTimeout(runAutoFitStep, 80); // slight delay for smooth visual transition
     } 
@@ -591,6 +591,7 @@ export function EditorWorkspace({ onExit, initialPasscode = '' }: { onExit: () =
                           style={{
                             '--cv-section-gap': `${cvData.sectionGap ?? 24}px`,
                             '--cv-page-padding': `${cvData.pagePadding ?? 15}mm`,
+                            '--cv-font-size-adjust': `${cvData.fontSize ?? 0}px`,
                           } as React.CSSProperties}
                           className={`
                             cv-document

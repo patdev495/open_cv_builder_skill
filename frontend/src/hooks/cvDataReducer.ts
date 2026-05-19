@@ -44,6 +44,7 @@ export type CVActionBase =
   | { type: 'SET_LAYOUT_DENSITY'; payload: 'compact' | 'normal' | 'comfortable' }
   | { type: 'SET_SECTION_GAP'; payload: number }
   | { type: 'SET_PAGE_PADDING'; payload: number }
+  | { type: 'SET_FONT_SIZE'; payload: number }
   | { type: 'SET_PAGE_LAYOUT'; payload: 'single' | 'multi' }
   | { type: 'SET_SECTION_ORDER'; payload: string[] }
   | { type: 'SET_THEME_MODE'; payload: 'light' | 'dark' | 'auto' }
@@ -453,6 +454,8 @@ export function cvDataReducer(state: CVSchema, action: CVAction): CVSchema {
       return { ...state, sectionGap: action.payload, translated_data: syncTrans(trans => ({ ...trans, sectionGap: action.payload })) };
     case 'SET_PAGE_PADDING':
       return { ...state, pagePadding: action.payload, translated_data: syncTrans(trans => ({ ...trans, pagePadding: action.payload })) };
+    case 'SET_FONT_SIZE':
+      return { ...state, fontSize: action.payload, translated_data: syncTrans(trans => ({ ...trans, fontSize: action.payload })) };
     case 'SET_PAGE_LAYOUT':
       return { ...state, pageLayout: action.payload, translated_data: syncTrans(trans => ({ ...trans, pageLayout: action.payload })) };
     case 'SET_SECTION_ORDER':
