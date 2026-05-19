@@ -267,18 +267,20 @@ export function EditorWorkspace({ onExit, initialPasscode = '' }: { onExit: () =
                       />
                     </div>
                   </div>
-                  <div className="space-y-1.5">
-                    <label className="text-xs font-bold text-slate-400 uppercase tracking-wider">{t('passcode')}</label>
-                    <input
-                      type="password"
-                      value={passcode}
-                      onChange={(e) => setPasscode(e.target.value)}
-                      className="w-full bg-slate-950 border border-slate-700 rounded-xl px-4 py-2.5 focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 outline-none transition-all text-sm font-medium"
-                      placeholder="••••••••"
-                      required
-                      disabled={isViewOnly}
-                    />
-                  </div>
+                  {!isViewOnly && (
+                    <div className="space-y-1.5">
+                      <label className="text-xs font-bold text-slate-400 uppercase tracking-wider">{t('passcode')}</label>
+                      <input
+                        type="password"
+                        value={passcode}
+                        onChange={(e) => setPasscode(e.target.value)}
+                        className="w-full bg-slate-950 border border-slate-700 rounded-xl px-4 py-2.5 focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 outline-none transition-all text-sm font-medium"
+                        placeholder="••••••••"
+                        required
+                        autoComplete="new-password"
+                      />
+                    </div>
+                  )}
                 </div>
                 <div className="flex gap-3 pt-2">
                   <button type="button" onClick={handleClearAll} className="px-4 py-2 bg-slate-800 hover:bg-rose-900/50 hover:text-rose-400 text-slate-400 text-sm font-semibold rounded-xl transition-all cursor-pointer">
@@ -286,7 +288,7 @@ export function EditorWorkspace({ onExit, initialPasscode = '' }: { onExit: () =
                   </button>
                   <button type="submit" disabled={isLoading} className="flex-1 bg-emerald-600 hover:bg-emerald-500 active:bg-emerald-700 text-white font-bold py-2.5 px-4 rounded-xl flex items-center justify-center gap-2 transition-all shadow-lg shadow-emerald-900/20 disabled:opacity-70 cursor-pointer">
                     {isLoading ? <Loader2 className="h-4 w-4 animate-spin" /> : <Save className="h-4 w-4" />}
-                    {isViewOnly ? t('updateCV') : t('saveAndPublish')}
+                    <span>{isViewOnly ? t('updateCV') : t('saveAndPublish')}</span>
                   </button>
                 </div>
               </form>

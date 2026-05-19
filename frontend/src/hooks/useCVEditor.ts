@@ -197,7 +197,7 @@ export function useCVEditor(initialPasscode: string = ''): CVEditorState {
   const handleSave = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!inputSlug.trim()) { setStatusMessage({ type: 'error', text: t('errorNoSlug') }); return; }
-    if (!passcode.trim())  { setStatusMessage({ type: 'error', text: t('errorNoPasscode') }); return; }
+    if (!isViewOnly && !passcode.trim()) { setStatusMessage({ type: 'error', text: t('errorNoPasscode') }); return; }
 
     setIsLoading(true);
     setStatusMessage(null);
@@ -227,6 +227,26 @@ export function useCVEditor(initialPasscode: string = ''): CVEditorState {
         </html>
       `);
       newWindow.document.close();
+    }
+
+    // If creating a new CV, check if slug is already taken
+    if (!isViewOnly) {
+      try {
+        const isAvailable = await api.checkSlugAvailable(targetSlug);
+        if (!isAvailable) {
+          if (newWindow) newWindow.close();
+          setStatusMessage({
+            type: 'error',
+            text: language === 'vi'
+              ? 'Đường dẫn này đã được sử dụng. Vui lòng chọn một đường dẫn khác.'
+              : 'This path (slug) is already taken. Please choose another one.'
+          });
+          setIsLoading(false);
+          return;
+        }
+      } catch (err) {
+        console.warn('Error checking slug availability:', err);
+      }
     }
 
     const cleanedCvData: CVSchema = {

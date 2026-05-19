@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { TRANSLATIONS } from './translations';
 
 export type LanguageCode = 'vi' | 'en';
@@ -14,6 +14,12 @@ export function useTranslation(): UseTranslationResult {
     const saved = localStorage.getItem('cv_builder_lang');
     return saved === 'en' || saved === 'vi' ? saved : 'en';
   });
+
+  useEffect(() => {
+    if (typeof document !== 'undefined') {
+      document.documentElement.lang = language;
+    }
+  }, [language]);
 
   const setLanguage = (lang: LanguageCode) => {
     localStorage.setItem('cv_builder_lang', lang);
