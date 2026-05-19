@@ -128,15 +128,15 @@ export const COLOR_MAP = {
     pill: "bg-rose-50 text-rose-700 border-rose-100 print:bg-rose-50 print:text-rose-700 print:border-rose-100"
   },
   amber: {
-    primary: "text-amber-600 print:text-amber-850",
+    primary: "text-amber-600 print:text-amber-800",
     bg: "bg-amber-600 print:bg-amber-600",
-    border: "border-amber-600 print:border-amber-850",
+    border: "border-amber-600 print:border-amber-800",
     lightBg: "bg-amber-50/50 print:bg-amber-50/50",
     pill: "bg-amber-50 text-amber-700 border-amber-100 print:bg-amber-50 print:text-amber-700 print:border-amber-100"
   },
   bronze: {
     primary: "text-amber-900 print:text-amber-950",
-    bg: "bg-amber-800 print:bg-amber-850",
+    bg: "bg-amber-800 print:bg-amber-800",
     border: "border-amber-800 print:border-amber-950",
     lightBg: "bg-amber-50/30 print:bg-amber-50/30",
     pill: "bg-amber-50 text-amber-900 border-amber-200 print:bg-amber-50 print:text-amber-900 print:border-amber-200"

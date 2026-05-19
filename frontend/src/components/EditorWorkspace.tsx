@@ -389,23 +389,28 @@ export function EditorWorkspace({ onExit, initialPasscode = '' }: { onExit: () =
             <div className="relative transition-all duration-300 rounded-2xl shadow-2xl border border-slate-700/50 bg-slate-900/50 backdrop-blur-md">
               <div className="absolute top-4 right-4 z-20 flex gap-3">
                 {/* CV Theme Color Picker */}
-                <div className="flex bg-slate-800/80 backdrop-blur-md rounded-xl p-1.5 shadow-lg border border-slate-700/50 items-center">
+                <div className="flex bg-slate-850/90 backdrop-blur-md rounded-xl p-1.5 shadow-lg border border-slate-700/60 items-center gap-1">
                   {(['indigo', 'emerald', 'rose', 'amber', 'bronze', 'slate'] as const).map((color) => {
                     const dotColor = color === 'indigo' ? 'bg-indigo-600' 
                                    : color === 'emerald' ? 'bg-emerald-600'
                                    : color === 'rose' ? 'bg-rose-600' 
                                    : color === 'amber' ? 'bg-amber-600' 
-                                   : color === 'bronze' ? 'bg-amber-850' 
-                                   : 'bg-slate-600';
+                                   : color === 'bronze' ? 'bg-amber-800' 
+                                   : 'bg-slate-500';
+                    const isActive = (cvData.themeColor || 'indigo') === color;
                     return (
                       <button
                         key={color}
                         type="button"
                         onClick={() => dispatch({ type: 'SET_THEME_COLOR', payload: color })}
-                        className={`w-5 h-5 rounded-full ${dotColor} mx-1 transition-all hover:scale-110 active:scale-95 cursor-pointer relative flex items-center justify-center`}
+                        className={`w-5 h-5 rounded-full ${dotColor} mx-0.5 transition-all duration-300 hover:scale-120 active:scale-90 cursor-pointer relative flex items-center justify-center border ${
+                          isActive 
+                            ? 'border-white scale-110 shadow-[0_0_8px_rgba(255,255,255,0.4)]' 
+                            : 'border-slate-700/40 hover:border-slate-500/60'
+                        }`}
                         title={color}
                       >
-                        {(cvData.themeColor || 'indigo') === color && (
+                        {isActive && (
                           <span className="w-1.5 h-1.5 bg-white rounded-full"></span>
                         )}
                       </button>
