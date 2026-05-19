@@ -453,15 +453,6 @@ export function cvDataReducer(state: CVSchema, action: CVAction): CVSchema {
       };
     }
     case 'UPDATE_CUSTOM_SECTION_ITEM': {
-      const customSections = (state.customSections || []).map(sec => {
-        if (sec.id === action.sectionId) {
-          const items = sec.items.map(item => 
-            item.id === action.itemId ? { ...item, ...action.payload } : item
-          );
-          return { ...sec, items };
-        }
-        return sec;
-      });
       const { title, subtitle, date, url, description } = action.payload;
       const content = { title, subtitle, description };
       const structural = { date, url };
