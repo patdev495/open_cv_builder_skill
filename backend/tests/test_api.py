@@ -73,6 +73,15 @@ def test_create_cv(client: TestClient):
     assert data["cv_data"]["personalInfo"]["phone"] == "0987654321"
 
 
+def test_get_nonexistent_cv(client: TestClient):
+    """
+    Verify fetching a CV that does not exist returns 404 Not Found.
+    """
+    response = client.get("/api/cvs/nonexistent-slug")
+    assert response.status_code == 404
+    assert "Không tìm thấy CV" in response.json()["detail"]
+
+
 def test_slug_collision(client: TestClient):
     """
     Verify creating a CV with a duplicate slug is blocked (strict collision handling).
