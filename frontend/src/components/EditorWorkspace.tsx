@@ -9,6 +9,7 @@ import { EducationForm } from '../editor/EducationForm';
 import { ProjectsForm } from '../editor/ProjectsForm';
 import { SkillsForm } from '../editor/SkillsForm';
 import { ExtraForm } from '../editor/ExtraForm';
+import { CustomSectionsForm } from '../editor/CustomSectionsForm';
 import { LayoutForm } from '../editor/LayoutForm';
 import { AnalyticsDashboard } from './AnalyticsDashboard';
 import TemplateRenderer from '../templates/TemplateRenderer';
@@ -325,7 +326,7 @@ export function EditorWorkspace({ onExit, initialPasscode = '' }: { onExit: () =
               </div>
 
               {/* Tab Selector Header */}
-              <div className="grid grid-cols-3 sm:grid-cols-5 border-b border-slate-800/80 bg-slate-900/60">
+              <div className="flex flex-wrap items-center gap-2 px-4 py-3 bg-slate-950/30 border-b border-slate-800/85 select-none relative">
                 {[
                   { id: 'personal', name: t('personalInfo'), icon: User },
                   { id: 'summary', name: t('summary'), icon: FileText },
@@ -334,6 +335,7 @@ export function EditorWorkspace({ onExit, initialPasscode = '' }: { onExit: () =
                   { id: 'projects', name: t('projects'), icon: FolderGit2 },
                   { id: 'skills', name: t('skills'), icon: Wrench },
                   { id: 'extra', name: t('languages'), icon: Award },
+                  { id: 'custom', name: language === 'vi' ? 'Tùy chỉnh' : 'Custom', icon: Sparkles },
                   { id: 'layout', name: language === 'vi' ? 'Bố cục' : 'Layout', icon: Layers },
                   { id: 'analytics', name: language === 'vi' ? 'Thống kê' : 'Stats', icon: BarChart3 }
                 ].map((tab) => {
@@ -342,14 +344,14 @@ export function EditorWorkspace({ onExit, initialPasscode = '' }: { onExit: () =
                     <button
                       key={tab.id}
                       onClick={() => setActiveTab(tab.id)}
-                      className={`flex items-center justify-center gap-1.5 px-1 sm:px-2 py-3 border-b-2 text-[10px] sm:text-xs font-bold transition-all cursor-pointer text-center ${
+                      className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer flex-shrink-0 whitespace-nowrap border ${
                         activeTab === tab.id
-                          ? 'border-purple-500 text-purple-400 bg-purple-500/5'
-                          : 'border-transparent text-slate-400 hover:text-slate-200'
+                          ? 'bg-purple-500/10 border-purple-500/40 text-purple-400 font-extrabold shadow-[0_0_12px_rgba(168,85,247,0.12)]'
+                          : 'border-transparent text-slate-400 hover:text-slate-200 hover:bg-slate-800/40'
                       }`}
                     >
-                      <Icon className="h-3.5 w-3.5 shrink-0" />
-                      <span className="truncate sm:whitespace-normal">{tab.name}</span>
+                      <Icon className="h-4 w-4 shrink-0" />
+                      <span>{tab.name}</span>
                     </button>
                   );
                 })}
@@ -364,6 +366,7 @@ export function EditorWorkspace({ onExit, initialPasscode = '' }: { onExit: () =
                 {activeTab === 'projects' && <ProjectsForm />}
                 {activeTab === 'skills' && <SkillsForm />}
                 {activeTab === 'extra' && <ExtraForm />}
+                {activeTab === 'custom' && <CustomSectionsForm />}
                 {activeTab === 'layout' && <LayoutForm />}
                 {activeTab === 'analytics' && (
                   <div className="text-slate-300">

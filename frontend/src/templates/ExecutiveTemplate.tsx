@@ -1,6 +1,7 @@
 import { User, Briefcase, GraduationCap, FolderGit2, Wrench, Award, Languages, ExternalLink } from 'lucide-react';
 import { ProjectEmbed } from '../components/ProjectEmbed';
 import type { TemplateProps } from './types';
+import CustomSectionRenderer from './CustomSectionRenderer';
 
 export default function ExecutiveTemplate({ cvData, activeColor, t }: TemplateProps) {
   return (
@@ -21,10 +22,10 @@ export default function ExecutiveTemplate({ cvData, activeColor, t }: TemplatePr
                       {/* Summary */}
                       {cvData.summary && (
                         <div className="flex flex-col gap-2">
-                          <h3 className={`text-xs font-black uppercase tracking-wider ${activeColor.primary} font-mono pb-0.5 flex items-center gap-1.5`}>
-                            <User className="h-3.5 w-3.5 stroke-[2.5]" />
-                            {t('summaryUpper')}
-                          </h3>
+                           <h3 className={`text-xs font-black uppercase tracking-wider ${activeColor.primary} font-mono pb-0.5 flex items-center gap-1.5`}>
+                             <User className="h-3.5 w-3.5 stroke-[2.5]" />
+                             {t('summaryUpper')}
+                           </h3>
                           <p className="text-xs leading-relaxed text-slate-700 dark:text-slate-300 text-justify">{cvData.summary}</p>
                         </div>
                       )}
@@ -114,6 +115,14 @@ export default function ExecutiveTemplate({ cvData, activeColor, t }: TemplatePr
                           ))}
                         </div>
                       )}
+
+                      {/* Render custom sections with timeline or text layouts */}
+                      {(cvData.customSections || []).map(sec => {
+                        if (sec.layoutStyle !== 'cards') {
+                          return <CustomSectionRenderer key={sec.id} section={sec} activeColor={activeColor} t={t} />;
+                        }
+                        return null;
+                      })}
                     </div>
 
                     {/* Right Narrow Column (1/3) with beautiful Glassmorphism sidebar styling */}
@@ -219,6 +228,14 @@ export default function ExecutiveTemplate({ cvData, activeColor, t }: TemplatePr
                           ))}
                         </div>
                       )}
+
+                      {/* Render custom sections with cards layout */}
+                      {(cvData.customSections || []).map(sec => {
+                        if (sec.layoutStyle === 'cards') {
+                          return <CustomSectionRenderer key={sec.id} section={sec} activeColor={activeColor} t={t} />;
+                        }
+                        return null;
+                      })}
                     </div>
                   </div>
                 </div>

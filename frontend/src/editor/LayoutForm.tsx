@@ -154,8 +154,17 @@ export function LayoutForm() {
 
                     <div className="flex flex-col gap-2.5">
                       {(() => {
-                        const order = cvData.sectionOrder || ['summary', 'experience', 'projects', 'education', 'skills', 'certificates', 'languages'];
+                        const baseOrder = cvData.sectionOrder || ['summary', 'experience', 'projects', 'education', 'skills', 'certificates', 'languages'];
+                        const order = [...baseOrder];
                         
+                        // Append any custom sections not yet in sectionOrder
+                        const customSecs = cvData.customSections || [];
+                        customSecs.forEach((sec: any) => {
+                          if (!order.includes(sec.id)) {
+                            order.push(sec.id);
+                          }
+                        });
+
                         const SECTION_META = {
                           summary: { nameVi: 'Tóm tắt (Summary)', nameEn: 'Summary', icon: User },
                           experience: { nameVi: 'Kinh nghiệm làm việc', nameEn: 'Work Experience', icon: Briefcase },
@@ -166,10 +175,21 @@ export function LayoutForm() {
                           languages: { nameVi: 'Ngoại ngữ', nameEn: 'Languages', icon: Languages }
                         };
 
-                        return (order as string[]).map((sec: string, idx: number) => {
-                          const meta = SECTION_META[sec as keyof typeof SECTION_META];
-                          if (!meta) return null;
-                          const IconComp = meta.icon;
+                        return order.map((sec: string, idx: number) => {
+                          const isCustom = sec.startsWith('custom-');
+                          let name = '';
+                          let IconComp: any = Sparkles;
+                          
+                          if (isCustom) {
+                            const customSec = customSecs.find((s: any) => s.id === sec);
+                            if (!customSec) return null;
+                            name = customSec.title || (language === 'vi' ? 'Mục tùy chỉnh' : 'Custom Section');
+                          } else {
+                            const meta = SECTION_META[sec as keyof typeof SECTION_META];
+                            if (!meta) return null;
+                            name = language === 'vi' ? meta.nameVi : meta.nameEn;
+                            IconComp = meta.icon;
+                          }
 
                           return (
                             <div 
@@ -181,7 +201,7 @@ export function LayoutForm() {
                                   <IconComp className="h-4 w-4" />
                                 </div>
                                 <span className="text-xs font-bold text-slate-200">
-                                  {language === 'vi' ? meta.nameVi : meta.nameEn}
+                                  {name}
                                 </span>
                               </div>
 

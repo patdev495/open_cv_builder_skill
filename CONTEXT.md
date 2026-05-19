@@ -64,6 +64,10 @@ _Avoid_: Visibility filter, manual toggling, explicit display settings
 Cơ chế lưu trữ và hiển thị các bản dịch song hành của một **CV** trong cùng một **CV Schema** (thông qua `translated_data`). Người dùng có thể dùng AI dịch 1-click toàn bộ CV, và nhà tuyển dụng có thể chuyển đổi ngôn ngữ hiển thị tức thì trên **Interactive Portfolio**.
 _Avoid_: Translation split, duplicate CV, localized clone
 
+**Custom Section** (Khối nội dung tùy chỉnh):
+Một vùng nội dung linh hoạt được người dùng tự do khởi tạo và đặt tên tiêu đề riêng (ví dụ: Hoạt động ngoại khóa, Người tham chiếu, Ấn phẩm nghiên cứu), hỗ trợ đa dạng cấu trúc hiển thị tùy chọn (Timeline, Card Grid, hoặc Paragraph) để mở rộng khả năng cá nhân hóa của **CV**.
+_Avoid_: Custom block, freeform text, extra fields
+
 ## Relationships
 
 - A **CV** is represented by a single **CV Schema**

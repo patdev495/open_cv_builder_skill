@@ -2,6 +2,15 @@
 @import "tailwindcss";
 @custom-variant dark (&:where(.dark, .dark *));
 
+/* Hide scrollbar utility for clean premium views */
+.scrollbar-none::-webkit-scrollbar {
+  display: none;
+}
+.scrollbar-none {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
 /* Auto-scale the entire webpage to 90% zoom on laptop screen sizes for a more compact and elegant view */
 @media screen and (min-width: 1024px) and (max-width: 1600px) {
   body {

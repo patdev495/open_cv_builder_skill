@@ -1,6 +1,7 @@
 import { User, Briefcase, GraduationCap, FolderGit2, Wrench, Award, Languages, ExternalLink } from 'lucide-react';
 import { ProjectEmbed } from '../components/ProjectEmbed';
 import type { TemplateProps } from './types';
+import CustomSectionRenderer from './CustomSectionRenderer';
 
 export default function MinimalTemplate({ cvData, activeColor, t }: TemplateProps) {
   return (
@@ -132,6 +133,18 @@ export default function MinimalTemplate({ cvData, activeColor, t }: TemplateProp
                     </div>
                   )}
 
+                  {/* Render Custom Sections with timeline/text layout sequentially */}
+                  {(cvData.customSections || []).map(sec => {
+                    if (sec.layoutStyle !== 'cards') {
+                      return (
+                        <div key={sec.id} className="flex flex-col gap-3">
+                          <CustomSectionRenderer section={sec} activeColor={activeColor} t={t} />
+                        </div>
+                      );
+                    }
+                    return null;
+                  })}
+
                   {/* Grid elements at bottom */}
                   <div className="grid grid-cols-2 gap-8 border-t border-slate-100 dark:border-slate-800 dark:border-slate-400 pt-4 print:border-slate-350">
                     
@@ -173,7 +186,7 @@ export default function MinimalTemplate({ cvData, activeColor, t }: TemplateProp
                       )}
                     </div>
 
-                    {/* Right Grid: Skills & Languages */}
+                    {/* Right Grid: Skills, Languages & Cards Custom Sections */}
                     <div className="flex flex-col gap-5">
                       {/* Skills */}
                       {cvData.skills.length > 0 && (
@@ -210,6 +223,18 @@ export default function MinimalTemplate({ cvData, activeColor, t }: TemplateProp
                           </div>
                         </div>
                       )}
+
+                      {/* Render Custom Sections with cards layout inside right narrow grid column */}
+                      {(cvData.customSections || []).map(sec => {
+                        if (sec.layoutStyle === 'cards') {
+                          return (
+                            <div key={sec.id} className="flex flex-col gap-2">
+                              <CustomSectionRenderer section={sec} activeColor={activeColor} t={t} />
+                            </div>
+                          );
+                        }
+                        return null;
+                      })}
                     </div>
                   </div>
                 </div>

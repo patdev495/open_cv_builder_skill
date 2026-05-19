@@ -55,6 +55,20 @@ class LanguageItem(BaseModel):
     name: str
     level: str
 
+class CustomSectionItem(BaseModel):
+    id: str
+    title: str
+    subtitle: Optional[str] = None
+    date: Optional[str] = None
+    url: Optional[str] = None
+    description: Optional[str] = None
+
+class CustomSection(BaseModel):
+    id: str
+    title: str
+    layoutStyle: Optional[str] = "timeline"
+    items: List[CustomSectionItem] = []
+
 class CVSchema(BaseModel):
     personalInfo: PersonalInfo
     summary: Optional[str] = None
@@ -64,6 +78,7 @@ class CVSchema(BaseModel):
     skills: List[SkillGroup] = []
     certificates: List[CertificateItem] = []
     languages: List[LanguageItem] = []
+    customSections: Optional[List[CustomSection]] = []
     themeColor: Optional[str] = "indigo"
     fontFamily: Optional[str] = "sans"
     layoutDensity: Optional[str] = "normal"

@@ -60,6 +60,22 @@ export interface LanguageItem {
   level: string;
 }
 
+export interface CustomSectionItem {
+  id: string;
+  title: string;
+  subtitle?: string;
+  date?: string;
+  url?: string;
+  description?: string;
+}
+
+export interface CustomSection {
+  id: string;
+  title: string;
+  layoutStyle?: 'timeline' | 'cards' | 'text';
+  items: CustomSectionItem[];
+}
+
 export interface CVSchema {
   personalInfo: PersonalInfo;
   summary?: string;
@@ -69,6 +85,7 @@ export interface CVSchema {
   skills: SkillGroup[];
   certificates: CertificateItem[];
   languages: LanguageItem[];
+  customSections?: CustomSection[];
   themeColor?: string;
   fontFamily?: string;
   layoutDensity?: 'compact' | 'normal' | 'comfortable';

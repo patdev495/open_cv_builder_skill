@@ -1,6 +1,7 @@
 import { User, Briefcase, GraduationCap, FolderGit2, Wrench, Award, Languages, ExternalLink } from 'lucide-react';
 import { ProjectEmbed } from '../components/ProjectEmbed';
 import type { TemplateProps } from './types';
+import CustomSectionRenderer from './CustomSectionRenderer';
 
 export default function ModernTemplate({ cvData, activeColor, t }: TemplateProps) {
   return (
@@ -54,9 +55,27 @@ export default function ModernTemplate({ cvData, activeColor, t }: TemplateProps
                     {/* Left narrow sidebar with Glassmorphism */}
                     <div className="md:col-span-1 print:col-span-1 flex flex-col gap-6 glass-sidebar">
                       {(() => {
-                        const order = cvData.sectionOrder || ['summary', 'experience', 'projects', 'education', 'skills', 'certificates', 'languages'];
-                        const sidebarSections = order.filter(sec => ['skills', 'languages', 'certificates'].includes(sec));
+                        const baseOrder = cvData.sectionOrder || ['summary', 'experience', 'projects', 'education', 'skills', 'certificates', 'languages'];
+                        const order = [...baseOrder];
+                        const customSecs = cvData.customSections || [];
+                        customSecs.forEach((sec: any) => {
+                          if (!order.includes(sec.id)) {
+                            order.push(sec.id);
+                          }
+                        });
+
+                        const sidebarSections = order.filter(sec => 
+                          ['skills', 'languages', 'certificates'].includes(sec) ||
+                          (sec.startsWith('custom-') && customSecs.find(s => s.id === sec)?.layoutStyle === 'cards')
+                        );
+
                         return sidebarSections.map((sec) => {
+                          if (sec.startsWith('custom-')) {
+                            const customSec = customSecs.find(s => s.id === sec);
+                            if (customSec) {
+                              return <CustomSectionRenderer key={sec} section={customSec} activeColor={activeColor} t={t} />;
+                            }
+                          }
                           if (sec === 'skills' && cvData.skills.length > 0) {
                             return (
                               <div key={sec} className="flex flex-col gap-3">
@@ -121,9 +140,27 @@ export default function ModernTemplate({ cvData, activeColor, t }: TemplateProps
                     {/* Right wide main column */}
                     <div className="md:col-span-2 print:col-span-2 flex flex-col gap-6">
                       {(() => {
-                        const order = cvData.sectionOrder || ['summary', 'experience', 'projects', 'education', 'skills', 'certificates', 'languages'];
-                        const mainSections = order.filter(sec => ['summary', 'experience', 'projects', 'education'].includes(sec));
+                        const baseOrder = cvData.sectionOrder || ['summary', 'experience', 'projects', 'education', 'skills', 'certificates', 'languages'];
+                        const order = [...baseOrder];
+                        const customSecs = cvData.customSections || [];
+                        customSecs.forEach((sec: any) => {
+                          if (!order.includes(sec.id)) {
+                            order.push(sec.id);
+                          }
+                        });
+
+                        const mainSections = order.filter(sec => 
+                          ['summary', 'experience', 'projects', 'education'].includes(sec) ||
+                          (sec.startsWith('custom-') && customSecs.find(s => s.id === sec)?.layoutStyle !== 'cards')
+                        );
+
                         return mainSections.map((sec) => {
+                          if (sec.startsWith('custom-')) {
+                            const customSec = customSecs.find(s => s.id === sec);
+                            if (customSec) {
+                              return <CustomSectionRenderer key={sec} section={customSec} activeColor={activeColor} t={t} />;
+                            }
+                          }
                           if (sec === 'summary' && cvData.summary) {
                             return (
                               <div key={sec} className="flex flex-col gap-2">

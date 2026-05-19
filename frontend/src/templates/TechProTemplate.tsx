@@ -1,6 +1,7 @@
 import { User, Briefcase, GraduationCap, FolderGit2, Wrench, Award, Languages, ExternalLink, Code } from 'lucide-react';
 import { ProjectEmbed } from '../components/ProjectEmbed';
 import type { TemplateProps } from './types';
+import CustomSectionRenderer from './CustomSectionRenderer';
 
 export default function TechProTemplate({ cvData, activeColor, t }: TemplateProps) {
   const activeColorName = activeColor.primary.includes('indigo') ? 'indigo'
@@ -77,10 +78,27 @@ export default function TechProTemplate({ cvData, activeColor, t }: TemplateProp
         {/* Left wider main column (60% weight -> 7/12 cols) */}
         <div className="md:col-span-7 print:col-span-7 flex flex-col gap-6">
           {(() => {
-            const order = cvData.sectionOrder || ['summary', 'experience', 'projects', 'education', 'skills', 'certificates', 'languages'];
-            const leftSections = order.filter(sec => ['summary', 'experience', 'projects'].includes(sec));
+            const baseOrder = cvData.sectionOrder || ['summary', 'experience', 'projects', 'education', 'skills', 'certificates', 'languages'];
+            const order = [...baseOrder];
+            const customSecs = cvData.customSections || [];
+            customSecs.forEach((sec: any) => {
+              if (!order.includes(sec.id)) {
+                order.push(sec.id);
+              }
+            });
+
+            const leftSections = order.filter(sec => 
+              ['summary', 'experience', 'projects'].includes(sec) ||
+              (sec.startsWith('custom-') && customSecs.find(s => s.id === sec)?.layoutStyle !== 'cards')
+            );
             
             return leftSections.map((sec) => {
+              if (sec.startsWith('custom-')) {
+                const customSec = customSecs.find(s => s.id === sec);
+                if (customSec) {
+                  return <CustomSectionRenderer key={sec} section={customSec} activeColor={activeColor} t={t} />;
+                }
+              }
               if (sec === 'summary' && cvData.summary) {
                 return (
                   <div key={sec} className="flex flex-col gap-2.5">
@@ -178,10 +196,27 @@ export default function TechProTemplate({ cvData, activeColor, t }: TemplateProp
         {/* Right narrower secondary column (40% weight -> 5/12 cols) */}
         <div className="md:col-span-5 print:col-span-5 flex flex-col gap-6">
           {(() => {
-            const order = cvData.sectionOrder || ['summary', 'experience', 'projects', 'education', 'skills', 'certificates', 'languages'];
-            const rightSections = order.filter(sec => ['skills', 'education', 'certificates', 'languages'].includes(sec));
+            const baseOrder = cvData.sectionOrder || ['summary', 'experience', 'projects', 'education', 'skills', 'certificates', 'languages'];
+            const order = [...baseOrder];
+            const customSecs = cvData.customSections || [];
+            customSecs.forEach((sec: any) => {
+              if (!order.includes(sec.id)) {
+                order.push(sec.id);
+              }
+            });
+
+            const rightSections = order.filter(sec => 
+              ['skills', 'education', 'certificates', 'languages'].includes(sec) ||
+              (sec.startsWith('custom-') && customSecs.find(s => s.id === sec)?.layoutStyle === 'cards')
+            );
             
             return rightSections.map((sec) => {
+              if (sec.startsWith('custom-')) {
+                const customSec = customSecs.find(s => s.id === sec);
+                if (customSec) {
+                  return <CustomSectionRenderer key={sec} section={customSec} activeColor={activeColor} t={t} />;
+                }
+              }
               if (sec === 'skills' && cvData.skills.length > 0) {
                 return (
                   <div key={sec} className="flex flex-col gap-3">
@@ -191,7 +226,7 @@ export default function TechProTemplate({ cvData, activeColor, t }: TemplateProp
                     </h3>
                     <div className="flex flex-col gap-3">
                       {cvData.skills.map((grp) => (
-                        <div key={grp.id} className="p-3 rounded-2xl bg-slate-50/50 dark:bg-slate-900/30 border border-slate-100/50 dark:border-slate-850/50 flex flex-col gap-1.5 print:bg-transparent print:border-0 print:p-0">
+                        <div key={grp.id} className="p-3 rounded-2xl bg-slate-55/50 dark:bg-slate-900/30 border border-slate-100/50 dark:border-slate-850/50 flex flex-col gap-1.5 print:bg-transparent print:border-0 print:p-0">
                           <span className="text-xs font-extrabold text-slate-800 dark:text-slate-200 print:text-black">{grp.category}</span>
                           <div className="flex flex-wrap gap-1.5">
                             {grp.skills.filter(Boolean).map((s, i) => (

@@ -47,6 +47,13 @@ export type CVActionBase =
   | { type: 'SET_PAGE_LAYOUT'; payload: 'single' | 'multi' }
   | { type: 'SET_SECTION_ORDER'; payload: string[] }
   | { type: 'SET_THEME_MODE'; payload: 'light' | 'dark' | 'auto' }
+  // Custom Sections
+  | { type: 'ADD_CUSTOM_SECTION'; payload?: { title?: string; layoutStyle?: 'timeline' | 'cards' | 'text' } }
+  | { type: 'UPDATE_CUSTOM_SECTION'; id: string; payload: Partial<{ title: string; layoutStyle: 'timeline' | 'cards' | 'text' }> }
+  | { type: 'REMOVE_CUSTOM_SECTION'; id: string }
+  | { type: 'ADD_CUSTOM_SECTION_ITEM'; sectionId: string }
+  | { type: 'UPDATE_CUSTOM_SECTION_ITEM'; sectionId: string; itemId: string; payload: Partial<{ title: string; subtitle: string; date: string; url: string; description: string }> }
+  | { type: 'REMOVE_CUSTOM_SECTION_ITEM'; sectionId: string; itemId: string }
   // Translation support
   | { type: 'SET_TRANSLATED_DATA'; payload: CVSchema }
   // Bulk operations
@@ -370,6 +377,162 @@ export function cvDataReducer(state: CVSchema, action: CVAction): CVSchema {
       return { ...state, sectionOrder: action.payload, translated_data: syncTrans(trans => ({ ...trans, sectionOrder: action.payload })) };
     case 'SET_THEME_MODE':
       return { ...state, themeMode: action.payload, translated_data: syncTrans(trans => ({ ...trans, themeMode: action.payload })) };
+
+    // ── Custom Sections ──────────────────────────────────────────────────
+    case 'ADD_CUSTOM_SECTION': {
+      const sectionCount = (state.customSections?.length || 0) + 1;
+      const newSec = {
+        id: `custom-${Date.now()}`,
+        title: `Custom Section ${sectionCount}`,
+        layoutStyle: 'timeline' as const,
+        items: []
+      };
+      const customSections = [...(state.customSections || []), newSec];
+      return {
+        ...state,
+        customSections,
+        translated_data: syncTrans(trans => ({
+          ...trans,
+          customSections: [...(trans.customSections || []), { ...newSec }]
+        }))
+      };
+    }
+    case 'UPDATE_CUSTOM_SECTION': {
+      const customSections = (state.customSections || []).map(sec => 
+        sec.id === action.id ? { ...sec, ...action.payload } : sec
+      );
+      return {
+        ...state,
+        customSections,
+        translated_data: syncTrans(trans => ({
+          ...trans,
+          customSections: (trans.customSections || []).map(sec => 
+            sec.id === action.id ? { ...sec, ...action.payload } : sec
+          )
+        }))
+      };
+    }
+    case 'REMOVE_CUSTOM_SECTION': {
+      const customSections = (state.customSections || []).filter(sec => sec.id !== action.id);
+      return {
+        ...state,
+        customSections,
+        translated_data: syncTrans(trans => ({
+          ...state,
+          customSections: (trans.customSections || []).filter(sec => sec.id !== action.id)
+        }))
+      };
+    }
+    case 'ADD_CUSTOM_SECTION_ITEM': {
+      const newItem = {
+        id: `citem-${Date.now()}`,
+        title: '',
+        subtitle: '',
+        date: '',
+        url: '',
+        description: ''
+      };
+      const customSections = (state.customSections || []).map(sec => {
+        if (sec.id === action.sectionId) {
+          return { ...sec, items: [...sec.items, newItem] };
+        }
+        return sec;
+      });
+      return {
+        ...state,
+        customSections,
+        translated_data: syncTrans(trans => ({
+          ...trans,
+          customSections: (trans.customSections || []).map(sec => {
+            if (sec.id === action.sectionId) {
+              return { ...sec, items: [...sec.items, { ...newItem }] };
+            }
+            return sec;
+          })
+        }))
+      };
+    }
+    case 'UPDATE_CUSTOM_SECTION_ITEM': {
+      const customSections = (state.customSections || []).map(sec => {
+        if (sec.id === action.sectionId) {
+          const items = sec.items.map(item => 
+            item.id === action.itemId ? { ...item, ...action.payload } : item
+          );
+          return { ...sec, items };
+        }
+        return sec;
+      });
+      const { title, subtitle, date, url, description } = action.payload;
+      const content = { title, subtitle, description };
+      const structural = { date, url };
+      
+      if (isOriginal) {
+        return {
+          ...state,
+          customSections,
+          translated_data: syncTrans(trans => ({
+            ...trans,
+            customSections: (trans.customSections || []).map(sec => {
+              if (sec.id === action.sectionId) {
+                const items = sec.items.map(item => 
+                  item.id === action.itemId ? { ...item, ...structural } : item
+                );
+                return { ...sec, items };
+              }
+              return sec;
+            })
+          }))
+        };
+      } else {
+        return {
+          ...state,
+          customSections: (state.customSections || []).map(sec => {
+            if (sec.id === action.sectionId) {
+              const items = sec.items.map(item => 
+                item.id === action.itemId ? { ...item, ...structural } : item
+              );
+              return { ...sec, items };
+            }
+            return sec;
+          }),
+          translated_data: syncTrans(trans => ({
+            ...trans,
+            customSections: (trans.customSections || []).map(sec => {
+              if (sec.id === action.sectionId) {
+                const items = sec.items.map(item => 
+                  item.id === action.itemId ? { ...item, ...structural, ...content } : item
+                );
+                return { ...sec, items };
+              }
+              return sec;
+            })
+          }))
+        };
+      }
+    }
+    case 'REMOVE_CUSTOM_SECTION_ITEM': {
+      const customSections = (state.customSections || []).map(sec => {
+        if (sec.id === action.sectionId) {
+          const items = sec.items.filter(item => item.id !== action.itemId);
+          return { ...sec, items };
+        }
+        return sec;
+      });
+      return {
+        ...state,
+        customSections,
+        translated_data: syncTrans(trans => ({
+          ...trans,
+          customSections: (trans.customSections || []).map(sec => {
+            if (sec.id === action.sectionId) {
+              const items = sec.items.filter(item => item.id !== action.itemId);
+              return { ...sec, items };
+            }
+            return sec;
+          })
+        }))
+      };
+    }
 
     // ── Bulk ──────────────────────────────────────────────────────────────
     case 'LOAD_CV':

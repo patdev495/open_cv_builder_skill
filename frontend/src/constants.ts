@@ -92,6 +92,7 @@ export const DEFAULT_CV: CVSchema = {
       level: "Chuyên nghiệp (IELTS 7.5)"
     }
   ],
+  customSections: [],
   themeColor: "indigo",
   fontFamily: "sans",
   layoutDensity: "normal",
