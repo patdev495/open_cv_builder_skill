@@ -3,7 +3,7 @@
  * Implements real-time Structural Mirroring for bilingual editing.
  * Language Agnostic Version: original vs translated.
  */
-import type { CVSchema, ExperienceItem, EducationItem, ProjectItem, SkillGroup, CertificateItem, LanguageItem, PersonalInfo } from '../types';
+import type { CVSchema, ExperienceItem, EducationItem, ProjectItem, SkillGroup, CertificateItem, LanguageItem, PersonalInfo, CustomSectionItem } from '../types';
 import { DEFAULT_CV } from '../constants';
 
 // ── Action union type ──────────────────────────────────────────────────────
