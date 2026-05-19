@@ -12,7 +12,7 @@ export interface UseTranslationResult {
 export function useTranslation(): UseTranslationResult {
   const [language, setLanguageState] = useState<LanguageCode>(() => {
     const saved = localStorage.getItem('cv_builder_lang');
-    return saved === 'en' || saved === 'vi' ? saved : 'vi';
+    return saved === 'en' || saved === 'vi' ? saved : 'en';
   });
 
   const setLanguage = (lang: LanguageCode) => {

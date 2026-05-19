@@ -2,6 +2,13 @@
 @import "tailwindcss";
 @custom-variant dark (&:where(.dark, .dark *));
 
+/* Auto-scale the entire webpage to 90% zoom on laptop screen sizes for a more compact and elegant view */
+@media screen and (min-width: 1024px) and (max-width: 1600px) {
+  body {
+    zoom: 90%;
+  }
+}
+
 /* Base Tailwind v4 configurations and customizations can be defined here */
 
 /* ========================================================
