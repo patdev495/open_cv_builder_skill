@@ -10,7 +10,7 @@ interface CustomSectionRendererProps {
   t: (key: string) => string;
 }
 
-export default function CustomSectionRenderer({ section, activeColor, t }: CustomSectionRendererProps) {
+export default function CustomSectionRenderer({ section, activeColor }: CustomSectionRendererProps) {
   if (!section || !section.items || section.items.length === 0) return null;
 
   const layout = section.layoutStyle || 'timeline';

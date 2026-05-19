@@ -469,13 +469,21 @@ export function cvDataReducer(state: CVSchema, action: CVAction): CVSchema {
       if (isOriginal) {
         return {
           ...state,
-          customSections,
+          customSections: (state.customSections || []).map(sec => {
+            if (sec.id === action.sectionId) {
+              const items = sec.items.map(item => 
+                item.id === action.itemId ? ({ ...item, ...action.payload } as CustomSectionItem) : item
+              );
+              return { ...sec, items };
+            }
+            return sec;
+          }),
           translated_data: syncTrans(trans => ({
             ...trans,
             customSections: (trans.customSections || []).map(sec => {
               if (sec.id === action.sectionId) {
                 const items = sec.items.map(item => 
-                  item.id === action.itemId ? { ...item, ...structural } : item
+                  item.id === action.itemId ? ({ ...item, ...structural } as CustomSectionItem) : item
                 );
                 return { ...sec, items };
               }
@@ -489,7 +497,7 @@ export function cvDataReducer(state: CVSchema, action: CVAction): CVSchema {
           customSections: (state.customSections || []).map(sec => {
             if (sec.id === action.sectionId) {
               const items = sec.items.map(item => 
-                item.id === action.itemId ? { ...item, ...structural } : item
+                item.id === action.itemId ? ({ ...item, ...structural } as CustomSectionItem) : item
               );
               return { ...sec, items };
             }
@@ -500,7 +508,7 @@ export function cvDataReducer(state: CVSchema, action: CVAction): CVSchema {
             customSections: (trans.customSections || []).map(sec => {
               if (sec.id === action.sectionId) {
                 const items = sec.items.map(item => 
-                  item.id === action.itemId ? { ...item, ...structural, ...content } : item
+                  item.id === action.itemId ? ({ ...item, ...structural, ...content } as CustomSectionItem) : item
                 );
                 return { ...sec, items };
               }
