@@ -38,9 +38,10 @@ export default function SkillsSectionRenderer({
 
   const setting = cvData.sectionSettings?.skills || {};
   const title = setting.title || t('skillsUpper');
-  const layoutStyle: 'timeline' | 'cards' | 'text' =
+  const layoutStyle: 'timeline' | 'cards' | 'text' | 'groupCards' =
     setting.layoutStyle === 'cards' ? 'cards'
     : setting.layoutStyle === 'text' ? 'text'
+    : setting.layoutStyle === 'groupCards' ? 'groupCards'
     : 'timeline';
 
   const defaultTitleClass = `text-xs font-bold uppercase tracking-wider ${activeColor.primary} pb-1 font-mono flex items-center gap-1.5 print:text-black border-b border-slate-100 dark:border-slate-800/40 print:border-slate-200`;
@@ -58,6 +59,34 @@ export default function SkillsSectionRenderer({
             </React.Fragment>
           ))}
         </p>
+      );
+    }
+
+    if (layoutStyle === 'groupCards') {
+      // Each SkillGroup rendered as a full-width card with border & background — visually premium
+      return (
+        <div className="flex flex-col gap-3">
+          {cvData.skills.map((grp: any) => (
+            <div
+              key={grp.id}
+              className="p-3 rounded-2xl bg-slate-50/50 dark:bg-slate-900/30 border border-slate-100/50 dark:border-slate-800/50 flex flex-col gap-1.5 print:bg-transparent break-inside-avoid"
+            >
+              <span className="text-xs font-extrabold text-slate-800 dark:text-slate-200 print:text-black">
+                {grp.category}
+              </span>
+              <div className="flex flex-wrap gap-1.5">
+                {grp.skills.filter(Boolean).map((s: string, i: number) => (
+                  <span
+                    key={i}
+                    className={`${activeColor.pill} px-2.5 py-0.5 rounded-lg text-[11px] font-bold border border-slate-100 dark:border-slate-800`}
+                  >
+                    {s}
+                  </span>
+                ))}
+              </div>
+            </div>
+          ))}
+        </div>
       );
     }
 
