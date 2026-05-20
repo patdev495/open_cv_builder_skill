@@ -332,7 +332,7 @@ export default function ModernTemplate({ cvData, activeColor, t }: TemplateProps
                           if (sec === 'languages' && cvData.languages.length > 0) {
                             const langTitle = cvData.sectionSettings?.languages?.title || t('languagesUpper');
                             return (
-                              <div key={sec} className="flex flex-col gap-2">
+                              <div key={sec} data-section="languages" className="flex flex-col gap-2">
                                 <h3 className={`text-xs font-bold uppercase tracking-wider ${activeColor.primary} pb-1 font-mono flex items-center gap-1.5 print:text-black border-b border-slate-100 dark:border-slate-800/40 print:border-slate-200`}>
                                   <Languages className="h-3.5 w-3.5 stroke-[2.5]" />
                                   <span>{langTitle}</span>
@@ -351,7 +351,7 @@ export default function ModernTemplate({ cvData, activeColor, t }: TemplateProps
                           if (sec === 'certificates' && cvData.certificates.length > 0) {
                             const certTitle = cvData.sectionSettings?.certificates?.title || t('certificatesUpper');
                             return (
-                              <div key={sec} className="flex flex-col gap-3">
+                              <div key={sec} data-section="certificates" className="flex flex-col gap-3">
                                 <h3 className={`text-xs font-bold uppercase tracking-wider ${activeColor.primary} pb-1 font-mono flex items-center gap-1.5 print:text-black border-b border-slate-100 dark:border-slate-800/40 print:border-slate-200`}>
                                   <Award className="h-3.5 w-3.5 stroke-[2.5]" />
                                   <span>{certTitle}</span>
@@ -369,7 +369,7 @@ export default function ModernTemplate({ cvData, activeColor, t }: TemplateProps
                         });
                       })()}
                     </div>
-
+ 
                     {/* Right wide main column */}
                     <div className="md:col-span-2 print:col-span-2 flex flex-col gap-6">
                       {(() => {
@@ -381,12 +381,12 @@ export default function ModernTemplate({ cvData, activeColor, t }: TemplateProps
                             order.push(sec.id);
                           }
                         });
-
+ 
                         const mainSections = order.filter(sec => 
                           ['summary', 'experience', 'projects', 'education'].includes(sec) ||
                           (sec.startsWith('custom-') && customSecs.find(s => s.id === sec)?.layoutStyle !== 'cards')
                         );
-
+ 
                         return mainSections.map((sec) => {
                           if (sec.startsWith('custom-')) {
                             const customSec = customSecs.find(s => s.id === sec);
@@ -397,7 +397,7 @@ export default function ModernTemplate({ cvData, activeColor, t }: TemplateProps
                           if (sec === 'summary' && cvData.summary) {
                             const summaryTitle = cvData.sectionSettings?.summary?.title || t('summaryUpper');
                             return (
-                              <div key={sec} className="flex flex-col gap-2 break-inside-avoid">
+                              <div key={sec} data-section="summary" className="flex flex-col gap-2 break-inside-avoid">
                                 <h3 className={`text-xs font-bold uppercase tracking-wider ${activeColor.primary} pb-1 font-mono flex items-center gap-1.5 print:text-black border-b border-slate-100 dark:border-slate-800/40 print:border-slate-200`}>
                                   <User className="h-3.5 w-3.5 stroke-[2.5]" />
                                   <span>{summaryTitle}</span>

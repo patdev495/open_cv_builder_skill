@@ -228,7 +228,7 @@ export default function MinimalTemplate({ cvData, activeColor, t }: TemplateProp
 
                   {/* Summary */}
                   {cvData.summary && (
-                    <div className="flex flex-col gap-2 break-inside-avoid">
+                    <div data-section="summary" className="flex flex-col gap-2 break-inside-avoid">
                       <h3 className={`text-xs font-bold tracking-widest uppercase ${activeColor.primary} flex items-center justify-center gap-1.5 font-serif`}>
                         <User className="h-3.5 w-3.5 stroke-[2.5]" />
                         <span>{cvData.sectionSettings?.summary?.title || t('summaryUpper')}</span>
@@ -313,7 +313,7 @@ export default function MinimalTemplate({ cvData, activeColor, t }: TemplateProp
                     <div className="flex flex-col gap-5">
                       {/* Education */}
                       {cvData.education.length > 0 && (
-                        <div className="flex flex-col gap-3 break-inside-avoid">
+                        <div data-section="education" className="flex flex-col gap-3 break-inside-avoid">
                           <h3 className={`text-xs font-bold tracking-widest uppercase ${activeColor.primary} flex items-center gap-1.5 font-serif`}>
                             <GraduationCap className="h-3.5 w-3.5 stroke-[2.5]" />
                             <span>{cvData.sectionSettings?.education?.title || t('educationUpper')}</span>
@@ -337,7 +337,7 @@ export default function MinimalTemplate({ cvData, activeColor, t }: TemplateProp
 
                       {/* Certificates */}
                       {cvData.certificates.length > 0 && (
-                        <div className="flex flex-col gap-2 break-inside-avoid">
+                        <div data-section="certificates" className="flex flex-col gap-2 break-inside-avoid">
                           <h3 className={`text-xs font-bold tracking-widest uppercase ${activeColor.primary} flex items-center gap-1.5 font-serif`}>
                             <Award className="h-3.5 w-3.5 stroke-[2.5]" />
                             <span>{cvData.sectionSettings?.certificates?.title || t('certificatesUpper')}</span>
@@ -367,7 +367,7 @@ export default function MinimalTemplate({ cvData, activeColor, t }: TemplateProp
 
                       {/* Languages */}
                       {cvData.languages.length > 0 && (
-                        <div className="flex flex-col gap-2 break-inside-avoid">
+                        <div data-section="languages" className="flex flex-col gap-2 break-inside-avoid">
                           <h3 className={`text-xs font-bold tracking-widest uppercase ${activeColor.primary} flex items-center gap-1.5 font-serif`}>
                             <Languages className="h-3.5 w-3.5 stroke-[2.5]" />
                             <span>{cvData.sectionSettings?.languages?.title || t('languagesUpper')}</span>

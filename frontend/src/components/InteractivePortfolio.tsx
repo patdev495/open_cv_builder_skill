@@ -87,11 +87,63 @@ export function InteractivePortfolio({
       }
     };
     window.addEventListener('scroll', handleScroll, { passive: true });
+
+    // Track active sections in viewport using IntersectionObserver
+    const sectionEnterTimes = new Map<string, number>();
+
+    const observerCallback = (entries: IntersectionObserverEntry[]) => {
+      entries.forEach((entry) => {
+        const section = entry.target.getAttribute('data-section');
+        if (!section) return;
+
+        if (entry.isIntersecting) {
+          // Section entered viewport
+          if (!sectionEnterTimes.has(section)) {
+            sectionEnterTimes.set(section, Date.now());
+          }
+        } else {
+          // Section left viewport
+          if (sectionEnterTimes.has(section)) {
+            const startTime = sectionEnterTimes.get(section)!;
+            sectionEnterTimes.delete(section);
+            const duration = (Date.now() - startTime) / 1000;
+            if (duration > 0.5) { // Only log if focused for > 0.5s to filter out quick scrolling
+              sendEvent('hover', section, duration);
+            }
+          }
+        }
+      });
+    };
+
+    const observer = new IntersectionObserver(observerCallback, {
+      root: null,
+      rootMargin: '-10% 0px -10% 0px',
+      threshold: 0.2
+    });
+
+    const observeSections = () => {
+      const elements = document.querySelectorAll('[data-section]');
+      elements.forEach((el) => observer.observe(el));
+    };
+
+    observeSections();
+    const timeoutId = setTimeout(observeSections, 1000);
     
     // Session duration
     const startTime = Date.now();
     return () => {
+      clearTimeout(timeoutId);
+      observer.disconnect();
       window.removeEventListener('scroll', handleScroll);
+
+      // Send hover events for any sections currently visible when leaving
+      sectionEnterTimes.forEach((sTime, section) => {
+        const duration = (Date.now() - sTime) / 1000;
+        if (duration > 0.5) {
+          sendEvent('hover', section, duration);
+        }
+      });
+
       const duration = (Date.now() - startTime) / 1000;
       sendEvent('leave', undefined, duration);
     };

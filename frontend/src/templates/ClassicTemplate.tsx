@@ -305,7 +305,7 @@ export default function ClassicTemplate({ cvData, activeColor, t }: TemplateProp
                         if (sec === 'summary' && cvData.summary) {
                           const summaryTitle = cvData.sectionSettings?.summary?.title || t('summaryUpper');
                           return (
-                            <div key={sec} className="flex flex-col gap-1.5 break-inside-avoid">
+                            <div key={sec} data-section="summary" className="flex flex-col gap-1.5 break-inside-avoid">
                               <h3 className={`text-xs font-extrabold uppercase tracking-wider ${activeColor.primary} pb-0.5 flex items-center gap-1.5 border-b border-slate-100 dark:border-slate-800/40 print:border-slate-200`}>
                                 <User className="h-3.5 w-3.5 stroke-[2.5]" />
                                 <span>{summaryTitle}</span>
@@ -377,7 +377,7 @@ export default function ClassicTemplate({ cvData, activeColor, t }: TemplateProp
                         if (sec === 'certificates' && cvData.certificates.length > 0) {
                           const certTitle = cvData.sectionSettings?.certificates?.title || t('certificatesUpper');
                           return (
-                            <div key={sec} className="flex flex-col gap-1 break-inside-avoid">
+                            <div key={sec} data-section="certificates" className="flex flex-col gap-1 break-inside-avoid">
                               <h3 className={`text-xs font-extrabold uppercase tracking-wider ${activeColor.primary} pb-0.5 flex items-center gap-1.5 border-b border-slate-100 dark:border-slate-800/40 print:border-slate-200`}>
                                 <Award className="h-3.5 w-3.5 stroke-[2.5]" />
                                 <span>{certTitle}</span>
@@ -393,7 +393,7 @@ export default function ClassicTemplate({ cvData, activeColor, t }: TemplateProp
                         if (sec === 'languages' && cvData.languages.length > 0) {
                           const langTitle = cvData.sectionSettings?.languages?.title || t('languagesUpper');
                           return (
-                            <div key={sec} className="flex flex-col gap-1 break-inside-avoid">
+                            <div key={sec} data-section="languages" className="flex flex-col gap-1 break-inside-avoid">
                               <h3 className={`text-xs font-extrabold uppercase tracking-wider ${activeColor.primary} pb-0.5 flex items-center gap-1.5 border-b border-slate-100 dark:border-slate-800/40 print:border-slate-200`}>
                                 <Languages className="h-3.5 w-3.5 stroke-[2.5]" />
                                 <span>{langTitle}</span>

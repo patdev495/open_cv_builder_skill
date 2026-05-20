@@ -345,7 +345,7 @@ export default function TechProTemplate({ cvData, activeColor, t }: TemplateProp
               if (sec === 'summary' && cvData.summary) {
                 const summaryTitle = cvData.sectionSettings?.summary?.title || t('summaryUpper');
                 return (
-                  <div key={sec} className="flex flex-col gap-2.5 break-inside-avoid">
+                  <div key={sec} data-section="summary" className="flex flex-col gap-2.5 break-inside-avoid">
                     <h3 className={`text-xs font-bold uppercase tracking-wider ${activeColor.primary} pb-0.5 border-l-2 ${accentBorder} pl-2 flex items-center gap-1.5 print:text-black`}>
                       <User className="h-3.5 w-3.5 stroke-[2.5]" />
                       <span>{summaryTitle}</span>
@@ -458,7 +458,7 @@ export default function TechProTemplate({ cvData, activeColor, t }: TemplateProp
               if (sec === 'certificates' && cvData.certificates.length > 0) {
                 const certTitle = cvData.sectionSettings?.certificates?.title || t('certificatesUpper');
                 return (
-                  <div key={sec} className="flex flex-col gap-3">
+                  <div key={sec} data-section="certificates" className="flex flex-col gap-3">
                     <h3 className={`text-xs font-bold uppercase tracking-wider ${activeColor.primary} pb-0.5 border-l-2 ${accentBorder} pl-2 flex items-center gap-1.5 print:text-black`}>
                       <Award className="h-3.5 w-3.5 stroke-[2.5]" />
                       <span>{certTitle}</span>
@@ -467,7 +467,7 @@ export default function TechProTemplate({ cvData, activeColor, t }: TemplateProp
                       {cvData.certificates.map((c) => (
                         <div key={c.id} className="text-xs flex flex-col gap-0.5 break-inside-avoid">
                           <span className="font-extrabold text-slate-850 dark:text-slate-200 leading-snug print:text-black">{c.name}</span>
-                          <span className="text-[10px] text-slate-500 dark:text-slate-400 font-medium">{c.issuer} ({c.date})</span>
+                          <span className="text-[10px] text-slate-500 dark:text-slate-405 font-medium">{c.issuer} ({c.date})</span>
                         </div>
                       ))}
                     </div>
@@ -477,7 +477,7 @@ export default function TechProTemplate({ cvData, activeColor, t }: TemplateProp
               if (sec === 'languages' && cvData.languages.length > 0) {
                 const langTitle = cvData.sectionSettings?.languages?.title || t('languagesUpper');
                 return (
-                  <div key={sec} className="flex flex-col gap-2">
+                  <div key={sec} data-section="languages" className="flex flex-col gap-2">
                     <h3 className={`text-xs font-bold uppercase tracking-wider ${activeColor.primary} pb-0.5 border-l-2 ${accentBorder} pl-2 flex items-center gap-1.5 print:text-black`}>
                       <Languages className="h-3.5 w-3.5 stroke-[2.5]" />
                       <span>{langTitle}</span>

@@ -45,7 +45,7 @@ export default function LayoutSectionRenderer({
     : "flex flex-col gap-3";
 
   return (
-    <div className="flex flex-col gap-3">
+    <div data-section={sectionId} className="flex flex-col gap-3">
       <h3 className={`text-xs font-bold uppercase tracking-wider ${activeColor.primary} pb-1 font-mono flex items-center gap-1.5 print:text-black border-b border-slate-100 dark:border-slate-800/40 print:border-slate-200`}>
         {IconComponent && <IconComponent className="h-3.5 w-3.5 stroke-[2.5]" />}
         <span>{title}</span>

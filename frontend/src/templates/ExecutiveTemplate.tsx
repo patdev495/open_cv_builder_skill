@@ -231,10 +231,9 @@ export default function ExecutiveTemplate({ cvData, activeColor, t }: TemplatePr
                   <div className="grid grid-cols-3 gap-6 flex-1">
                     {/* Left Wide Section (2/3) */}
                     <div className="col-span-2 flex flex-col gap-5 pr-4 border-r border-slate-100 dark:border-slate-800 dark:border-slate-400 print:border-slate-350">
-                      
                       {/* Summary */}
                       {cvData.summary && (
-                        <div className="flex flex-col gap-2 break-inside-avoid">
+                        <div data-section="summary" className="flex flex-col gap-2 break-inside-avoid">
                            <h3 className={`text-xs font-black uppercase tracking-wider ${activeColor.primary} font-mono pb-0.5 flex items-center gap-1.5 border-b border-slate-100 dark:border-slate-800/40 print:border-slate-200`}>
                              <User className="h-3.5 w-3.5 stroke-[2.5]" />
                              <span>{cvData.sectionSettings?.summary?.title || t('summaryUpper')}</span>
@@ -242,7 +241,7 @@ export default function ExecutiveTemplate({ cvData, activeColor, t }: TemplatePr
                           <p className="text-xs leading-relaxed text-slate-705 dark:text-slate-300 text-justify">{cvData.summary}</p>
                         </div>
                       )}
-
+ 
                       {/* Dynamic Left Column Order */}
                       {(() => {
                         const baseOrder = cvData.sectionOrder || ['summary', 'experience', 'projects', 'education', 'skills', 'certificates', 'languages'];
@@ -253,13 +252,13 @@ export default function ExecutiveTemplate({ cvData, activeColor, t }: TemplatePr
                             order.push(sec.id);
                           }
                         });
-
+ 
                         // Only render main dynamic sections on the left
                         const leftSections = order.filter(sec => 
                           ['experience', 'projects', 'education'].includes(sec) ||
                           (sec.startsWith('custom-') && customSecs.find(s => s.id === sec)?.layoutStyle !== 'cards')
                         );
-
+ 
                         return leftSections.map((sec) => {
                           if (sec.startsWith('custom-')) {
                             const customSec = customSecs.find(s => s.id === sec);
@@ -319,7 +318,7 @@ export default function ExecutiveTemplate({ cvData, activeColor, t }: TemplatePr
                         });
                       })()}
                     </div>
-
+ 
                     {/* Right Narrow Column (1/3) */}
                     <div className="col-span-1 flex flex-col gap-5 glass-sidebar">
                       {cvData.personalInfo.avatar && (
@@ -387,7 +386,7 @@ export default function ExecutiveTemplate({ cvData, activeColor, t }: TemplatePr
                           itemClassName="hover:underline flex items-center gap-1 font-medium"
                         />
                       </div>
-
+ 
                       {/* Right side dynamic layout order */}
                       {(() => {
                         const baseOrder = cvData.sectionOrder || ['summary', 'experience', 'projects', 'education', 'skills', 'certificates', 'languages'];
@@ -398,12 +397,12 @@ export default function ExecutiveTemplate({ cvData, activeColor, t }: TemplatePr
                             order.push(sec.id);
                           }
                         });
-
+ 
                         const rightSections = order.filter(sec => 
                           ['skills', 'languages', 'certificates'].includes(sec) ||
                           (sec.startsWith('custom-') && customSecs.find(s => s.id === sec)?.layoutStyle === 'cards')
                         );
-
+ 
                         return rightSections.map((sec) => {
                           if (sec.startsWith('custom-')) {
                             const customSec = customSecs.find(s => s.id === sec);
@@ -426,7 +425,7 @@ export default function ExecutiveTemplate({ cvData, activeColor, t }: TemplatePr
                           if (sec === 'languages' && cvData.languages.length > 0) {
                             const langTitle = cvData.sectionSettings?.languages?.title || t('languagesUpper');
                             return (
-                              <div key={sec} className="flex flex-col gap-2 break-inside-avoid">
+                              <div key={sec} data-section="languages" className="flex flex-col gap-2 break-inside-avoid">
                                 <h3 className={`text-xs font-black uppercase tracking-wider ${activeColor.primary} font-mono pb-1 border-b border-slate-250 flex items-center gap-1.5`}>
                                   <Languages className="h-3.5 w-3.5 stroke-[2.5]" />
                                   <span>{langTitle}</span>
@@ -445,7 +444,7 @@ export default function ExecutiveTemplate({ cvData, activeColor, t }: TemplatePr
                           if (sec === 'certificates' && cvData.certificates.length > 0) {
                             const certTitle = cvData.sectionSettings?.certificates?.title || t('certificatesUpper');
                             return (
-                              <div key={sec} className="flex flex-col gap-3 break-inside-avoid">
+                              <div key={sec} data-section="certificates" className="flex flex-col gap-3 break-inside-avoid">
                                 <h3 className={`text-xs font-black uppercase tracking-wider ${activeColor.primary} font-mono pb-1 border-b border-slate-250 flex items-center gap-1.5`}>
                                   <Award className="h-3.5 w-3.5 stroke-[2.5]" />
                                   <span>{certTitle}</span>

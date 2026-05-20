@@ -137,7 +137,7 @@ export default function SkillsSectionRenderer({
   };
 
   return (
-    <div className={`flex flex-col gap-3 ${wrapperClassName}`}>
+    <div data-section="skills" className={`flex flex-col gap-3 ${wrapperClassName}`}>
       <h3 className={titleClassName || defaultTitleClass}>
         <Wrench className="h-3.5 w-3.5 stroke-[2.5]" />
         <span>{title}</span>

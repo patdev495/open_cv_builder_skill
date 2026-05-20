@@ -322,7 +322,7 @@ export default function CreativeTemplate({ cvData, activeColor, t }: TemplatePro
                         }
                         if (sec === 'summary' && cvData.summary) {
                           return (
-                            <div key={sec} className={`${activeColor.lightBg} p-4 rounded-xl border border-slate-200 dark:border-slate-700/40 print:bg-white dark:bg-slate-900/50 print:p-0 print:border-none break-inside-avoid`}>
+                            <div key={sec} data-section="summary" className={`${activeColor.lightBg} p-4 rounded-xl border border-slate-200 dark:border-slate-700/40 print:bg-white dark:bg-slate-900/50 print:p-0 print:border-none break-inside-avoid`}>
                               <h4 className={`text-xs font-black uppercase tracking-wider ${activeColor.primary} mb-2 print:text-black flex items-center gap-1.5`}>
                                 <User className="h-3.5 w-3.5 stroke-[2.5]" />
                                 <span>{cvData.sectionSettings?.summary?.title || t('summaryUpper')}</span>
@@ -394,7 +394,7 @@ export default function CreativeTemplate({ cvData, activeColor, t }: TemplatePro
                         if (sec === 'certificates' && cvData.certificates.length > 0) {
                           const certTitle = cvData.sectionSettings?.certificates?.title || t('certificatesUpper');
                           return (
-                            <div key={sec} className="flex flex-col gap-2 break-inside-avoid">
+                            <div key={sec} data-section="certificates" className="flex flex-col gap-2 break-inside-avoid">
                               <h3 className={`text-xs font-black uppercase tracking-wider ${activeColor.primary} flex items-center gap-1.5`}>
                                 <Award className="h-3.5 w-3.5 stroke-[2.5]" />
                                 <span>{certTitle}</span>
@@ -412,7 +412,7 @@ export default function CreativeTemplate({ cvData, activeColor, t }: TemplatePro
                         if (sec === 'languages' && cvData.languages.length > 0) {
                           const langTitle = cvData.sectionSettings?.languages?.title || t('languagesUpper');
                           return (
-                            <div key={sec} className="flex flex-col gap-2 break-inside-avoid">
+                            <div key={sec} data-section="languages" className="flex flex-col gap-2 break-inside-avoid">
                               <h3 className={`text-xs font-black uppercase tracking-wider ${activeColor.primary} flex items-center gap-1.5`}>
                                 <Languages className="h-3.5 w-3.5 stroke-[2.5]" />
                                 <span>{langTitle}</span>
