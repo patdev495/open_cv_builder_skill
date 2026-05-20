@@ -257,8 +257,18 @@ export default function ModernTemplate({ cvData, activeColor, t }: TemplateProps
                       {cvData.personalInfo.location && <div>{cvData.personalInfo.location}</div>}
                       <div className="flex flex-wrap gap-2 mt-1 sm:justify-end print:justify-end">
                         {cvData.personalInfo.website && (
-                          <a href={cvData.personalInfo.website} target="_blank" rel="noopener noreferrer" className="font-mono hover:underline text-slate-500 dark:text-slate-400 print:text-slate-700 dark:text-slate-300">
-                            {cvData.personalInfo.website.replace(/^https?:\/\//, '')}
+                          <a 
+                            href={cvData.personalInfo.website} 
+                            target="_blank" 
+                            rel="noopener noreferrer" 
+                            className="font-mono hover:underline text-slate-500 dark:text-slate-400 print:bg-amber-50 print:border print:border-amber-200 print:text-amber-800 print:font-extrabold print:px-2 print:py-0.5 print:rounded"
+                          >
+                            <span className="print:hidden">
+                              {cvData.personalInfo.website.replace(/^https?:\/\/(www\.)?/, '')}
+                            </span>
+                            <span className="hidden print:inline">
+                              Personal Website: {cvData.personalInfo.website.replace(/^https?:\/\/(www\.)?/, '')}
+                            </span>
                           </a>
                         )}
                         {cvData.personalInfo.github && (

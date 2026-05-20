@@ -353,7 +353,20 @@ export default function ExecutiveTemplate({ cvData, activeColor, t }: TemplatePr
                           )}
                           {cvData.personalInfo.website && (
                             <div className="truncate">
-                              <span className="font-bold text-slate-800 dark:text-slate-200">Web:</span> <a href={cvData.personalInfo.website} target="_blank" rel="noopener noreferrer" className="hover:underline text-slate-700 dark:text-slate-300 font-medium">{cvData.personalInfo.website.replace(/^https?:\/\//, '')}</a>
+                              <span className="font-bold text-slate-800 dark:text-slate-200 print:hidden">Web:</span>{" "}
+                              <a 
+                                href={cvData.personalInfo.website} 
+                                target="_blank" 
+                                rel="noopener noreferrer" 
+                                className="hover:underline text-slate-700 dark:text-slate-300 font-medium print:bg-amber-50 print:border print:border-amber-200 print:text-amber-800 print:font-extrabold print:px-2 print:py-0.5 print:rounded"
+                              >
+                                <span className="print:hidden">
+                                  {cvData.personalInfo.website.replace(/^https?:\/\/(www\.)?/, '')}
+                                </span>
+                                <span className="hidden print:inline">
+                                  Personal Website: {cvData.personalInfo.website.replace(/^https?:\/\/(www\.)?/, '')}
+                                </span>
+                              </a>
                             </div>
                           )}
                           {cvData.personalInfo.github && (

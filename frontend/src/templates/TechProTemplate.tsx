@@ -278,9 +278,19 @@ export default function TechProTemplate({ cvData, activeColor, t }: TemplateProp
           
           <div className="flex flex-wrap gap-2.5 mt-1.5 sm:justify-end print:justify-end">
             {cvData.personalInfo.website && (
-              <a href={cvData.personalInfo.website} target="_blank" rel="noopener noreferrer" className="font-mono hover:underline text-slate-500 dark:text-slate-400 print:text-slate-700 dark:text-slate-300 flex items-center gap-1">
-                <span className="w-1.5 h-1.5 rounded-full bg-slate-400"></span>
-                {cvData.personalInfo.website.replace(/^https?:\/\//, '')}
+              <a 
+                href={cvData.personalInfo.website} 
+                target="_blank" 
+                rel="noopener noreferrer" 
+                className="font-mono hover:underline text-slate-500 dark:text-slate-400 print:text-amber-800 print:bg-amber-50 print:border print:border-amber-200 print:font-bold print:px-2 print:py-0.5 print:rounded flex items-center gap-1"
+              >
+                <span className="w-1.5 h-1.5 rounded-full bg-slate-400 print:hidden"></span>
+                <span className="print:hidden">
+                  {cvData.personalInfo.website.replace(/^https?:\/\/(www\.)?/, '')}
+                </span>
+                <span className="hidden print:inline">
+                  Personal Website: {cvData.personalInfo.website.replace(/^https?:\/\/(www\.)?/, '')}
+                </span>
               </a>
             )}
             {cvData.personalInfo.github && (

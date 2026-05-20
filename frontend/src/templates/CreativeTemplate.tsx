@@ -257,6 +257,21 @@ export default function CreativeTemplate({ cvData, activeColor, t }: TemplatePro
                         {cvData.personalInfo.phone && <div>{cvData.personalInfo.phone}</div>}
                         {cvData.personalInfo.location && <div>{cvData.personalInfo.location}</div>}
                         <div className="flex flex-wrap gap-2 mt-1 md:justify-end print:justify-end">
+                           {cvData.personalInfo.website && (
+                             <a 
+                               href={cvData.personalInfo.website} 
+                               target="_blank" 
+                               rel="noopener noreferrer" 
+                               className={`bg-white hover:bg-slate-100 ${activeColor.primary} px-2 py-0.5 rounded text-[10px] font-bold border border-white/20 print:bg-amber-50 print:border-amber-200 print:text-amber-800 print:font-extrabold print:px-2.5 print:py-0.5 transition-colors`}
+                             >
+                               <span className="print:hidden">
+                                 {cvData.personalInfo.website.replace(/^https?:\/\/(www\.)?/, '')}
+                               </span>
+                               <span className="hidden print:inline">
+                                 Personal Website: {cvData.personalInfo.website.replace(/^https?:\/\/(www\.)?/, '')}
+                               </span>
+                             </a>
+                           )}
                            {cvData.personalInfo.github && (
                              <a 
                                href={cvData.personalInfo.github} 
