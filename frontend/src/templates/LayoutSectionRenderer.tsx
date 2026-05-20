@@ -37,8 +37,11 @@ export default function LayoutSectionRenderer({
   const hideFields = setting.hideFields || [];
 
   // Cards layout uses grid layout, timeline/text uses stacked layout
+  // NOTE: Do NOT use responsive prefixes like `md:grid-cols-2` here.
+  // Print media has no viewport, so breakpoint classes are never applied when printing.
+  // Use `grid-cols-2` directly so the 2-column layout works both on screen and in print.
   const containerClass = layoutStyle === 'cards'
-    ? "grid grid-cols-1 md:grid-cols-2 gap-3"
+    ? "grid grid-cols-2 gap-3"
     : "flex flex-col gap-3";
 
   return (

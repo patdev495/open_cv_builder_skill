@@ -1,8 +1,9 @@
-import { User, Briefcase, GraduationCap, FolderGit2, Wrench, Award, Languages, ExternalLink } from 'lucide-react';
+import { User, Briefcase, GraduationCap, FolderGit2, Award, Languages, ExternalLink } from 'lucide-react';
 import { ProjectEmbed } from '../components/ProjectEmbed';
 import type { TemplateProps } from './types';
 import CustomSectionRenderer from './CustomSectionRenderer';
 import LayoutSectionRenderer from './LayoutSectionRenderer';
+import SkillsSectionRenderer from './SkillsSectionRenderer';
 import { CustomLinksRenderer } from './TemplateHelpers';
 
 export default function MinimalTemplate({ cvData, activeColor, t }: TemplateProps) {
@@ -345,20 +346,13 @@ export default function MinimalTemplate({ cvData, activeColor, t }: TemplateProp
                     <div className="flex flex-col gap-5">
                       {/* Skills */}
                       {cvData.skills.length > 0 && (
-                        <div className="flex flex-col gap-3 break-inside-avoid">
-                          <h3 className={`text-xs font-bold tracking-widest uppercase ${activeColor.primary} flex items-center gap-1.5 font-serif`}>
-                            <Wrench className="h-3.5 w-3.5 stroke-[2.5]" />
-                            <span>{cvData.sectionSettings?.skills?.title || t('skillsUpper')}</span>
-                          </h3>
-                          <div className="flex flex-col gap-2 text-xs">
-                            {cvData.skills.map((grp) => (
-                              <div key={grp.id} className="leading-relaxed">
-                                <span className="font-bold text-slate-900 dark:text-slate-100 font-serif block">{grp.category}</span>
-                                <span className="text-slate-600 dark:text-slate-400">{grp.skills.filter(Boolean).join(", ")}</span>
-                              </div>
-                            ))}
-                          </div>
-                        </div>
+                        <SkillsSectionRenderer
+                          cvData={cvData}
+                          activeColor={activeColor}
+                          t={t}
+                          titleClassName={`text-xs font-bold tracking-widest uppercase ${activeColor.primary} flex items-center gap-1.5 font-serif`}
+                          wrapperClassName="break-inside-avoid"
+                        />
                       )}
 
                       {/* Languages */}

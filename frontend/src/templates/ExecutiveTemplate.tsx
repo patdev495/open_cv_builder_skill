@@ -1,8 +1,9 @@
-import { User, Briefcase, GraduationCap, FolderGit2, Wrench, Award, Languages, ExternalLink } from 'lucide-react';
+import { User, Briefcase, GraduationCap, FolderGit2, Award, Languages, ExternalLink } from 'lucide-react';
 import { ProjectEmbed } from '../components/ProjectEmbed';
 import type { TemplateProps } from './types';
 import CustomSectionRenderer from './CustomSectionRenderer';
 import LayoutSectionRenderer from './LayoutSectionRenderer';
+import SkillsSectionRenderer from './SkillsSectionRenderer';
 import { CustomLinksRenderer } from './TemplateHelpers';
 
 export default function ExecutiveTemplate({ cvData, activeColor, t }: TemplateProps) {
@@ -398,26 +399,15 @@ export default function ExecutiveTemplate({ cvData, activeColor, t }: TemplatePr
                             }
                           }
                           if (sec === 'skills' && cvData.skills.length > 0) {
-                            const skillsTitle = cvData.sectionSettings?.skills?.title || t('skillsUpper');
                             return (
-                              <div key={sec} className="flex flex-col gap-3 break-inside-avoid">
-                                <h3 className={`text-xs font-black uppercase tracking-wider ${activeColor.primary} font-mono pb-1 border-b border-slate-250 flex items-center gap-1.5`}>
-                                  <Wrench className="h-3.5 w-3.5 stroke-[2.5]" />
-                                  <span>{skillsTitle}</span>
-                                </h3>
-                                {cvData.skills.map((grp) => (
-                                  <div key={grp.id} className="flex flex-col gap-1">
-                                    <span className="text-xs font-bold text-slate-800 dark:text-slate-200">{grp.category}</span>
-                                    <div className="flex flex-wrap gap-1">
-                                      {grp.skills.filter(Boolean).map((s, idx) => (
-                                        <span key={idx} className={`${activeColor.pill} px-2 py-0.5 rounded text-[10px] font-semibold`}>
-                                          {s}
-                                        </span>
-                                      ))}
-                                    </div>
-                                  </div>
-                                ))}
-                              </div>
+                              <SkillsSectionRenderer
+                                key={sec}
+                                cvData={cvData}
+                                activeColor={activeColor}
+                                t={t}
+                                titleClassName={`text-xs font-black uppercase tracking-wider ${activeColor.primary} font-mono pb-1 border-b border-slate-250 flex items-center gap-1.5`}
+                                wrapperClassName="break-inside-avoid"
+                              />
                             );
                           }
                           if (sec === 'languages' && cvData.languages.length > 0) {
