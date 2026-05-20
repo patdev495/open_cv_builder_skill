@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
-import { FileText, Save, Globe, Sun, Moon, AlertCircle, CheckCircle2, Loader2, Sparkles, User, Briefcase, GraduationCap, FolderGit2, Wrench, Award, Layers, BarChart3, ChevronLeft, Copy, ExternalLink } from 'lucide-react';
+import { FileText, Save, Globe, Sun, Moon, AlertCircle, CheckCircle2, Loader2, Sparkles, User, Briefcase, GraduationCap, FolderGit2, Wrench, Award, Layers, BarChart3, ChevronLeft, Copy, ExternalLink, X, Mail, Phone } from 'lucide-react';
 import { useCVEditor } from '../hooks/useCVEditor';
 import { CVEditorContext } from '../context/CVEditorContext';
 import { PersonalInfoForm } from '../editor/PersonalInfoForm';
@@ -209,6 +209,27 @@ export function EditorWorkspace({ onExit, initialPasscode = '' }: { onExit: () =
             </div>
 
             <div className="flex items-center gap-3">
+              {!slug && (
+                <>
+                  <a 
+                    href="mailto:work.phamanhtu@gmail.com" 
+                    className="hidden sm:flex items-center gap-1.5 bg-slate-800/60 hover:bg-slate-850 hover:text-purple-400 px-3 py-1.5 rounded-full border border-slate-700/50 text-xs text-slate-400 font-medium transition-all cursor-pointer"
+                    title="Email Lập trình viên"
+                  >
+                    <Mail className="h-3.5 w-3.5 text-purple-400" />
+                    <span className="font-mono">work.phamanhtu@gmail.com</span>
+                  </a>
+                  <a 
+                    href="tel:0823634810" 
+                    className="hidden sm:flex items-center gap-1.5 bg-slate-800/60 hover:bg-slate-850 hover:text-purple-400 px-3 py-1.5 rounded-full border border-slate-700/50 text-xs text-slate-400 font-medium transition-all cursor-pointer"
+                    title="Số điện thoại Lập trình viên"
+                  >
+                    <Phone className="h-3.5 w-3.5 text-purple-400" />
+                    <span className="font-mono">082.363.4810</span>
+                  </a>
+                </>
+              )}
+
               {slug && (
                 <div className="hidden md:flex items-center gap-2 bg-slate-800/60 px-3 py-1.5 rounded-full border border-slate-700/50 text-xs">
                   <Globe className="h-3.5 w-3.5 text-purple-400" />
@@ -662,7 +683,7 @@ export function EditorWorkspace({ onExit, initialPasscode = '' }: { onExit: () =
                 <AlertCircle className="h-5 w-5 text-rose-400 mt-0.5 shrink-0" />
               )}
               <div className="flex-1 min-w-0">
-                <p className="text-sm font-medium text-white break-words">{statusMessage.text}</p>
+                <p className="text-sm font-medium text-white break-words pr-4">{statusMessage.text}</p>
                 
                 {statusMessage.link && (
                   <div className="mt-3 space-y-2">
@@ -709,6 +730,14 @@ export function EditorWorkspace({ onExit, initialPasscode = '' }: { onExit: () =
                   </div>
                 )}
               </div>
+              <button 
+                type="button"
+                onClick={() => setStatusMessage(null)}
+                className="text-slate-400 hover:text-slate-200 transition-colors p-1 hover:bg-slate-800/50 rounded-lg shrink-0 cursor-pointer -mt-1 -mr-1"
+                aria-label="Close notification"
+              >
+                <X className="h-4 w-4" />
+              </button>
             </div>
           </div>
         )}
