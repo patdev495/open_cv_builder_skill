@@ -233,7 +233,9 @@ export function EditorWorkspace({ onExit, initialPasscode = '' }: { onExit: () =
               {slug && (
                 <div className="hidden md:flex items-center gap-2 bg-slate-800/60 px-3 py-1.5 rounded-full border border-slate-700/50 text-xs">
                   <Globe className="h-3.5 w-3.5 text-purple-400" />
-                  <span className="text-slate-400 font-mono">localhost:5173/{slug}</span>
+                  <span className="text-slate-400 font-mono">
+                    {typeof window !== 'undefined' ? window.location.host : 'localhost:5173'}/{slug}
+                  </span>
                   <span className="bg-purple-500/20 text-purple-300 px-2 py-0.5 rounded-full text-[10px] font-bold border border-purple-500/30">EDITING</span>
                 </div>
               )}
