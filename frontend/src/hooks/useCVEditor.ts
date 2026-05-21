@@ -385,8 +385,9 @@ export function useCVEditor(initialPasscode: string = ''): CVEditorState {
   const handleClearAll = () => {
     if (window.confirm(t('confirmClear'))) {
       dispatch({ type: 'LOAD_CV', payload: DEFAULT_CV });
-      setPasscode('');
-      setIsViewOnly(false);
+      if (!isViewOnly) {
+        setPasscode('');
+      }
       try {
         const key = slug ? `cv_draft_${slug}` : 'cv_draft_new';
         localStorage.removeItem(key);
