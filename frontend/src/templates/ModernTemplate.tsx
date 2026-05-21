@@ -91,7 +91,7 @@ export default function ModernTemplate({ cvData, activeColor, t, slug }: Templat
           {!hideUrl && proj.url && (
             <a href={proj.url} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-0.5 text-[10px] text-purple-600 hover:text-purple-750 font-semibold hover:underline print:text-black">
               <ExternalLink className="h-2.5 w-2.5" />
-              {proj.url.replace(/^https?:\/\/(www\.)?/, '').split('/')[0]}
+              {proj.url.replace(/^https?:\/\/(www\.)?/, '')}
             </a>
           )}
           {!hideTech && proj.technologies.filter(Boolean).length > 0 && (
@@ -124,7 +124,7 @@ export default function ModernTemplate({ cvData, activeColor, t, slug }: Templat
           {!hideUrl && proj.url && (
             <a href={proj.url} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-0.5 text-[10px] text-purple-600 hover:text-purple-750 font-semibold hover:underline print:text-black">
               <ExternalLink className="h-2.5 w-2.5" />
-              {proj.url.replace(/^https?:\/\/(www\.)?/, '').split('/')[0]}
+              {proj.url.replace(/^https?:\/\/(www\.)?/, '')}
             </a>
           )}
           {!hideTech && proj.technologies.filter(Boolean).length > 0 && (
@@ -154,7 +154,7 @@ export default function ModernTemplate({ cvData, activeColor, t, slug }: Templat
                 className="inline-flex items-center gap-0.5 text-[10px] text-purple-600 hover:text-purple-750 font-bold ml-1.5 hover:underline print:text-black print:no-underline"
               >
                 <ExternalLink className="h-2.5 w-2.5" />
-                {proj.url.replace(/^https?:\/\/(www\.)?github\.com\//, 'github.com/').replace(/^https?:\/\/(www\.)?/, '').split('/')[0]}
+                {proj.url.replace(/^https?:\/\/(www\.)?github\.com\//, 'github.com/').replace(/^https?:\/\/(www\.)?/, '')}
               </a>
             )}
             {!hideRole && (

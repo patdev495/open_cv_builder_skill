@@ -87,7 +87,7 @@ export default function ExecutiveTemplate({ cvData, activeColor, t, slug }: Temp
           {!hideUrl && proj.url && (
             <a href={proj.url} target="_blank" rel="noopener noreferrer" className={`inline-flex items-center gap-0.5 text-[10px] ${activeColor.primary} hover:underline font-bold print:text-black font-sans`}>
               <ExternalLink className="h-2.5 w-2.5" />
-              {proj.url.replace(/^https?:\/\/(www\.)?/, '').split('/')[0]}
+              {proj.url.replace(/^https?:\/\/(www\.)?/, '')}
             </a>
           )}
           {!hideTech && proj.technologies.filter(Boolean).length > 0 && (
@@ -116,7 +116,7 @@ export default function ExecutiveTemplate({ cvData, activeColor, t, slug }: Temp
           {!hideUrl && proj.url && (
             <a href={proj.url} target="_blank" rel="noopener noreferrer" className={`inline-flex items-center gap-0.5 text-[10px] ${activeColor.primary} hover:underline font-bold print:text-black font-sans`}>
               <ExternalLink className="h-2.5 w-2.5" />
-              {proj.url.replace(/^https?:\/\/(www\.)?/, '').split('/')[0]}
+              {proj.url.replace(/^https?:\/\/(www\.)?/, '')}
             </a>
           )}
           {!hideTech && proj.technologies.filter(Boolean).length > 0 && (

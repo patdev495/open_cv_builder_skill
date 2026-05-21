@@ -50,7 +50,7 @@ export default function CustomSectionRenderer({ section, activeColor, titleClass
                         className="inline-flex items-center gap-0.5 text-[10px] text-purple-600 hover:text-purple-750 font-bold ml-1.5 hover:underline print:text-black print:no-underline"
                       >
                         <ExternalLink className="h-2.5 w-2.5" />
-                        {item.url.replace(/^https?:\/\/(www\.)?/, '').split('/')[0]}
+                        {item.url.replace(/^https?:\/\/(www\.)?/, '')}
                       </a>
                     )}
                   </div>
@@ -93,7 +93,7 @@ export default function CustomSectionRenderer({ section, activeColor, titleClass
                     className="inline-flex items-center gap-0.5 text-[10px] text-purple-600 hover:text-purple-750 font-semibold hover:underline print:text-black"
                   >
                     <ExternalLink className="h-2.5 w-2.5" />
-                    {item.url.replace(/^https?:\/\/(www\.)?/, '').split('/')[0]}
+                    {item.url.replace(/^https?:\/\/(www\.)?/, '')}
                   </a>
                 )}
                 {item.description && (

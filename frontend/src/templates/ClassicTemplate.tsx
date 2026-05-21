@@ -91,7 +91,7 @@ export default function ClassicTemplate({ cvData, activeColor, t, slug }: Templa
           {!hideUrl && proj.url && (
             <a href={proj.url} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-0.5 text-[10px] text-purple-600 hover:text-purple-750 font-semibold hover:underline print:text-black">
               <ExternalLink className="h-2.5 w-2.5" />
-              {proj.url.replace(/^https?:\/\/(www\.)?/, '').split('/')[0]}
+              {proj.url.replace(/^https?:\/\/(www\.)?/, '')}
             </a>
           )}
           {!hideTech && proj.technologies.filter(Boolean).length > 0 && (
@@ -120,7 +120,7 @@ export default function ClassicTemplate({ cvData, activeColor, t, slug }: Templa
           {!hideUrl && proj.url && (
             <a href={proj.url} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-0.5 text-[10px] text-purple-650 hover:underline print:text-black">
               <ExternalLink className="h-2.5 w-2.5" />
-              {proj.url.replace(/^https?:\/\/(www\.)?/, '').split('/')[0]}
+              {proj.url.replace(/^https?:\/\/(www\.)?/, '')}
             </a>
           )}
           {!hideTech && proj.technologies.filter(Boolean).length > 0 && (
