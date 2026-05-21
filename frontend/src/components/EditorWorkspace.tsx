@@ -631,7 +631,7 @@ export function EditorWorkspace({ onExit, initialPasscode = '' }: { onExit: () =
                               }
                             }
                           `}</style>
-                          <TemplateRenderer templateId={template || 'modern'} cvData={activeCvData} activeColor={activeColor} t={t} />
+                          <TemplateRenderer templateId={template || 'modern'} cvData={activeCvData} activeColor={activeColor} t={t} slug={slug} />
                         </div>
                       </div>
                     </div>

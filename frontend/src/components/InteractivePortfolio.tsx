@@ -356,7 +356,7 @@ export function InteractivePortfolio({
                 }
               }
             `}</style>
-            <TemplateRenderer templateId={template || 'modern'} cvData={activeCvData} activeColor={activeColor} t={t} />
+            <TemplateRenderer templateId={template || 'modern'} cvData={activeCvData} activeColor={activeColor} t={t} slug={slug} />
           </div>
         </div>
       </div>

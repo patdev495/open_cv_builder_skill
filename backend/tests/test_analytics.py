@@ -124,3 +124,39 @@ def test_cv_analytics_e2e(client: TestClient):
         params={"passcode": passcode}
     )
     assert r_dashboard_missing.status_code == 404
+
+    # 6. Attempt reset stats with INCORRECT passcode
+    r_reset_fail = client.post(
+        f"/api/cvs/{slug}/analytics-reset",
+        json={"passcode": "wrongpass"}
+    )
+    assert r_reset_fail.status_code == 401
+
+    # 7. Attempt reset stats for non-existent CV
+    r_reset_missing = client.post(
+        "/api/cvs/non-existent-slug/analytics-reset",
+        json={"passcode": passcode}
+    )
+    assert r_reset_missing.status_code == 404
+
+    # 8. Reset stats with CORRECT passcode
+    r_reset_ok = client.post(
+        f"/api/cvs/{slug}/analytics-reset",
+        json={"passcode": passcode}
+    )
+    assert r_reset_ok.status_code == 200
+    assert r_reset_ok.json()["status"] == "success"
+
+    # 9. Verify stats are all 0/empty
+    r_dashboard_after = client.get(
+        f"/api/cvs/{slug}/analytics-dashboard",
+        params={"passcode": passcode}
+    )
+    assert r_dashboard_after.status_code == 200
+    report_after = r_dashboard_after.json()
+    assert report_after["total_views"] == 0
+    assert report_after["total_exports"] == 0
+    assert report_after["total_focus_time"] == 0.0
+    assert len(report_after["section_heatmap"]) == 0
+    assert len(report_after["devices"]) == 0
+    assert len(report_after["countries"]) == 0

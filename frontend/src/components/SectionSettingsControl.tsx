@@ -76,7 +76,10 @@ export function SectionSettingsControl({ sectionId, allowedFields = [] }: Sectio
               <option value="timeline">{t('layoutTimeline' as any)}</option>
               <option value="cards">{t('layoutCards' as any)}</option>
               {sectionId === 'skills' && (
-                <option value="groupCards">{t('layoutGroupCards' as any)}</option>
+                <>
+                  <option value="groupCards">{t('layoutGroupCards' as any)}</option>
+                  <option value="radar">{t('layoutRadar' as any)}</option>
+                </>
               )}
               <option value="text">{t('layoutText' as any)}</option>
             </select>

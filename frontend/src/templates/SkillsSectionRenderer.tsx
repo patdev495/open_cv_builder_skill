@@ -1,5 +1,6 @@
 import React from 'react';
 import { Wrench } from 'lucide-react';
+import { SkillsRadarChart } from '../components/SkillsRadarChart';
 
 interface SkillsSectionRendererProps {
   cvData: any;
@@ -22,6 +23,7 @@ interface SkillsSectionRendererProps {
  *  - timeline (default): each SkillGroup on its own row, category label + skills as comma-separated text
  *  - cards: each SkillGroup rendered as a pill-badge card with skill tags — visually rich
  *  - text: fully flat, all groups inline as "Category: s1, s2 • Category2: s3" — ultra-compact
+ *  - radar: dynamic spider-web chart on screen, fallback to groupCards on print
  *
  * NOTE: Do NOT use responsive breakpoint prefixes (md:, sm:, lg:) in grid/layout
  * classes here. Print media has no viewport width so breakpoints are ignored,
@@ -38,15 +40,56 @@ export default function SkillsSectionRenderer({
 
   const setting = cvData.sectionSettings?.skills || {};
   const title = setting.title || t('skillsUpper');
-  const layoutStyle: 'timeline' | 'cards' | 'text' | 'groupCards' =
+  const layoutStyle: 'timeline' | 'cards' | 'text' | 'groupCards' | 'radar' =
     setting.layoutStyle === 'cards' ? 'cards'
     : setting.layoutStyle === 'text' ? 'text'
     : setting.layoutStyle === 'groupCards' ? 'groupCards'
+    : setting.layoutStyle === 'radar' ? 'radar'
     : 'timeline';
 
   const defaultTitleClass = `text-xs font-bold uppercase tracking-wider ${activeColor.primary} pb-1 font-mono flex items-center gap-1.5 print:text-black border-b border-slate-100 dark:border-slate-800/40 print:border-slate-200`;
 
+  const renderGroupCards = () => {
+    return (
+      <div className="flex flex-col gap-3">
+        {cvData.skills.map((grp: any) => (
+          <div
+            key={grp.id}
+            className="p-3 rounded-2xl bg-slate-50/50 dark:bg-slate-900/30 border border-slate-100/50 dark:border-slate-800/50 flex flex-col gap-1.5 print:bg-transparent break-inside-avoid"
+          >
+            <span className="text-xs font-extrabold text-slate-800 dark:text-slate-200 print:text-black">
+              {grp.category}
+            </span>
+            <div className="flex flex-wrap gap-1.5">
+              {grp.skills.filter(Boolean).map((s: string, i: number) => (
+                <span
+                  key={i}
+                  className={`${activeColor.pill} px-2.5 py-0.5 rounded-lg text-[11px] font-bold border border-slate-100 dark:border-slate-800`}
+                >
+                  {s}
+                </span>
+              ))}
+            </div>
+          </div>
+        ))}
+      </div>
+    );
+  };
+
   const renderContent = () => {
+    if (layoutStyle === 'radar') {
+      return (
+        <>
+          <div className="print:hidden">
+            <SkillsRadarChart skills={cvData.skills} activeColor={activeColor} />
+          </div>
+          <div className="hidden print:block">
+            {renderGroupCards()}
+          </div>
+        </>
+      );
+    }
+
     if (layoutStyle === 'text') {
       // Ultra-compact: all groups inline, no visual separation
       return (
@@ -63,31 +106,7 @@ export default function SkillsSectionRenderer({
     }
 
     if (layoutStyle === 'groupCards') {
-      // Each SkillGroup rendered as a full-width card with border & background — visually premium
-      return (
-        <div className="flex flex-col gap-3">
-          {cvData.skills.map((grp: any) => (
-            <div
-              key={grp.id}
-              className="p-3 rounded-2xl bg-slate-50/50 dark:bg-slate-900/30 border border-slate-100/50 dark:border-slate-800/50 flex flex-col gap-1.5 print:bg-transparent break-inside-avoid"
-            >
-              <span className="text-xs font-extrabold text-slate-800 dark:text-slate-200 print:text-black">
-                {grp.category}
-              </span>
-              <div className="flex flex-wrap gap-1.5">
-                {grp.skills.filter(Boolean).map((s: string, i: number) => (
-                  <span
-                    key={i}
-                    className={`${activeColor.pill} px-2.5 py-0.5 rounded-lg text-[11px] font-bold border border-slate-100 dark:border-slate-800`}
-                  >
-                    {s}
-                  </span>
-                ))}
-              </div>
-            </div>
-          ))}
-        </div>
-      );
+      return renderGroupCards();
     }
 
     if (layoutStyle === 'cards') {

@@ -87,7 +87,7 @@ export interface CustomSection {
 export interface SectionSetting {
   id: string;
   title?: string;
-  layoutStyle?: 'timeline' | 'cards' | 'text' | 'default' | 'groupCards';
+  layoutStyle?: 'timeline' | 'cards' | 'text' | 'default' | 'groupCards' | 'radar';
   hideFields?: string[];
 }
 

@@ -5,8 +5,9 @@ import CustomSectionRenderer from './CustomSectionRenderer';
 import LayoutSectionRenderer from './LayoutSectionRenderer';
 import SkillsSectionRenderer from './SkillsSectionRenderer';
 import { CustomLinksRenderer } from './TemplateHelpers';
+import { QRCodeWidget } from '../components/QRCodeWidget';
 
-export default function MinimalTemplate({ cvData, activeColor, t }: TemplateProps) {
+export default function MinimalTemplate({ cvData, activeColor, t, slug }: TemplateProps) {
   
   const renderExperienceItem = (exp: any, layout: 'timeline' | 'cards' | 'text', hiddenFields: string[]) => {
     const hideRole = hiddenFields.includes('role');
@@ -168,7 +169,12 @@ export default function MinimalTemplate({ cvData, activeColor, t }: TemplateProp
   return (
     <div className="flex flex-col flex-1 gap-6 text-sm">
                   {/* Elegant Editorial Header */}
-                  <div className="text-center flex flex-col items-center gap-1.5 pb-4 border-b border-slate-250 print:border-slate-350">
+                  <div className="text-center flex flex-col items-center gap-1.5 pb-4 border-b border-slate-250 print:border-slate-350 relative">
+                    {slug && (
+                      <div className="hidden print:flex absolute right-0 top-0">
+                        <QRCodeWidget slug={slug} />
+                      </div>
+                    )}
                     {cvData.personalInfo.avatar && (
                       <img 
                         src={cvData.personalInfo.avatar} 

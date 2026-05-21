@@ -120,3 +120,14 @@ def get_cv_analytics_summary(db: Session, slug: str) -> dict:
         "devices": devices,
         "countries": countries
     }
+
+def reset_cv_analytics(db: Session, slug: str) -> None:
+    """
+    Delete all analytics logs for a specific CV slug.
+    """
+    normalized_slug = slug.strip().lower()
+    statement = select(CVAnalytics).where(CVAnalytics.slug == normalized_slug)
+    results = db.exec(statement).all()
+    for row in results:
+        db.delete(row)
+    db.commit()

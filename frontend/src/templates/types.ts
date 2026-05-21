@@ -12,4 +12,5 @@ export interface TemplateProps {
   cvData: CVSchema;
   activeColor: ColorTheme;
   t: any;
+  slug?: string;
 }

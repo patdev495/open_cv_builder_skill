@@ -144,3 +144,33 @@ def get_cv_analytics_report(slug: str, passcode: str, db: Session = Depends(get_
         )
     
     return crud.get_cv_analytics_summary(db, slug)
+
+@app.post("/api/cvs/{slug}/analytics-reset")
+def reset_cv_analytics_endpoint(slug: str, payload: dict, db: Session = Depends(get_session)):
+    """
+    Endpoint to reset (delete) all analytics data for a CV slug.
+    Requires validating the correct passcode.
+    """
+    db_cv = crud.get_cv_by_slug(db, slug)
+    if not db_cv:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Không tìm thấy CV với đường dẫn này."
+        )
+    
+    passcode = payload.get("passcode")
+    if not passcode:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Vui lòng cung cấp mật mã xác thực."
+        )
+    
+    # Authenticate via Passcode
+    if not verify_passcode(passcode, db_cv.passcode_hash):
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Mật mã xác thực không chính xác."
+        )
+    
+    crud.reset_cv_analytics(db, slug)
+    return {"status": "success", "message": "Đã reset thống kê tương tác."}

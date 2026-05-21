@@ -5,8 +5,9 @@ import CustomSectionRenderer from './CustomSectionRenderer';
 import LayoutSectionRenderer from './LayoutSectionRenderer';
 import SkillsSectionRenderer from './SkillsSectionRenderer';
 import { CustomLinksRenderer } from './TemplateHelpers';
+import { QRCodeWidget } from '../components/QRCodeWidget';
 
-export default function CreativeTemplate({ cvData, activeColor, t }: TemplateProps) {
+export default function CreativeTemplate({ cvData, activeColor, t, slug }: TemplateProps) {
   
   const renderExperienceItem = (exp: any, layout: 'timeline' | 'cards' | 'text', hiddenFields: string[]) => {
     const hideRole = hiddenFields.includes('role');
@@ -252,53 +253,60 @@ export default function CreativeTemplate({ cvData, activeColor, t }: TemplatePro
                           </div>
                         </div>
                       </div>
-                      <div className="flex flex-col gap-1 text-slate-105 text-xs font-mono sm:items-end mt-2 md:mt-0 print:text-black print:items-end print:text-right print:mt-0">
-                        <div>{cvData.personalInfo.email}</div>
-                        {cvData.personalInfo.phone && <div>{cvData.personalInfo.phone}</div>}
-                        {cvData.personalInfo.location && <div>{cvData.personalInfo.location}</div>}
-                        <div className="flex flex-wrap gap-2 mt-1 md:justify-end print:justify-end">
-                           {cvData.personalInfo.website && (
-                             <a 
-                               href={cvData.personalInfo.website} 
-                               target="_blank" 
-                               rel="noopener noreferrer" 
-                               className={`bg-white hover:bg-slate-100 ${activeColor.primary} px-2 py-0.5 rounded text-[10px] font-bold border border-white/20 print:bg-amber-50 print:border-amber-200 print:text-amber-800 print:font-extrabold print:px-2.5 print:py-0.5 transition-colors`}
-                             >
-                               <span className="print:hidden">
-                                 {cvData.personalInfo.website.replace(/^https?:\/\/(www\.)?/, '')}
-                               </span>
-                               <span className="hidden print:inline">
-                                 Personal Website: {cvData.personalInfo.website.replace(/^https?:\/\/(www\.)?/, '')}
-                               </span>
-                             </a>
-                           )}
-                           {cvData.personalInfo.github && (
-                             <a 
-                               href={cvData.personalInfo.github} 
-                               target="_blank" 
-                               rel="noopener noreferrer" 
-                               className={`bg-white hover:bg-slate-100 ${activeColor.primary} px-2 py-0.5 rounded text-[10px] font-bold border border-white/20 print:bg-slate-50 print:border-slate-300 print:text-black transition-colors`}
-                             >
-                               github.com/{cvData.personalInfo.github.split('/').pop()}
-                             </a>
-                           )}
-                           {cvData.personalInfo.linkedin && (
-                             <a 
-                               href={cvData.personalInfo.linkedin} 
-                               target="_blank" 
-                               rel="noopener noreferrer" 
-                               className={`bg-white hover:bg-slate-100 ${activeColor.primary} px-2 py-0.5 rounded text-[10px] font-bold border border-white/20 print:bg-slate-50 print:border-slate-300 print:text-black transition-colors`}
-                             >
-                               linkedin.com/in/{cvData.personalInfo.linkedin.split('/').pop()}
-                             </a>
-                           )}
+                      <div className="flex items-center gap-4 print:flex-row print:items-center">
+                        <div className="flex flex-col gap-1 text-slate-105 text-xs font-mono sm:items-end mt-2 md:mt-0 print:text-black print:items-end print:text-right print:mt-0">
+                          <div>{cvData.personalInfo.email}</div>
+                          {cvData.personalInfo.phone && <div>{cvData.personalInfo.phone}</div>}
+                          {cvData.personalInfo.location && <div>{cvData.personalInfo.location}</div>}
+                          <div className="flex flex-wrap gap-2 mt-1 md:justify-end print:justify-end">
+                             {cvData.personalInfo.website && (
+                               <a 
+                                 href={cvData.personalInfo.website} 
+                                 target="_blank" 
+                                 rel="noopener noreferrer" 
+                                 className={`bg-white hover:bg-slate-100 ${activeColor.primary} px-2 py-0.5 rounded text-[10px] font-bold border border-white/20 print:bg-amber-50 print:border-amber-200 print:text-amber-800 print:font-extrabold print:px-2.5 print:py-0.5 transition-colors`}
+                               >
+                                 <span className="print:hidden">
+                                   {cvData.personalInfo.website.replace(/^https?:\/\/(www\.)?/, '')}
+                                 </span>
+                                 <span className="hidden print:inline">
+                                   Personal Website: {cvData.personalInfo.website.replace(/^https?:\/\/(www\.)?/, '')}
+                                 </span>
+                               </a>
+                             )}
+                             {cvData.personalInfo.github && (
+                               <a 
+                                 href={cvData.personalInfo.github} 
+                                 target="_blank" 
+                                 rel="noopener noreferrer" 
+                                 className={`bg-white hover:bg-slate-100 ${activeColor.primary} px-2 py-0.5 rounded text-[10px] font-bold border border-white/20 print:bg-slate-50 print:border-slate-300 print:text-black transition-colors`}
+                               >
+                                 github.com/{cvData.personalInfo.github.split('/').pop()}
+                               </a>
+                             )}
+                             {cvData.personalInfo.linkedin && (
+                               <a 
+                                 href={cvData.personalInfo.linkedin} 
+                                 target="_blank" 
+                                 rel="noopener noreferrer" 
+                                 className={`bg-white hover:bg-slate-100 ${activeColor.primary} px-2 py-0.5 rounded text-[10px] font-bold border border-white/20 print:bg-slate-50 print:border-slate-300 print:text-black transition-colors`}
+                               >
+                                 linkedin.com/in/{cvData.personalInfo.linkedin.split('/').pop()}
+                               </a>
+                             )}
+                          </div>
+                          {/* Custom links rendering in header */}
+                          <CustomLinksRenderer
+                            customLinks={cvData.personalInfo.customLinks}
+                            className="flex flex-wrap gap-2 mt-1 md:justify-end print:justify-end"
+                            itemClassName={`bg-white hover:bg-slate-100 ${activeColor.primary} px-2 py-0.5 rounded text-[10px] font-bold border border-white/20 print:bg-slate-50 print:border-slate-300 print:text-black transition-colors flex items-center gap-1`}
+                          />
                         </div>
-                        {/* Custom links rendering in header */}
-                        <CustomLinksRenderer
-                          customLinks={cvData.personalInfo.customLinks}
-                          className="flex flex-wrap gap-2 mt-1 md:justify-end print:justify-end"
-                          itemClassName={`bg-white hover:bg-slate-100 ${activeColor.primary} px-2 py-0.5 rounded text-[10px] font-bold border border-white/20 print:bg-slate-50 print:border-slate-300 print:text-black transition-colors flex items-center gap-1`}
-                        />
+                        {slug && (
+                          <div className="hidden print:flex flex-shrink-0">
+                            <QRCodeWidget slug={slug} />
+                          </div>
+                        )}
                       </div>
                     </div>
 

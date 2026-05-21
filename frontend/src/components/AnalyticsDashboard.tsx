@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useCVEditorContext } from '../context/CVEditorContext';
-import { Eye, Printer, Clock, BarChart3, Globe, Smartphone, RefreshCw, AlertCircle, Lock } from 'lucide-react';
+import { Eye, Printer, Clock, BarChart3, Globe, Smartphone, RefreshCw, AlertCircle, Lock, Trash2 } from 'lucide-react';
 import { API_BASE_URL } from '../services/api';
 
 interface AnalyticsData {
@@ -19,6 +19,31 @@ export function AnalyticsDashboard() {
   const [error, setError] = useState<string | null>(null);
   const [inputCode, setInputCode] = useState<string>('');
   const [showAuthForm, setShowAuthForm] = useState<boolean>(false);
+  const [isConfirming, setIsConfirming] = useState<boolean>(false);
+  const [isResetting, setIsResetting] = useState<boolean>(false);
+
+  const handleReset = async () => {
+    if (!slug || !passcode) return;
+    setIsResetting(true);
+    try {
+      const res = await fetch(`${API_BASE_URL}/cvs/${slug}/analytics-reset`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ passcode }),
+      });
+      if (!res.ok) {
+        throw new Error(language === 'vi' ? 'Không thể reset thống kê.' : 'Failed to reset analytics.');
+      }
+      setIsConfirming(false);
+      fetchAnalytics(passcode);
+    } catch (err: any) {
+      alert(err.message || 'Error resetting stats');
+    } finally {
+      setIsResetting(false);
+    }
+  };
 
   const fetchAnalytics = async (codeToUse: string) => {
     if (!slug) return;
@@ -171,14 +196,49 @@ export function AnalyticsDashboard() {
               : 'Anonymously track reader focus and engagement metrics.'}
           </p>
         </div>
-        <button
-          onClick={() => fetchAnalytics(passcode)}
-          className="p-2 bg-slate-900 border border-slate-800 hover:bg-slate-800 text-slate-400 hover:text-white rounded-xl transition-all cursor-pointer flex items-center gap-1.5 text-xs font-semibold"
-          title={language === 'vi' ? 'Làm mới' : 'Refresh stats'}
-        >
-          <RefreshCw className="h-3.5 w-3.5" />
-          {language === 'vi' ? 'Làm mới' : 'Refresh'}
-        </button>
+        <div className="flex items-center gap-2">
+          {/* Reset Button */}
+          {isConfirming ? (
+            <div className="flex items-center gap-1.5">
+              <button
+                onClick={handleReset}
+                disabled={isResetting}
+                className="px-2.5 py-1.5 bg-rose-600/20 border border-rose-500/30 hover:bg-rose-600/30 text-rose-300 hover:text-white rounded-xl transition-all cursor-pointer text-xs font-bold flex items-center gap-1 disabled:opacity-50"
+              >
+                {isResetting ? (
+                  <RefreshCw className="h-3 w-3 animate-spin" />
+                ) : (
+                  <Trash2 className="h-3.5 w-3.5" />
+                )}
+                {language === 'vi' ? 'Chắc chắn xóa?' : 'Confirm Reset?'}
+              </button>
+              <button
+                onClick={() => setIsConfirming(false)}
+                className="px-2.5 py-1.5 bg-slate-900 border border-slate-850 hover:bg-slate-800 text-slate-400 hover:text-white rounded-xl transition-all cursor-pointer text-xs font-semibold"
+              >
+                {language === 'vi' ? 'Hủy' : 'Cancel'}
+              </button>
+            </div>
+          ) : (
+            <button
+              onClick={() => setIsConfirming(true)}
+              className="p-2 bg-slate-900 border border-slate-850 hover:border-rose-950 hover:bg-rose-950/20 text-slate-500 hover:text-rose-400 rounded-xl transition-all cursor-pointer flex items-center gap-1.5 text-xs font-semibold"
+              title={language === 'vi' ? 'Reset thống kê' : 'Reset stats'}
+            >
+              <Trash2 className="h-3.5 w-3.5" />
+              {language === 'vi' ? 'Reset' : 'Reset'}
+            </button>
+          )}
+
+          <button
+            onClick={() => fetchAnalytics(passcode)}
+            className="p-2 bg-slate-900 border border-slate-800 hover:bg-slate-800 text-slate-400 hover:text-white rounded-xl transition-all cursor-pointer flex items-center gap-1.5 text-xs font-semibold"
+            title={language === 'vi' ? 'Làm mới' : 'Refresh stats'}
+          >
+            <RefreshCw className="h-3.5 w-3.5" />
+            {language === 'vi' ? 'Làm mới' : 'Refresh'}
+          </button>
+        </div>
       </div>
 
       {/* Aggregate Cards */}

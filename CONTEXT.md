@@ -53,7 +53,7 @@ Một thành phần giao diện động được tự động sinh ra trên **In
 _Avoid_: Video link, iframe, external link
 
 **Engagement Analytics** (Thống kê Tương tác):
-Hệ thống đo lường và ghi nhận ẩn danh các hành vi tương tác của người xem (như thời gian đọc, mức độ tập trung vào từng khối nội dung, các lượt bấm liên kết và lượt **Export** PDF) trên **Interactive Portfolio**, được tổng hợp và hiển thị trực quan thông qua biểu đồ trong bảng quản trị của ứng viên.
+Hệ thống đo lường và ghi nhận ẩn danh các hành vi tương tác của người xem (như thời gian đọc, mức độ tập trung vào từng khối nội dung, các lượt bấm liên kết và lượt **Export** PDF) trên **Interactive Portfolio**, được tổng hợp và hiển thị trực quan thông qua biểu đồ trong bảng quản trị của ứng viên. Hệ thống cho phép ứng viên thực hiện reset thống kê về 0 (xóa vĩnh viễn các log cũ) sau khi xác thực bằng **Passcode**.
 _Avoid_: Pageview counter, web tracker, visitor logs
 
 **Implicit Toggling** (Ẩn/Hiện Tự động):

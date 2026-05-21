@@ -5,8 +5,9 @@ import CustomSectionRenderer from './CustomSectionRenderer';
 import LayoutSectionRenderer from './LayoutSectionRenderer';
 import SkillsSectionRenderer from './SkillsSectionRenderer';
 import { CustomLinksRenderer } from './TemplateHelpers';
+import { QRCodeWidget } from '../components/QRCodeWidget';
 
-export default function TechProTemplate({ cvData, activeColor, t }: TemplateProps) {
+export default function TechProTemplate({ cvData, activeColor, t, slug }: TemplateProps) {
   const activeColorName = activeColor.primary.includes('indigo') ? 'indigo'
                         : activeColor.primary.includes('emerald') ? 'emerald'
                         : activeColor.primary.includes('rose') ? 'rose'
@@ -271,47 +272,54 @@ export default function TechProTemplate({ cvData, activeColor, t }: TemplateProp
           </div>
         </div>
 
-        <div className="flex flex-col gap-1 text-slate-500 dark:text-slate-400 text-xs text-right sm:items-end font-medium print:text-slate-700 dark:text-slate-300 print:items-end print:text-right">
-          <div className="font-semibold text-slate-850 dark:text-slate-200 print:text-black">{cvData.personalInfo.email}</div>
-          {cvData.personalInfo.phone && <div className="font-mono">{cvData.personalInfo.phone}</div>}
-          {cvData.personalInfo.location && <div>{cvData.personalInfo.location}</div>}
-          
-          <div className="flex flex-wrap gap-2.5 mt-1.5 sm:justify-end print:justify-end">
-            {cvData.personalInfo.website && (
-              <a 
-                href={cvData.personalInfo.website} 
-                target="_blank" 
-                rel="noopener noreferrer" 
-                className="font-mono hover:underline text-slate-500 dark:text-slate-400 print:text-amber-800 print:bg-amber-50 print:border print:border-amber-200 print:font-bold print:px-2 print:py-0.5 print:rounded flex items-center gap-1"
-              >
-                <span className="w-1.5 h-1.5 rounded-full bg-slate-400 print:hidden"></span>
-                <span className="print:hidden">
-                  {cvData.personalInfo.website.replace(/^https?:\/\/(www\.)?/, '')}
-                </span>
-                <span className="hidden print:inline">
-                  Personal Website: {cvData.personalInfo.website.replace(/^https?:\/\/(www\.)?/, '')}
-                </span>
-              </a>
-            )}
-            {cvData.personalInfo.github && (
-              <a href={cvData.personalInfo.github} target="_blank" rel="noopener noreferrer" className="font-mono hover:underline text-slate-500 dark:text-slate-400 print:text-slate-700 dark:text-slate-300 flex items-center gap-1">
-                <span className="w-1.5 h-1.5 rounded-full bg-slate-400"></span>
-                github.com/{cvData.personalInfo.github.split('/').pop()}
-              </a>
-            )}
-            {cvData.personalInfo.linkedin && (
-              <a href={cvData.personalInfo.linkedin} target="_blank" rel="noopener noreferrer" className="font-mono hover:underline text-slate-500 dark:text-slate-400 print:text-slate-700 dark:text-slate-300 flex items-center gap-1">
-                <span className="w-1.5 h-1.5 rounded-full bg-slate-400"></span>
-                linkedin.com/in/{cvData.personalInfo.linkedin.split('/').pop()}
-              </a>
-            )}
+        <div className="flex items-center gap-4 print:flex-row print:items-center">
+          <div className="flex flex-col gap-1 text-slate-500 dark:text-slate-400 text-xs text-right sm:items-end font-medium print:text-slate-700 dark:text-slate-300 print:items-end print:text-right">
+            <div className="font-semibold text-slate-850 dark:text-slate-200 print:text-black">{cvData.personalInfo.email}</div>
+            {cvData.personalInfo.phone && <div className="font-mono">{cvData.personalInfo.phone}</div>}
+            {cvData.personalInfo.location && <div>{cvData.personalInfo.location}</div>}
+            
+            <div className="flex flex-wrap gap-2.5 mt-1.5 sm:justify-end print:justify-end">
+              {cvData.personalInfo.website && (
+                <a 
+                  href={cvData.personalInfo.website} 
+                  target="_blank" 
+                  rel="noopener noreferrer" 
+                  className="font-mono hover:underline text-slate-500 dark:text-slate-400 print:text-amber-800 print:bg-amber-50 print:border print:border-amber-200 print:font-bold print:px-2 print:py-0.5 print:rounded flex items-center gap-1"
+                >
+                  <span className="w-1.5 h-1.5 rounded-full bg-slate-400 print:hidden"></span>
+                  <span className="print:hidden">
+                    {cvData.personalInfo.website.replace(/^https?:\/\/(www\.)?/, '')}
+                  </span>
+                  <span className="hidden print:inline">
+                    Personal Website: {cvData.personalInfo.website.replace(/^https?:\/\/(www\.)?/, '')}
+                  </span>
+                </a>
+              )}
+              {cvData.personalInfo.github && (
+                <a href={cvData.personalInfo.github} target="_blank" rel="noopener noreferrer" className="font-mono hover:underline text-slate-500 dark:text-slate-400 print:text-slate-700 dark:text-slate-300 flex items-center gap-1">
+                  <span className="w-1.5 h-1.5 rounded-full bg-slate-400"></span>
+                  github.com/{cvData.personalInfo.github.split('/').pop()}
+                </a>
+              )}
+              {cvData.personalInfo.linkedin && (
+                <a href={cvData.personalInfo.linkedin} target="_blank" rel="noopener noreferrer" className="font-mono hover:underline text-slate-500 dark:text-slate-400 print:text-slate-700 dark:text-slate-300 flex items-center gap-1">
+                  <span className="w-1.5 h-1.5 rounded-full bg-slate-400"></span>
+                  linkedin.com/in/{cvData.personalInfo.linkedin.split('/').pop()}
+                </a>
+              )}
+            </div>
+            {/* Custom contact links */}
+            <CustomLinksRenderer
+              customLinks={cvData.personalInfo.customLinks}
+              className="flex flex-wrap gap-2.5 mt-1.5 sm:justify-end print:justify-end"
+              itemClassName="hover:underline flex items-center gap-1 font-mono text-slate-500 dark:text-slate-400 print:text-slate-705 dark:text-slate-300 font-medium"
+            />
           </div>
-          {/* Custom contact links */}
-          <CustomLinksRenderer
-            customLinks={cvData.personalInfo.customLinks}
-            className="flex flex-wrap gap-2.5 mt-1.5 sm:justify-end print:justify-end"
-            itemClassName="hover:underline flex items-center gap-1 font-mono text-slate-500 dark:text-slate-400 print:text-slate-705 dark:text-slate-300 font-medium"
-          />
+          {slug && (
+            <div className="hidden print:flex flex-shrink-0">
+              <QRCodeWidget slug={slug} />
+            </div>
+          )}
         </div>
       </div>
 
