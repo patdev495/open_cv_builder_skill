@@ -7,7 +7,7 @@ import { QRCodeWidget } from '../components/QRCodeWidget';
 
 export default function MinimalTemplate({ cvData, activeColor, t, slug }: TemplateProps) {
   
-  const renderExperienceItem = (exp: any, layout: 'timeline' | 'cards' | 'text', hiddenFields: string[]) => {
+  const renderExperienceItem = (exp: any, _layout: 'timeline' | 'cards' | 'text', hiddenFields: string[]) => {
     const hideRole = hiddenFields.includes('role');
 
     return (
@@ -34,7 +34,7 @@ export default function MinimalTemplate({ cvData, activeColor, t, slug }: Templa
     );
   };
 
-  const renderProjectItem = (proj: any, layout: 'timeline' | 'cards' | 'text', hiddenFields: string[]) => {
+  const renderProjectItem = (proj: any, _layout: 'timeline' | 'cards' | 'text', hiddenFields: string[]) => {
     const hideRole = hiddenFields.includes('role');
     const hideUrl = hiddenFields.includes('url');
     const hideTech = hiddenFields.includes('technologies');

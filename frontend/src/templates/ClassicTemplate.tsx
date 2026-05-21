@@ -1,4 +1,4 @@
-import { User, Briefcase, GraduationCap, FolderGit2, Award, Languages, ExternalLink } from 'lucide-react';
+import { ExternalLink } from 'lucide-react';
 import { ProjectEmbed } from '../components/ProjectEmbed';
 import type { TemplateProps } from './types';
 import CustomSectionRenderer from './CustomSectionRenderer';

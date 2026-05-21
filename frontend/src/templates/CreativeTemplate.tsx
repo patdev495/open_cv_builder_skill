@@ -376,9 +376,9 @@ export default function CreativeTemplate({ cvData, activeColor, t, slug }: Templ
         }
         if (sec === 'projects' && cvData.projects.length > 0) {
           const projTitle = cvData.sectionSettings?.projects?.title || t('projectsUpper');
-          const setting = cvData.sectionSettings?.projects || {};
-          const layoutStyle = setting.layoutStyle || 'timeline';
-          const hideFields = setting.hideFields || [];
+          const setting = cvData.sectionSettings?.projects;
+          const layoutStyle = setting?.layoutStyle || 'timeline';
+          const hideFields = setting?.hideFields || [];
 
           if (layoutStyle === 'cards') {
             return (

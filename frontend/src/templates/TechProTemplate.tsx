@@ -1,4 +1,4 @@
-import { User, Briefcase, GraduationCap, FolderGit2, Award, Languages, ExternalLink, Code } from 'lucide-react';
+import { User, Briefcase, GraduationCap, FolderGit2, Award, Languages, Code } from 'lucide-react';
 import { ProjectEmbed } from '../components/ProjectEmbed';
 import type { TemplateProps } from './types';
 import CustomSectionRenderer from './CustomSectionRenderer';
@@ -22,7 +22,7 @@ export default function TechProTemplate({ cvData, activeColor, t, slug }: Templa
                      : activeColorName === 'bronze' ? 'border-l-amber-900 print:border-l-amber-955'
                      : 'border-l-slate-600 print:border-l-slate-800';
 
-  const renderExperienceItem = (exp: any, layout: 'timeline' | 'cards' | 'text', hiddenFields: string[]) => {
+  const renderExperienceItem = (exp: any, _layout: 'timeline' | 'cards' | 'text', hiddenFields: string[]) => {
     const hideRole = hiddenFields.includes('role');
 
     return (
@@ -50,7 +50,7 @@ export default function TechProTemplate({ cvData, activeColor, t, slug }: Templa
     );
   };
 
-  const renderProjectItem = (proj: any, layout: 'timeline' | 'cards' | 'text', hiddenFields: string[]) => {
+  const renderProjectItem = (proj: any, _layout: 'timeline' | 'cards' | 'text', hiddenFields: string[]) => {
     const hideRole = hiddenFields.includes('role');
     const hideUrl = hiddenFields.includes('url');
     const hideTech = hiddenFields.includes('technologies');
@@ -106,7 +106,7 @@ export default function TechProTemplate({ cvData, activeColor, t, slug }: Templa
     );
   };
 
-  const renderEducationItem = (edu: any, layout: 'timeline' | 'cards' | 'text', hiddenFields: string[]) => {
+  const renderEducationItem = (edu: any, _layout: 'timeline' | 'cards' | 'text', hiddenFields: string[]) => {
     const hideRole = hiddenFields.includes('role');
 
     return (
