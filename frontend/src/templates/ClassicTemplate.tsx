@@ -221,76 +221,74 @@ export default function ClassicTemplate({ cvData, activeColor, t, slug }: Templa
     );
   };
 
+  const isDefaultFont = !cvData.fontFamily || cvData.fontFamily === 'sans';
+  const classicFontClass = isDefaultFont ? 'font-lora font-serif' : '';
+  const sectionTitleClass = `text-[13px] font-bold uppercase tracking-wider ${activeColor.primary} pb-1 border-b border-slate-300 dark:border-slate-800 print:border-slate-400 font-serif flex items-center justify-start mt-4`;
+
   return (
-    <div className="flex flex-col flex-1 gap-5 text-sm">
+    <div className={`flex flex-col flex-1 gap-5 text-sm ${classicFontClass}`}>
                    
-                    {/* Header */}
-                   <div className={`flex flex-col sm:flex-row items-center justify-between gap-4 border-b-[3px] ${activeColor.border} pb-4 print:flex-row print:justify-between print:items-center`}>
-                     <div className="flex flex-col sm:flex-row items-center gap-4 print:flex-row print:items-center">
-                       {cvData.personalInfo.avatar && (
-                         <img 
-                           src={cvData.personalInfo.avatar} 
-                           alt="Avatar" 
-                           className="w-16 h-16 rounded-full object-cover border border-slate-300 dark:border-slate-600" 
-                         />
-                       )}
-                       <div className="text-center sm:text-left flex flex-col gap-1 print:text-left">
-                         <h1 className="text-3xl font-extrabold tracking-wide text-slate-950 dark:text-slate-50 uppercase m-0 print:text-black">
-                           {cvData.personalInfo.fullName || "HỌ VÀ TÊN"}
-                         </h1>
-                         <p className={`font-bold text-xs tracking-widest uppercase ${activeColor.primary}`}>
-                           {cvData.personalInfo.title || "VỊ TRÍ ỨNG TUYỂN"}
-                         </p>
-                         <div className="flex flex-wrap justify-center sm:justify-start gap-x-3 gap-y-1 text-slate-600 dark:text-slate-400 text-xs font-mono mt-2 print:text-black print:justify-start print:flex-wrap">
-                           <span>{cvData.personalInfo.email}</span>
-                           {cvData.personalInfo.phone && <span>• {cvData.personalInfo.phone}</span>}
-                           {cvData.personalInfo.location && <span>• {cvData.personalInfo.location}</span>}
-                           {cvData.personalInfo.website && (
-                              <span className="flex items-center gap-1">
-                                • <a 
-                                    href={cvData.personalInfo.website} 
-                                    target="_blank" 
-                                    rel="noopener noreferrer" 
-                                    className="hover:underline print:bg-amber-50 print:border print:border-amber-200 print:text-amber-800 print:font-extrabold print:px-2 print:py-0.5 print:rounded"
-                                  >
-                                    <span className="print:hidden">
-                                      {cvData.personalInfo.website.replace(/^https?:\/\/(www\.)?/, '')}
-                                    </span>
-                                    <span className="hidden print:inline">
-                                      Personal Website: {cvData.personalInfo.website.replace(/^https?:\/\/(www\.)?/, '')}
-                                    </span>
-                                  </a>
-                              </span>
-                            )}
-                           {cvData.personalInfo.github && (
-                             <span>
-                               • <a href={cvData.personalInfo.github} target="_blank" rel="noopener noreferrer" className="hover:underline">
-                                 github.com/{cvData.personalInfo.github.split('/').pop()}
-                               </a>
-                             </span>
-                           )}
-                           {cvData.personalInfo.linkedin && (
-                             <span>
-                               • <a href={cvData.personalInfo.linkedin} target="_blank" rel="noopener noreferrer" className="hover:underline">
-                                 linkedin.com/in/{cvData.personalInfo.linkedin.split('/').pop()}
-                               </a>
-                             </span>
-                           )}
-                         </div>
-                         {/* Render custom contact links */}
-                         <CustomLinksRenderer
-                           customLinks={cvData.personalInfo.customLinks}
-                           className="flex flex-wrap justify-center sm:justify-start gap-x-3 gap-y-1 text-slate-600 dark:text-slate-400 text-xs font-mono mt-1 print:text-black print:justify-start"
-                           itemClassName="hover:underline flex items-center gap-1"
-                         />
-                       </div>
-                     </div>
-                     {slug && (
-                       <div className="hidden print:flex flex-shrink-0">
-                         <QRCodeWidget slug={slug} />
-                       </div>
-                     )}
-                   </div>
+                    {/* Header - Centered LaTeX Style */}
+                    <div className={`flex flex-col items-center text-center w-full gap-2 border-b-2 ${activeColor.border} pb-4 print:flex-col print:items-center print:text-center`}>
+                      {cvData.personalInfo.avatar && (
+                        <img 
+                          src={cvData.personalInfo.avatar} 
+                          alt="Avatar" 
+                          className="w-20 h-20 rounded-full object-cover border border-slate-300 dark:border-slate-600 mb-1" 
+                        />
+                      )}
+                      <h1 className="text-3xl font-bold tracking-wide text-slate-950 dark:text-slate-50 uppercase m-0 print:text-black font-serif">
+                        {cvData.personalInfo.fullName || "HỌ VÀ TÊN"}
+                      </h1>
+                      <p className={`font-semibold text-xs tracking-widest uppercase ${activeColor.primary} font-serif`}>
+                        {cvData.personalInfo.title || "VỊ TRÍ ỨNG TUYỂN"}
+                      </p>
+                      
+                      <div className="flex flex-wrap justify-center gap-x-4 gap-y-1 text-slate-600 dark:text-slate-400 text-xs mt-1 print:text-black print:justify-center print:flex-wrap font-serif">
+                        <span>{cvData.personalInfo.email}</span>
+                        {cvData.personalInfo.phone && <span>• {cvData.personalInfo.phone}</span>}
+                        {cvData.personalInfo.location && <span>• {cvData.personalInfo.location}</span>}
+                        {cvData.personalInfo.website && (
+                          <span>
+                            • <a 
+                                href={cvData.personalInfo.website} 
+                                target="_blank" 
+                                rel="noopener noreferrer" 
+                                className="hover:underline"
+                              >
+                                {cvData.personalInfo.website.replace(/^https?:\/\/(www\.)?/, '')}
+                              </a>
+                          </span>
+                        )}
+                        {cvData.personalInfo.github && (
+                          <span>
+                            • <a href={cvData.personalInfo.github} target="_blank" rel="noopener noreferrer" className="hover:underline">
+                              github.com/{cvData.personalInfo.github.split('/').pop()}
+                            </a>
+                          </span>
+                        )}
+                        {cvData.personalInfo.linkedin && (
+                          <span>
+                            • <a href={cvData.personalInfo.linkedin} target="_blank" rel="noopener noreferrer" className="hover:underline">
+                              linkedin.com/in/{cvData.personalInfo.linkedin.split('/').pop()}
+                            </a>
+                          </span>
+                        )}
+                      </div>
+                      
+                      <CustomLinksRenderer
+                        customLinks={cvData.personalInfo.customLinks}
+                        className="flex flex-wrap justify-center gap-x-4 gap-y-1 text-slate-600 dark:text-slate-400 text-xs mt-1 print:text-black print:justify-center"
+                        itemClassName="hover:underline flex items-center gap-1 font-serif"
+                        showIcon={false}
+                      />
+                      
+                      {slug && (
+                        <div className="hidden print:flex flex-shrink-0 mt-2">
+                          <QRCodeWidget slug={slug} />
+                        </div>
+                      )}
+                    </div>
 
                     {/* Dynamic sections */}
                     {(() => {
@@ -307,18 +305,17 @@ export default function ClassicTemplate({ cvData, activeColor, t, slug }: Templa
                         if (sec.startsWith('custom-')) {
                           const customSec = customSecs.find(s => s.id === sec);
                           if (customSec) {
-                            return <CustomSectionRenderer key={sec} section={customSec} activeColor={activeColor} t={t} />;
+                            return <CustomSectionRenderer key={sec} section={customSec} activeColor={activeColor} t={t} titleClassName={sectionTitleClass} hideIcon={true} />;
                           }
                         }
                         if (sec === 'summary' && cvData.summary) {
                           const summaryTitle = cvData.sectionSettings?.summary?.title || t('summaryUpper');
                           return (
                             <div key={sec} data-section="summary" className="flex flex-col gap-1.5 break-inside-avoid">
-                              <h3 className={`text-xs font-extrabold uppercase tracking-wider ${activeColor.primary} pb-0.5 flex items-center gap-1.5 border-b border-slate-100 dark:border-slate-800/40 print:border-slate-200`}>
-                                <User className="h-3.5 w-3.5 stroke-[2.5]" />
+                              <h3 className={sectionTitleClass}>
                                 <span>{summaryTitle}</span>
                               </h3>
-                              <p className="text-xs leading-relaxed text-slate-705 dark:text-slate-300 italic text-justify">{cvData.summary}</p>
+                              <p className="text-xs leading-relaxed text-slate-700 dark:text-slate-300 italic text-justify font-serif">{cvData.summary}</p>
                             </div>
                           );
                         }
@@ -331,10 +328,11 @@ export default function ClassicTemplate({ cvData, activeColor, t, slug }: Templa
                               activeColor={activeColor}
                               t={t}
                               defaultTitleKey="experienceUpper"
-                              IconComponent={Briefcase}
+                              IconComponent={null}
                               items={cvData.experience}
                               defaultLayoutStyle="timeline"
                               renderItem={renderExperienceItem}
+                              titleClassName={sectionTitleClass}
                             />
                           );
                         }
@@ -347,10 +345,11 @@ export default function ClassicTemplate({ cvData, activeColor, t, slug }: Templa
                               activeColor={activeColor}
                               t={t}
                               defaultTitleKey="projectsUpper"
-                              IconComponent={FolderGit2}
+                              IconComponent={null}
                               items={cvData.projects}
                               defaultLayoutStyle="timeline"
                               renderItem={renderProjectItem}
+                              titleClassName={sectionTitleClass}
                             />
                           );
                         }
@@ -363,10 +362,11 @@ export default function ClassicTemplate({ cvData, activeColor, t, slug }: Templa
                               activeColor={activeColor}
                               t={t}
                               defaultTitleKey="educationUpper"
-                              IconComponent={GraduationCap}
+                              IconComponent={null}
                               items={cvData.education}
                               defaultLayoutStyle="timeline"
                               renderItem={renderEducationItem}
+                              titleClassName={sectionTitleClass}
                             />
                           );
                         }
@@ -377,36 +377,37 @@ export default function ClassicTemplate({ cvData, activeColor, t, slug }: Templa
                               cvData={cvData}
                               activeColor={activeColor}
                               t={t}
-                              titleClassName={`text-xs font-extrabold uppercase tracking-wider ${activeColor.primary} pb-0.5 flex items-center gap-1.5 border-b border-slate-100 dark:border-slate-800/40 print:border-slate-200`}
+                              titleClassName={sectionTitleClass}
                               wrapperClassName="break-inside-avoid"
+                              hideIcon={true}
                             />
                           );
                         }
                         if (sec === 'certificates' && cvData.certificates.length > 0) {
                           const certTitle = cvData.sectionSettings?.certificates?.title || t('certificatesUpper');
                           return (
-                            <div key={sec} data-section="certificates" className="flex flex-col gap-1 break-inside-avoid">
-                              <h3 className={`text-xs font-extrabold uppercase tracking-wider ${activeColor.primary} pb-0.5 flex items-center gap-1.5 border-b border-slate-100 dark:border-slate-800/40 print:border-slate-200`}>
-                                <Award className="h-3.5 w-3.5 stroke-[2.5]" />
+                            <div key={sec} data-section="certificates" className="flex flex-col gap-1.5 break-inside-avoid">
+                              <h3 className={sectionTitleClass}>
                                 <span>{certTitle}</span>
                               </h3>
-                              {cvData.certificates.map((c) => (
-                                <div key={c.id} className="text-xs text-slate-755">
-                                  <span className="font-bold text-slate-900 dark:text-slate-100">{c.name}</span> <span className="text-[10px] text-slate-500 dark:text-slate-400">({c.date})</span>
-                                </div>
-                              ))}
+                              <div className="flex flex-col gap-1 mt-1">
+                                {cvData.certificates.map((c) => (
+                                  <div key={c.id} className="text-xs text-slate-700 dark:text-slate-300 font-serif">
+                                    <span className="font-bold text-slate-900 dark:text-slate-100">{c.name}</span> <span className="text-[10px] text-slate-500 dark:text-slate-400">({c.date})</span>
+                                  </div>
+                                ))}
+                              </div>
                             </div>
                           );
                         }
                         if (sec === 'languages' && cvData.languages.length > 0) {
                           const langTitle = cvData.sectionSettings?.languages?.title || t('languagesUpper');
                           return (
-                            <div key={sec} data-section="languages" className="flex flex-col gap-1 break-inside-avoid">
-                              <h3 className={`text-xs font-extrabold uppercase tracking-wider ${activeColor.primary} pb-0.5 flex items-center gap-1.5 border-b border-slate-100 dark:border-slate-800/40 print:border-slate-200`}>
-                                <Languages className="h-3.5 w-3.5 stroke-[2.5]" />
+                            <div key={sec} data-section="languages" className="flex flex-col gap-1.5 break-inside-avoid">
+                              <h3 className={sectionTitleClass}>
                                 <span>{langTitle}</span>
                               </h3>
-                              <div className="text-xs text-slate-755 flex flex-col gap-0.5">
+                              <div className="text-xs text-slate-700 dark:text-slate-300 flex flex-col gap-1 mt-1 font-serif">
                                 {cvData.languages.map((l) => (
                                   <div key={l.id}>
                                     <span className="font-bold text-slate-900 dark:text-slate-100">{l.name}</span>: {l.level}

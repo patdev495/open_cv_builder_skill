@@ -8,9 +8,12 @@ interface CustomSectionRendererProps {
     pill: string;
   };
   t: (key: string) => string;
+  titleClassName?: string;
+  hideHeader?: boolean;
+  hideIcon?: boolean;
 }
 
-export default function CustomSectionRenderer({ section, activeColor }: CustomSectionRendererProps) {
+export default function CustomSectionRenderer({ section, activeColor, titleClassName, hideHeader, hideIcon = false }: CustomSectionRendererProps) {
   if (!section || !section.items || section.items.length === 0) return null;
 
   const layout = section.layoutStyle || 'timeline';
@@ -18,10 +21,12 @@ export default function CustomSectionRenderer({ section, activeColor }: CustomSe
   return (
     <div className="flex flex-col gap-4">
       {/* Section Title */}
-      <h3 className={`text-xs font-bold uppercase tracking-wider ${activeColor.primary} pb-1 font-mono flex items-center gap-1.5 print:text-black border-b border-slate-100 dark:border-slate-800/40 print:border-slate-200`}>
-        <Sparkles className="h-3.5 w-3.5 stroke-[2.5]" />
-        {section.title}
-      </h3>
+      {!hideHeader && (
+        <h3 className={titleClassName || `text-xs font-bold uppercase tracking-wider ${activeColor.primary} pb-1 font-mono flex items-center gap-1.5 print:text-black border-b border-slate-100 dark:border-slate-800/40 print:border-slate-200`}>
+          {!hideIcon && <Sparkles className="h-3.5 w-3.5 stroke-[2.5]" />}
+          {section.title}
+        </h3>
+      )}
 
       <div className={`flex flex-col gap-4 ${layout === 'cards' ? 'grid grid-cols-1 gap-3' : ''}`}>
         {section.items.map((item) => {

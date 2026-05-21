@@ -13,6 +13,8 @@ interface LayoutSectionRendererProps {
   items: any[];
   defaultLayoutStyle: 'timeline' | 'cards' | 'text';
   renderItem: (item: any, layout: 'timeline' | 'cards' | 'text', hiddenFields: string[]) => React.ReactNode;
+  titleClassName?: string;
+  hideHeader?: boolean;
 }
 
 export default function LayoutSectionRenderer({
@@ -24,7 +26,9 @@ export default function LayoutSectionRenderer({
   IconComponent,
   items,
   defaultLayoutStyle,
-  renderItem
+  renderItem,
+  titleClassName,
+  hideHeader
 }: LayoutSectionRendererProps) {
   if (!items || items.length === 0) return null;
 
@@ -46,10 +50,12 @@ export default function LayoutSectionRenderer({
 
   return (
     <div data-section={sectionId} className="flex flex-col gap-3">
-      <h3 className={`text-xs font-bold uppercase tracking-wider ${activeColor.primary} pb-1 font-mono flex items-center gap-1.5 print:text-black border-b border-slate-100 dark:border-slate-800/40 print:border-slate-200`}>
-        {IconComponent && <IconComponent className="h-3.5 w-3.5 stroke-[2.5]" />}
-        <span>{title}</span>
-      </h3>
+      {!hideHeader && (
+        <h3 className={titleClassName || `text-xs font-bold uppercase tracking-wider ${activeColor.primary} pb-1 font-mono flex items-center gap-1.5 print:text-black border-b border-slate-100 dark:border-slate-800/40 print:border-slate-200`}>
+          {IconComponent && <IconComponent className="h-3.5 w-3.5 stroke-[2.5]" />}
+          <span>{title}</span>
+        </h3>
+      )}
 
       <div className={containerClass}>
         {items.map((item) => renderItem(item, layoutStyle, hideFields))}

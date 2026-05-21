@@ -14,6 +14,8 @@ interface SkillsSectionRendererProps {
   titleClassName?: string;
   /** Extra classes for the wrapping container */
   wrapperClassName?: string;
+  hideIcon?: boolean;
+  IconComponent?: any;
 }
 
 /**
@@ -35,6 +37,8 @@ export default function SkillsSectionRenderer({
   t,
   titleClassName = '',
   wrapperClassName = '',
+  hideIcon = false,
+  IconComponent = Wrench,
 }: SkillsSectionRendererProps) {
   if (!cvData.skills || cvData.skills.length === 0) return null;
 
@@ -158,7 +162,7 @@ export default function SkillsSectionRenderer({
   return (
     <div data-section="skills" className={`flex flex-col gap-3 ${wrapperClassName}`}>
       <h3 className={titleClassName || defaultTitleClass}>
-        <Wrench className="h-3.5 w-3.5 stroke-[2.5]" />
+        {!hideIcon && IconComponent && <IconComponent className="h-3.5 w-3.5 stroke-[2.5]" />}
         <span>{title}</span>
       </h3>
       {renderContent()}

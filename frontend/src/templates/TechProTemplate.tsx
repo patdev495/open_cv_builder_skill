@@ -3,7 +3,6 @@ import { ProjectEmbed } from '../components/ProjectEmbed';
 import type { TemplateProps } from './types';
 import CustomSectionRenderer from './CustomSectionRenderer';
 import LayoutSectionRenderer from './LayoutSectionRenderer';
-import SkillsSectionRenderer from './SkillsSectionRenderer';
 import { CustomLinksRenderer } from './TemplateHelpers';
 import { QRCodeWidget } from '../components/QRCodeWidget';
 
@@ -26,60 +25,25 @@ export default function TechProTemplate({ cvData, activeColor, t, slug }: Templa
   const renderExperienceItem = (exp: any, layout: 'timeline' | 'cards' | 'text', hiddenFields: string[]) => {
     const hideRole = hiddenFields.includes('role');
 
-    if (layout === 'cards') {
-      return (
-        <div key={exp.id} className="p-3 bg-slate-50/50 dark:bg-slate-900/30 border border-slate-100 dark:border-slate-850/50 rounded-2xl flex flex-col gap-1 break-inside-avoid">
-          <div className="flex justify-between items-start text-xs">
-            <span className="font-extrabold text-slate-900 dark:text-slate-100 leading-snug">{exp.company}</span>
-            <span className="text-[10px] font-mono font-bold text-slate-400 print:text-slate-850 dark:text-slate-200 shrink-0">{exp.startDate} - {exp.endDate || 'Hiện tại'}</span>
-          </div>
-          {!hideRole && (
-            <span className={`text-[11px] font-bold ${activeColor.primary} print:text-black leading-snug`}>
-              {exp.position}
-            </span>
-          )}
-          <p className="text-xs leading-relaxed text-slate-650 dark:text-slate-405 font-medium whitespace-pre-line mt-1 print:text-slate-955">
-            {exp.description}
-          </p>
-        </div>
-      );
-    }
-
-    if (layout === 'text') {
-      return (
-        <div key={exp.id} className="flex flex-col gap-0.5 break-inside-avoid">
-          <div className="flex justify-between items-baseline text-xs">
-            <span className="font-bold text-slate-900 dark:text-slate-100">
-              {exp.company}
-              {!hideRole && <span className="font-normal text-slate-550"> ({exp.position})</span>}
-            </span>
-            <span className="text-[10px] font-mono font-bold text-slate-400">{exp.startDate} - {exp.endDate || 'Hiện tại'}</span>
-          </div>
-          <p className="text-xs leading-relaxed text-slate-650 dark:text-slate-400 font-medium whitespace-pre-line mt-0.5 print:text-slate-955">
-            {exp.description}
-          </p>
-        </div>
-      );
-    }
-
-    // Default timeline with left vertical line structure
     return (
-      <div key={exp.id} className="flex flex-col gap-1 break-inside-avoid relative">
-        <div className={`absolute -left-[21px] top-1.5 w-2 h-2 rounded-full border bg-white dark:bg-slate-900 ${activeColor.border}`}></div>
+      <div key={exp.id} className="flex flex-col gap-1.5 break-inside-avoid relative font-mono text-xs">
+        <div className={`absolute -left-[21px] top-1.5 w-2.5 h-2.5 rounded-full border bg-white dark:bg-slate-900 ${activeColor.border} flex items-center justify-center`}>
+          <span className="w-1 h-1 rounded-full bg-slate-400"></span>
+        </div>
         
-        <div className="flex flex-col sm:flex-row sm:justify-between sm:items-start text-xs gap-1">
+        <div className="flex flex-col sm:flex-row sm:justify-between sm:items-start gap-1">
           <div>
-            <span className="font-extrabold text-slate-900 dark:text-slate-100 leading-snug">{exp.company}</span>
+            <span className="font-extrabold text-slate-900 dark:text-slate-100 text-[13px]">{exp.company}</span>
             {!hideRole && (
               <>
-                <span className="text-slate-400 mx-1.5">•</span>
+                <span className="text-slate-400 mx-1.5 select-none">&gt;&gt;</span>
                 <span className={`font-bold ${activeColor.primary} print:text-black`}>{exp.position}</span>
               </>
             )}
           </div>
-          <span className="text-[10px] font-mono font-bold text-slate-405 print:text-slate-850 dark:text-slate-200 shrink-0">{exp.startDate} - {exp.endDate || 'Hiện tại'}</span>
+          <span className="text-[10px] font-bold text-slate-400 print:text-slate-850 dark:text-slate-200 shrink-0">{exp.startDate} - {exp.endDate || 'Hiện tại'}</span>
         </div>
-        <p className="text-xs leading-relaxed text-slate-650 dark:text-slate-405 font-medium whitespace-pre-line mt-1 print:text-slate-950">
+        <p className="text-xs leading-relaxed text-slate-600 dark:text-slate-405 whitespace-pre-line mt-0.5 print:text-slate-955 font-sans">
           {exp.description}
         </p>
       </div>
@@ -92,109 +56,52 @@ export default function TechProTemplate({ cvData, activeColor, t, slug }: Templa
     const hideTech = hiddenFields.includes('technologies');
     const hideEmbed = hiddenFields.includes('embed');
 
-    if (layout === 'cards') {
-      return (
-        <div key={proj.id} className="p-3 rounded-2xl bg-slate-50/50 dark:bg-slate-900/30 border border-slate-100/50 dark:border-slate-850/50 flex flex-col gap-2 break-inside-avoid">
-          <div className="flex justify-between items-start text-xs font-bold">
-            <span className="text-slate-900 dark:text-slate-100">{proj.name}</span>
-            <span className="text-[10px] font-mono text-slate-500 dark:text-slate-400">{proj.startDate}</span>
+    return (
+      <div key={proj.id} className="rounded-lg border border-slate-200 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-950/40 overflow-hidden break-inside-avoid flex flex-col font-mono text-xs">
+        {/* Terminal Header */}
+        <div className="flex items-center justify-between px-3 py-1.5 bg-slate-100/70 dark:bg-slate-900/50 border-b border-slate-200 dark:border-slate-800 select-none print:hidden">
+          <div className="flex gap-1.5">
+            <span className="w-2 h-2 rounded-full bg-rose-400/80"></span>
+            <span className="w-2 h-2 rounded-full bg-amber-450/80"></span>
+            <span className="w-2 h-2 rounded-full bg-emerald-450/80"></span>
+          </div>
+          <span className="text-[9px] text-slate-400 dark:text-slate-500 font-medium">bash – {proj.name.toLowerCase().replace(/\s+/g, '_')}.sh</span>
+        </div>
+        {/* Terminal Body */}
+        <div className="p-3 flex flex-col gap-2 print:p-2">
+          <div className="flex justify-between items-start text-xs font-bold font-mono">
+            <span className="text-slate-900 dark:text-slate-100 font-extrabold flex items-center gap-1 text-[13px]">
+              <span className="text-slate-400 font-normal select-none">$</span>
+              {proj.name}
+            </span>
+            <span className="text-[10px] text-slate-500 dark:text-slate-400 shrink-0 font-medium">{proj.startDate}</span>
           </div>
           {!hideRole && (
-            <span className={`text-[11px] font-semibold ${activeColor.primary}`}>{proj.role}</span>
+            <div className="text-[11px] text-slate-500 dark:text-slate-400 font-medium">
+              <span className="text-slate-400 select-none">role: </span>
+              <span className={`${activeColor.primary} font-bold`}>{proj.role}</span>
+            </div>
           )}
           {!hideUrl && proj.url && (
-            <a href={proj.url} target="_blank" rel="noopener noreferrer" className={`inline-flex items-center gap-0.5 text-[10px] ${activeColor.primary} hover:underline font-bold print:text-black`}>
-              <ExternalLink className="h-2.5 w-2.5" />
-              {proj.url.replace(/^https?:\/\/(www\.)?/, '').split('/')[0]}
+            <a href={proj.url} target="_blank" rel="noopener noreferrer" className={`inline-flex items-center gap-1 text-[10px] ${activeColor.primary} hover:underline font-bold print:text-black`}>
+              <span className="text-slate-400 select-none">url: </span>
+              {proj.url.replace(/^https?:\/\/(www\.)?/, '')}
             </a>
           )}
           {!hideTech && proj.technologies.filter(Boolean).length > 0 && (
-            <div className="flex flex-wrap gap-1">
+            <div className="flex flex-wrap gap-1.5 mt-0.5">
               {proj.technologies.filter(Boolean).map((tech: string, idx: number) => (
-                <span key={idx} className={`${activeColor.pill} rounded px-1.5 py-0.2 text-[9px] font-bold font-mono border border-slate-100 dark:border-slate-800`}>
+                <span key={idx} className={`${activeColor.pill} rounded px-1.5 py-0.5 text-[9px] font-bold border border-slate-100 dark:border-slate-800`}>
                   {tech}
                 </span>
               ))}
             </div>
           )}
-          <p className="text-xs leading-relaxed text-slate-650 dark:text-slate-400 font-medium mt-1 print:text-slate-950 whitespace-pre-line">
+          <p className="text-xs leading-relaxed text-slate-600 dark:text-slate-400 whitespace-pre-line mt-1 print:text-slate-955 font-sans">
             {proj.description}
           </p>
           {!hideEmbed && <ProjectEmbed embedUrl={proj.embedUrl} projectName={proj.name} />}
         </div>
-      );
-    }
-
-    if (layout === 'text') {
-      return (
-        <div key={proj.id} className="flex flex-col gap-0.5 break-inside-avoid">
-          <div className="flex justify-between items-baseline text-xs">
-            <span className="font-bold text-slate-900 dark:text-slate-100">
-              {proj.name}
-              {!hideRole && <span className="font-normal text-slate-550"> ({proj.role})</span>}
-            </span>
-            <span className="text-[10px] font-mono text-slate-400">{proj.startDate}</span>
-          </div>
-          {!hideUrl && proj.url && (
-            <a href={proj.url} target="_blank" rel="noopener noreferrer" className={`inline-flex items-center gap-0.5 text-[10px] ${activeColor.primary} hover:underline font-bold print:text-black`}>
-              <ExternalLink className="h-2.5 w-2.5" />
-              {proj.url.replace(/^https?:\/\/(www\.)?/, '').split('/')[0]}
-            </a>
-          )}
-          {!hideTech && proj.technologies.filter(Boolean).length > 0 && (
-            <span className="text-[10px] text-slate-500 dark:text-slate-400">
-              {proj.technologies.filter(Boolean).join(", ")}
-            </span>
-          )}
-          <p className="text-xs leading-relaxed text-slate-650 dark:text-slate-400 font-medium mt-0.5 print:text-slate-950">
-            {proj.description}
-          </p>
-          {!hideEmbed && <ProjectEmbed embedUrl={proj.embedUrl} projectName={proj.name} />}
-        </div>
-      );
-    }
-
-    // Default layout style: full timeline-like card
-    return (
-      <div key={proj.id} className="flex flex-col gap-2.5 p-3 rounded-2xl bg-slate-50/50 dark:bg-slate-900/30 border border-slate-100/50 dark:border-slate-850/50 break-inside-avoid print:bg-transparent">
-        <div className="flex flex-col sm:flex-row sm:justify-between sm:items-start text-xs gap-1">
-          <div>
-            <span className="font-extrabold text-slate-900 dark:text-slate-100">{proj.name}</span>
-            {!hideUrl && proj.url && (
-              <a
-                href={proj.url}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex items-center gap-0.5 text-[10px] text-purple-650 hover:text-purple-750 font-bold ml-1.5 hover:underline print:text-black print:no-underline"
-              >
-                <ExternalLink className="h-2.5 w-2.5" />
-                {proj.url.replace(/^https?:\/\/(www\.)?github\.com\//, 'github.com/').replace(/^https?:\/\/(www\.)?/, '').split('/')[0]}
-              </a>
-            )}
-            {!hideRole && (
-              <>
-                <span className="text-slate-450 mx-1.5">•</span>
-                <span className="text-[10px] text-slate-500 dark:text-slate-400 font-semibold italic">{proj.role}</span>
-              </>
-            )}
-          </div>
-          <span className="text-[10px] font-mono font-bold text-slate-400 print:text-slate-850 dark:text-slate-200 shrink-0">{proj.startDate}</span>
-        </div>
-        
-        {!hideTech && proj.technologies.filter(Boolean).length > 0 && (
-          <div className="flex flex-wrap gap-1">
-            {proj.technologies.filter(Boolean).map((tech: string, idx: number) => (
-              <span key={idx} className={`${activeColor.pill} rounded px-1.5 py-0.2 text-[9px] font-bold font-mono border border-slate-100 dark:border-slate-800`}>
-                {tech}
-              </span>
-            ))}
-          </div>
-        )}
-        
-        <p className="text-xs leading-relaxed text-slate-655 dark:text-slate-400 font-medium whitespace-pre-line mt-0.5 print:text-slate-950">
-          {proj.description}
-        </p>
-        {!hideEmbed && <ProjectEmbed embedUrl={proj.embedUrl} projectName={proj.name} />}
       </div>
     );
   };
@@ -202,53 +109,35 @@ export default function TechProTemplate({ cvData, activeColor, t, slug }: Templa
   const renderEducationItem = (edu: any, layout: 'timeline' | 'cards' | 'text', hiddenFields: string[]) => {
     const hideRole = hiddenFields.includes('role');
 
-    if (layout === 'cards') {
-      return (
-        <div key={edu.id} className="p-3 bg-slate-50/50 dark:bg-slate-900/30 border border-slate-100 dark:border-slate-850/50 rounded-2xl flex flex-col gap-1 break-inside-avoid">
-          <div className="flex justify-between items-start text-xs font-bold">
-            <span className="text-slate-900 dark:text-slate-100">{edu.institution}</span>
-            <span className="text-[10px] font-mono text-slate-500 dark:text-slate-400">{edu.startDate} - {edu.endDate || 'Hiện tại'}</span>
-          </div>
-          {!hideRole && (
-            <div className="text-slate-600 dark:text-slate-400 font-semibold italic">{edu.degree}</div>
-          )}
-          {edu.description && <p className="text-[11px] text-slate-500 dark:text-slate-400 italic mt-1">{edu.description}</p>}
-        </div>
-      );
-    }
-
-    if (layout === 'text') {
-      return (
-        <div key={edu.id} className="flex flex-col gap-0.5 text-xs break-inside-avoid">
-          <div className="flex justify-between items-baseline font-bold">
-            <span>
-              {edu.institution}
-              {!hideRole && <span className="font-normal text-slate-500"> ({edu.degree})</span>}
-            </span>
-            <span className="text-[10px] font-mono text-slate-405 print:text-slate-800 dark:text-slate-200">{edu.startDate} - {edu.endDate || 'Hiện tại'}</span>
-          </div>
-          {edu.description && <p className="text-[11px] text-slate-500 dark:text-slate-400 italic mt-0.5">{edu.description}</p>}
-        </div>
-      );
-    }
-
-    // Default timeline
     return (
-      <div key={edu.id} className="flex flex-col gap-1 text-xs break-inside-avoid">
+      <div key={edu.id} className="flex flex-col gap-1.5 text-xs break-inside-avoid font-mono">
         <div className="flex justify-between items-start">
-          <span className="font-extrabold text-slate-900 dark:text-slate-100 leading-snug">{edu.institution}</span>
-          <span className="text-[10px] font-mono font-bold text-slate-400 print:text-slate-850 dark:text-slate-200 shrink-0">{edu.startDate} - {edu.endDate || 'Hiện tại'}</span>
+          <span className="font-extrabold text-slate-900 dark:text-slate-100 flex items-center gap-1">
+            <span className="text-purple-500 font-normal select-none">&gt;</span>
+            {edu.institution}
+          </span>
+          <span className="text-[10px] font-bold text-slate-400 print:text-slate-850 dark:text-slate-200 shrink-0">{edu.startDate} - {edu.endDate || 'Hiện tại'}</span>
         </div>
         {!hideRole && (
-          <div className="text-slate-600 dark:text-slate-400 font-semibold print:text-slate-900">{edu.degree}</div>
+          <div className="text-slate-600 dark:text-slate-400 font-semibold print:text-slate-900 pl-3">
+            <span className="text-slate-400 font-normal select-none">degree: </span>
+            {edu.degree}
+          </div>
         )}
-        {edu.description && <p className="text-[11px] text-slate-500 dark:text-slate-400 italic mt-0.5">{edu.description}</p>}
+        {edu.description && (
+          <p className="text-[11px] text-slate-500 dark:text-slate-405 italic pl-3 border-l border-slate-200 dark:border-slate-800 font-sans mt-0.5">
+            {edu.description}
+          </p>
+        )}
       </div>
     );
   };
 
+  const isDefaultFont = !cvData.fontFamily || cvData.fontFamily === 'sans';
+  const techFontClass = isDefaultFont ? 'font-mono' : '';
+
   return (
-    <div className="flex flex-col flex-1 gap-6 text-sm">
+    <div className={`flex flex-col flex-1 gap-6 text-sm ${techFontClass}`}>
       {/* 1. Header */}
       <div className="border-b border-slate-200/80 dark:border-slate-800/80 pb-6 flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4 print:flex-row print:justify-between print:items-center">
         <div className="flex items-center gap-4">
@@ -259,12 +148,13 @@ export default function TechProTemplate({ cvData, activeColor, t, slug }: Templa
               className="w-16 h-16 rounded-2xl object-cover border-2 border-slate-200 dark:border-slate-700 print:border-slate-800 dark:border-slate-400 shadow-md" 
             />
           )}
-          <div>
+          <div className="font-mono">
+            <div className="text-slate-450 text-[10px] select-none font-medium mb-0.5">// dev profile</div>
             <h1 className="text-3xl font-extrabold tracking-tight text-slate-900 dark:text-slate-100 leading-tight m-0 print:text-black">
               {cvData.personalInfo.fullName || "HỌ VÀ TÊN"}
             </h1>
-            <div className="flex items-center gap-2 mt-1.5">
-              <span className={`inline-flex items-center gap-1.5 px-3 py-0.5 rounded-full text-xs font-bold font-mono border ${activeColor.pill}`}>
+            <div className="flex items-center gap-2 mt-1">
+              <span className={`inline-flex items-center gap-1.5 px-3 py-0.5 rounded text-xs font-bold border ${activeColor.pill}`}>
                 <Code className="h-3 w-3" />
                 {cvData.personalInfo.title || "VỊ TRÍ ỨNG TUYỂN"}
               </span>
@@ -272,38 +162,46 @@ export default function TechProTemplate({ cvData, activeColor, t, slug }: Templa
           </div>
         </div>
 
-        <div className="flex items-center gap-4 print:flex-row print:items-center">
+        <div className="flex items-center gap-4 print:flex-row print:items-center font-mono">
           <div className="flex flex-col gap-1 text-slate-500 dark:text-slate-400 text-xs text-right sm:items-end font-medium print:text-slate-700 dark:text-slate-300 print:items-end print:text-right">
-            <div className="font-semibold text-slate-850 dark:text-slate-200 print:text-black">{cvData.personalInfo.email}</div>
-            {cvData.personalInfo.phone && <div className="font-mono">{cvData.personalInfo.phone}</div>}
-            {cvData.personalInfo.location && <div>{cvData.personalInfo.location}</div>}
+            <div className="font-semibold text-slate-850 dark:text-slate-200 print:text-black">
+              <span className="text-slate-450 select-none">email: </span>
+              {cvData.personalInfo.email}
+            </div>
+            {cvData.personalInfo.phone && (
+              <div>
+                <span className="text-slate-450 select-none">phone: </span>
+                {cvData.personalInfo.phone}
+              </div>
+            )}
+            {cvData.personalInfo.location && (
+              <div>
+                <span className="text-slate-450 select-none">loc: </span>
+                {cvData.personalInfo.location}
+              </div>
+            )}
             
-            <div className="flex flex-wrap gap-2.5 mt-1.5 sm:justify-end print:justify-end">
+            <div className="flex flex-wrap gap-2 mt-1.5 sm:justify-end print:justify-end">
               {cvData.personalInfo.website && (
                 <a 
                   href={cvData.personalInfo.website} 
                   target="_blank" 
                   rel="noopener noreferrer" 
-                  className="font-mono hover:underline text-slate-500 dark:text-slate-400 print:text-amber-800 print:bg-amber-50 print:border print:border-amber-200 print:font-bold print:px-2 print:py-0.5 print:rounded flex items-center gap-1"
+                  className="hover:underline text-slate-500 dark:text-slate-400 print:text-amber-800 print:bg-amber-50 print:border print:border-amber-200 print:font-bold print:px-2 print:py-0.5 print:rounded flex items-center gap-1"
                 >
-                  <span className="w-1.5 h-1.5 rounded-full bg-slate-400 print:hidden"></span>
-                  <span className="print:hidden">
-                    {cvData.personalInfo.website.replace(/^https?:\/\/(www\.)?/, '')}
-                  </span>
-                  <span className="hidden print:inline">
-                    Personal Website: {cvData.personalInfo.website.replace(/^https?:\/\/(www\.)?/, '')}
-                  </span>
+                  <span className="text-slate-450 select-none">web: </span>
+                  {cvData.personalInfo.website.replace(/^https?:\/\/(www\.)?/, '')}
                 </a>
               )}
               {cvData.personalInfo.github && (
-                <a href={cvData.personalInfo.github} target="_blank" rel="noopener noreferrer" className="font-mono hover:underline text-slate-500 dark:text-slate-400 print:text-slate-700 dark:text-slate-300 flex items-center gap-1">
-                  <span className="w-1.5 h-1.5 rounded-full bg-slate-400"></span>
+                <a href={cvData.personalInfo.github} target="_blank" rel="noopener noreferrer" className="hover:underline text-slate-500 dark:text-slate-400 print:text-slate-700 dark:text-slate-300 flex items-center gap-1">
+                  <span className="text-slate-450 select-none">git: </span>
                   github.com/{cvData.personalInfo.github.split('/').pop()}
                 </a>
               )}
               {cvData.personalInfo.linkedin && (
-                <a href={cvData.personalInfo.linkedin} target="_blank" rel="noopener noreferrer" className="font-mono hover:underline text-slate-500 dark:text-slate-400 print:text-slate-700 dark:text-slate-300 flex items-center gap-1">
-                  <span className="w-1.5 h-1.5 rounded-full bg-slate-400"></span>
+                <a href={cvData.personalInfo.linkedin} target="_blank" rel="noopener noreferrer" className="hover:underline text-slate-500 dark:text-slate-400 print:text-slate-700 dark:text-slate-300 flex items-center gap-1">
+                  <span className="text-slate-450 select-none">ln: </span>
                   linkedin.com/in/{cvData.personalInfo.linkedin.split('/').pop()}
                 </a>
               )}
@@ -311,8 +209,8 @@ export default function TechProTemplate({ cvData, activeColor, t, slug }: Templa
             {/* Custom contact links */}
             <CustomLinksRenderer
               customLinks={cvData.personalInfo.customLinks}
-              className="flex flex-wrap gap-2.5 mt-1.5 sm:justify-end print:justify-end"
-              itemClassName="hover:underline flex items-center gap-1 font-mono text-slate-500 dark:text-slate-400 print:text-slate-705 dark:text-slate-300 font-medium"
+              className="flex flex-wrap gap-2.5 mt-1 sm:justify-end print:justify-end"
+              itemClassName="hover:underline flex items-center gap-1 text-slate-500 dark:text-slate-400 print:text-slate-705 dark:text-slate-300 font-medium"
             />
           </div>
           {slug && (
@@ -347,31 +245,41 @@ export default function TechProTemplate({ cvData, activeColor, t, slug }: Templa
               if (sec.startsWith('custom-')) {
                 const customSec = customSecs.find(s => s.id === sec);
                 if (customSec) {
-                  return <CustomSectionRenderer key={sec} section={customSec} activeColor={activeColor} t={t} />;
+                  return (
+                    <div key={sec} className="flex flex-col gap-3">
+                      <CustomSectionRenderer section={customSec} activeColor={activeColor} t={t} titleClassName={`text-xs font-bold uppercase tracking-wider ${activeColor.primary} pb-0.5 border-l-2 ${accentBorder} pl-2 flex items-center gap-1.5 print:text-black font-mono`} />
+                    </div>
+                  );
                 }
               }
               if (sec === 'summary' && cvData.summary) {
                 const summaryTitle = cvData.sectionSettings?.summary?.title || t('summaryUpper');
                 return (
                   <div key={sec} data-section="summary" className="flex flex-col gap-2.5 break-inside-avoid">
-                    <h3 className={`text-xs font-bold uppercase tracking-wider ${activeColor.primary} pb-0.5 border-l-2 ${accentBorder} pl-2 flex items-center gap-1.5 print:text-black`}>
+                    <h3 className={`text-xs font-bold uppercase tracking-wider ${activeColor.primary} pb-0.5 border-l-2 ${accentBorder} pl-2 flex items-center gap-1.5 print:text-black font-mono`}>
                       <User className="h-3.5 w-3.5 stroke-[2.5]" />
-                      <span>{summaryTitle}</span>
+                      <span>{`// ${summaryTitle}`}</span>
                     </h3>
-                    <p className="text-xs leading-relaxed text-slate-700 dark:text-slate-300 font-medium text-justify">{cvData.summary}</p>
+                    <div className="rounded-lg border border-dashed border-slate-200 dark:border-slate-800 bg-slate-50/20 dark:bg-slate-950/20 p-3 font-mono text-xs">
+                      <span className="text-slate-400 select-none">{"/**"}</span>
+                      <p className="text-xs leading-relaxed text-slate-700 dark:text-slate-350 font-medium pl-3 border-l border-slate-250 dark:border-slate-850 my-1 font-sans">
+                        {cvData.summary}
+                      </p>
+                      <span className="text-slate-400 select-none">{" */"}</span>
+                    </div>
                   </div>
                 );
               }
               if (sec === 'experience' && cvData.experience.length > 0) {
                 const layout = cvData.sectionSettings?.experience?.layoutStyle || 'timeline';
                 // For timeline layout, TechProTemplate uses a special border alignment
-                const extraClass = layout === 'timeline' ? "border-l border-slate-100 dark:border-slate-800/80 ml-2 pl-4 space-y-2 print:border-slate-200" : "";
+                const extraClass = layout === 'timeline' ? "border-l border-slate-155 dark:border-slate-800/80 ml-2 pl-4 space-y-2 print:border-slate-200" : "";
                 
                 return (
                   <div key={sec} className="flex flex-col gap-4">
-                    <h3 className={`text-xs font-bold uppercase tracking-wider ${activeColor.primary} pb-0.5 border-l-2 ${accentBorder} pl-2 flex items-center gap-1.5 print:text-black`}>
+                    <h3 className={`text-xs font-bold uppercase tracking-wider ${activeColor.primary} pb-0.5 border-l-2 ${accentBorder} pl-2 flex items-center gap-1.5 print:text-black font-mono`}>
                       <Briefcase className="h-3.5 w-3.5 stroke-[2.5]" />
-                      <span>{cvData.sectionSettings?.experience?.title || t('experienceUpper')}</span>
+                      <span>{`// ${cvData.sectionSettings?.experience?.title || t('experienceUpper')}`}</span>
                     </h3>
                     <div className={extraClass}>
                       <LayoutSectionRenderer
@@ -384,6 +292,7 @@ export default function TechProTemplate({ cvData, activeColor, t, slug }: Templa
                         items={cvData.experience}
                         defaultLayoutStyle="timeline"
                         renderItem={renderExperienceItem}
+                        hideHeader={true}
                       />
                     </div>
                   </div>
@@ -392,16 +301,21 @@ export default function TechProTemplate({ cvData, activeColor, t, slug }: Templa
               if (sec === 'projects' && cvData.projects.length > 0) {
                 return (
                   <div key={sec} className="flex flex-col gap-4">
+                    <h3 className={`text-xs font-bold uppercase tracking-wider ${activeColor.primary} pb-0.5 border-l-2 ${accentBorder} pl-2 flex items-center gap-1.5 print:text-black font-mono`}>
+                      <FolderGit2 className="h-3.5 w-3.5 stroke-[2.5]" />
+                      <span>{`// ${cvData.sectionSettings?.projects?.title || t('projectsUpper')}`}</span>
+                    </h3>
                     <LayoutSectionRenderer
                       sectionId="projects"
                       cvData={cvData}
                       activeColor={activeColor}
                       t={t}
                       defaultTitleKey="projectsUpper"
-                      IconComponent={FolderGit2}
+                      IconComponent={null}
                       items={cvData.projects}
                       defaultLayoutStyle="timeline"
                       renderItem={renderProjectItem}
+                      hideHeader={true}
                     />
                   </div>
                 );
@@ -432,33 +346,69 @@ export default function TechProTemplate({ cvData, activeColor, t, slug }: Templa
               if (sec.startsWith('custom-')) {
                 const customSec = customSecs.find(s => s.id === sec);
                 if (customSec) {
-                  return <CustomSectionRenderer key={sec} section={customSec} activeColor={activeColor} t={t} />;
+                  return (
+                    <div key={sec} className="flex flex-col gap-3">
+                      <CustomSectionRenderer section={customSec} activeColor={activeColor} t={t} titleClassName={`text-xs font-bold uppercase tracking-wider ${activeColor.primary} pb-0.5 border-l-2 ${accentBorder} pl-2 flex items-center gap-1.5 print:text-black font-mono`} />
+                    </div>
+                  );
                 }
               }
               if (sec === 'skills' && cvData.skills.length > 0) {
                 return (
-                  <SkillsSectionRenderer
-                    key={sec}
-                    cvData={cvData}
-                    activeColor={activeColor}
-                    t={t}
-                    titleClassName={`text-xs font-bold uppercase tracking-wider ${activeColor.primary} pb-0.5 border-l-2 ${accentBorder} pl-2 flex items-center gap-1.5 print:text-black`}
-                  />
+                  <div key={sec} data-section="skills" className="flex flex-col gap-3 break-inside-avoid">
+                    <h3 className={`text-xs font-bold uppercase tracking-wider ${activeColor.primary} pb-0.5 border-l-2 ${accentBorder} pl-2 flex items-center gap-1.5 print:text-black font-mono`}>
+                      <Code className="h-3.5 w-3.5 stroke-[2.5]" />
+                      <span>{`// ${cvData.sectionSettings?.skills?.title || t('skillsUpper')}`}</span>
+                    </h3>
+                    <div className="rounded-lg border border-slate-200 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-950/40 overflow-hidden break-inside-avoid flex flex-col font-mono text-xs">
+                      {/* Code block header */}
+                      <div className="flex items-center justify-between px-3 py-1.5 bg-slate-100/70 dark:bg-slate-900/50 border-b border-slate-200 dark:border-slate-800 select-none print:hidden">
+                        <span className="text-[9px] text-slate-400 dark:text-slate-500 font-medium">skills.json</span>
+                        <span className="text-[9px] text-slate-400 dark:text-slate-500 font-medium">JSON</span>
+                      </div>
+                      {/* Code block body */}
+                      <div className="p-3 flex flex-col gap-3 font-mono">
+                        {cvData.skills.map((grp: any) => (
+                          <div key={grp.id} className="flex flex-col gap-1.5">
+                            <span className="text-xs font-bold text-slate-850 dark:text-slate-200 flex items-center gap-1">
+                              <span className="text-purple-500 select-none">&lt;/&gt;</span>
+                              {grp.category}
+                            </span>
+                            <div className="flex flex-wrap gap-1.5 font-sans">
+                              {grp.skills.filter(Boolean).map((s: string, idx: number) => (
+                                <span
+                                  key={idx}
+                                  className={`${activeColor.pill} px-2 py-0.5 rounded text-[10px] font-bold border border-slate-100/50 dark:border-slate-800/50 font-mono`}
+                                >
+                                  {s}
+                                </span>
+                              ))}
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
                 );
               }
               if (sec === 'education' && cvData.education.length > 0) {
                 return (
                   <div key={sec} className="flex flex-col gap-3">
+                    <h3 className={`text-xs font-bold uppercase tracking-wider ${activeColor.primary} pb-0.5 border-l-2 ${accentBorder} pl-2 flex items-center gap-1.5 print:text-black font-mono`}>
+                      <GraduationCap className="h-3.5 w-3.5 stroke-[2.5]" />
+                      <span>{`// ${cvData.sectionSettings?.education?.title || t('educationUpper')}`}</span>
+                    </h3>
                     <LayoutSectionRenderer
                       sectionId="education"
                       cvData={cvData}
                       activeColor={activeColor}
                       t={t}
                       defaultTitleKey="educationUpper"
-                      IconComponent={GraduationCap}
+                      IconComponent={null}
                       items={cvData.education}
                       defaultLayoutStyle="timeline"
                       renderItem={renderEducationItem}
+                      hideHeader={true}
                     />
                   </div>
                 );
@@ -467,15 +417,20 @@ export default function TechProTemplate({ cvData, activeColor, t, slug }: Templa
                 const certTitle = cvData.sectionSettings?.certificates?.title || t('certificatesUpper');
                 return (
                   <div key={sec} data-section="certificates" className="flex flex-col gap-3">
-                    <h3 className={`text-xs font-bold uppercase tracking-wider ${activeColor.primary} pb-0.5 border-l-2 ${accentBorder} pl-2 flex items-center gap-1.5 print:text-black`}>
+                    <h3 className={`text-xs font-bold uppercase tracking-wider ${activeColor.primary} pb-0.5 border-l-2 ${accentBorder} pl-2 flex items-center gap-1.5 print:text-black font-mono`}>
                       <Award className="h-3.5 w-3.5 stroke-[2.5]" />
-                      <span>{certTitle}</span>
+                      <span>{`// ${certTitle}`}</span>
                     </h3>
-                    <div className="flex flex-col gap-2.5">
+                    <div className="flex flex-col gap-2.5 font-mono text-xs">
                       {cvData.certificates.map((c) => (
-                        <div key={c.id} className="text-xs flex flex-col gap-0.5 break-inside-avoid">
-                          <span className="font-extrabold text-slate-850 dark:text-slate-200 leading-snug print:text-black">{c.name}</span>
-                          <span className="text-[10px] text-slate-500 dark:text-slate-405 font-medium">{c.issuer} ({c.date})</span>
+                        <div key={c.id} className="flex flex-col gap-0.5 break-inside-avoid">
+                          <span className="font-extrabold text-slate-850 dark:text-slate-200 leading-snug print:text-black flex items-center gap-1 text-[13px]">
+                            <span className="text-amber-500 font-normal select-none">#</span>
+                            {c.name}
+                          </span>
+                          <span className="text-[10px] text-slate-500 dark:text-slate-405 font-medium pl-3">
+                            {c.issuer} ({c.date})
+                          </span>
                         </div>
                       ))}
                     </div>
@@ -486,15 +441,18 @@ export default function TechProTemplate({ cvData, activeColor, t, slug }: Templa
                 const langTitle = cvData.sectionSettings?.languages?.title || t('languagesUpper');
                 return (
                   <div key={sec} data-section="languages" className="flex flex-col gap-2">
-                    <h3 className={`text-xs font-bold uppercase tracking-wider ${activeColor.primary} pb-0.5 border-l-2 ${accentBorder} pl-2 flex items-center gap-1.5 print:text-black`}>
+                    <h3 className={`text-xs font-bold uppercase tracking-wider ${activeColor.primary} pb-0.5 border-l-2 ${accentBorder} pl-2 flex items-center gap-1.5 print:text-black font-mono`}>
                       <Languages className="h-3.5 w-3.5 stroke-[2.5]" />
-                      <span>{langTitle}</span>
+                      <span>{`// ${langTitle}`}</span>
                     </h3>
-                    <div className="flex flex-col gap-2">
+                    <div className="flex flex-col gap-2 font-mono text-xs">
                       {cvData.languages.map((l) => (
-                        <div key={l.id} className="flex justify-between text-xs font-medium text-slate-700 dark:text-slate-300 break-inside-avoid">
-                          <span className="font-semibold text-slate-800 dark:text-slate-200 print:text-black">{l.name}</span>
-                          <span className="text-slate-500 dark:text-slate-400 font-mono text-[10px] print:text-slate-800 dark:text-slate-200">{l.level}</span>
+                        <div key={l.id} className="flex justify-between text-xs font-medium text-slate-755 dark:text-slate-300 break-inside-avoid">
+                          <span className="font-semibold text-slate-800 dark:text-slate-200 print:text-black flex items-center gap-1">
+                            <span className="text-slate-450 select-none">locale:</span>
+                            {l.name}
+                          </span>
+                          <span className="text-slate-500 dark:text-slate-400 text-[10px] print:text-slate-800 dark:text-slate-200 font-bold">{l.level}</span>
                         </div>
                       ))}
                     </div>
