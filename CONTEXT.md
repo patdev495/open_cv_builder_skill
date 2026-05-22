@@ -49,7 +49,7 @@ Chế độ hiển thị trực tuyến sống động của **CV** trên trang 
 _Avoid_: Dynamic CV, personal site
 
 **Project Embed** (Tiện ích Nhúng Dự án):
-Một thành phần giao diện động được tự động sinh ra trên **Interactive Portfolio** khi người dùng cung cấp trường `embedUrl` trong khối dự án. Giao diện này tự phân tích tên miền nguồn (như GitHub, YouTube, Figma, CodeSandbox) để hiển thị widget tương tác động hoặc thẻ xem trước sang trọng, và tự rút gọn thành URL văn bản/QR code khi **Export** PDF.
+Một thành phần giao diện động được tự động sinh ra trên **Interactive Portfolio** khi người dùng cung cấp trường `embedUrl` trong khối dự án. Giao diện này tự phân tích tên miền nguồn (như GitHub, YouTube, Figma, CodeSandbox) để hiển thị widget tương tác động hoặc thẻ xem trước sang trọng, và tự rút gọn thành URL văn bản khi **Export** PDF.
 _Avoid_: Video link, iframe, external link
 
 **Engagement Analytics** (Thống kê Tương tác):

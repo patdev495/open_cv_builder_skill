@@ -32,7 +32,7 @@ We will design and implement the **Interactive Portfolio Commercial Suite** as f
 2. **Polymorphic Project Embeds (`embedUrl`)**:
    - Instead of polluting the **CV Schema** with multiple third-party fields (e.g. `githubUrl`, `figmaUrl`, `youtubeUrl`), a single generic `embedUrl` field is added to the project entity.
    - The frontend rendering engine inspects the domain pattern of the `embedUrl` and renders specific high-fidelity glassmorphic widgets (e.g., GitHub repo cards, embedded Figma design frames, embedded YouTube players, or interactive sandbox spaces).
-   - For print sheets, the engine replaces active iframes and embed cards with clean, shortened text URLs and QR code references to maintain document utility.
+   - For print sheets, the engine replaces active iframes and embed cards with clean, shortened text URLs to maintain document utility.
 
 3. **Granular Engagement Analytics**:
    - A client-side activity tracker anonymously measures user scrolling, hover duration on specific sections (e.g., how long the reader stays focused on "Projects" vs "Education"), link clicks, and PDF exports.

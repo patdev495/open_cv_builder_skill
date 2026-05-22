@@ -5,9 +5,8 @@ import CustomSectionRenderer from './CustomSectionRenderer';
 import LayoutSectionRenderer from './LayoutSectionRenderer';
 import SkillsSectionRenderer from './SkillsSectionRenderer';
 import { CustomLinksRenderer } from './TemplateHelpers';
-import { QRCodeWidget } from '../components/QRCodeWidget';
 
-export default function ClassicTemplate({ cvData, activeColor, t, slug }: TemplateProps) {
+export default function ClassicTemplate({ cvData, activeColor, t }: TemplateProps) {
   
   const renderExperienceItem = (exp: any, layout: 'timeline' | 'cards' | 'text', hiddenFields: string[]) => {
     const hideRole = hiddenFields.includes('role');
@@ -283,11 +282,7 @@ export default function ClassicTemplate({ cvData, activeColor, t, slug }: Templa
                         showIcon={false}
                       />
                       
-                      {slug && (
-                        <div className="hidden print:flex flex-shrink-0 mt-2">
-                          <QRCodeWidget slug={slug} />
-                        </div>
-                      )}
+
                     </div>
 
                     {/* Dynamic sections */}

@@ -4,9 +4,8 @@ import type { TemplateProps } from './types';
 import CustomSectionRenderer from './CustomSectionRenderer';
 import LayoutSectionRenderer from './LayoutSectionRenderer';
 import { CustomLinksRenderer } from './TemplateHelpers';
-import { QRCodeWidget } from '../components/QRCodeWidget';
 
-export default function TechProTemplate({ cvData, activeColor, t, slug }: TemplateProps) {
+export default function TechProTemplate({ cvData, activeColor, t }: TemplateProps) {
   const activeColorName = activeColor.primary.includes('indigo') ? 'indigo'
                         : activeColor.primary.includes('emerald') ? 'emerald'
                         : activeColor.primary.includes('rose') ? 'rose'
@@ -213,11 +212,6 @@ export default function TechProTemplate({ cvData, activeColor, t, slug }: Templa
               itemClassName="hover:underline flex items-center gap-1 text-slate-500 dark:text-slate-400 print:text-slate-705 dark:text-slate-300 font-medium"
             />
           </div>
-          {slug && (
-            <div className="hidden print:flex flex-shrink-0">
-              <QRCodeWidget slug={slug} />
-            </div>
-          )}
         </div>
       </div>
 

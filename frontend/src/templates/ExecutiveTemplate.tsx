@@ -5,9 +5,8 @@ import CustomSectionRenderer from './CustomSectionRenderer';
 import LayoutSectionRenderer from './LayoutSectionRenderer';
 import SkillsSectionRenderer from './SkillsSectionRenderer';
 import { CustomLinksRenderer } from './TemplateHelpers';
-import { QRCodeWidget } from '../components/QRCodeWidget';
 
-export default function ExecutiveTemplate({ cvData, activeColor, t, slug }: TemplateProps) {
+export default function ExecutiveTemplate({ cvData, activeColor, t }: TemplateProps) {
   
   const renderExperienceItem = (exp: any, layout: 'timeline' | 'cards' | 'text', hiddenFields: string[]) => {
     const hideRole = hiddenFields.includes('role');
@@ -254,11 +253,7 @@ export default function ExecutiveTemplate({ cvData, activeColor, t, slug }: Temp
             {cvData.personalInfo.title || "VỊ TRÍ ỨNG TUYỂN"}
           </p>
         </div>
-        {slug && (
-          <div className="hidden print:flex flex-shrink-0 ml-4">
-            <QRCodeWidget slug={slug} />
-          </div>
-        )}
+
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-3 print:grid-cols-3 gap-6 flex-1">

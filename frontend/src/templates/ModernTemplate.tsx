@@ -5,9 +5,8 @@ import CustomSectionRenderer from './CustomSectionRenderer';
 import LayoutSectionRenderer from './LayoutSectionRenderer';
 import SkillsSectionRenderer from './SkillsSectionRenderer';
 import { CustomLinksRenderer } from './TemplateHelpers';
-import { QRCodeWidget } from '../components/QRCodeWidget';
 
-export default function ModernTemplate({ cvData, activeColor, t, slug }: TemplateProps) {
+export default function ModernTemplate({ cvData, activeColor, t }: TemplateProps) {
   
   const renderExperienceItem = (exp: any, layout: 'timeline' | 'cards' | 'text', hiddenFields: string[]) => {
     const hideRole = hiddenFields.includes('role');
@@ -375,11 +374,7 @@ export default function ModernTemplate({ cvData, activeColor, t, slug }: Templat
           return null;
         })}
 
-        {slug && (
-          <div className="hidden print:flex flex-col items-center gap-2 mt-auto border-t border-slate-250/50 dark:border-slate-800/50 pt-4">
-            <QRCodeWidget slug={slug} />
-          </div>
-        )}
+
       </div>
 
       {/* Right Column: 8/12 width */}

@@ -26,8 +26,7 @@
 @media print {
 
   /* Force clean white background and clear text colors */
-  html,
-  body {
+  html {
     background-color: white !important;
     background-image: none !important;
     color: black !important;
@@ -35,6 +34,17 @@
     min-height: 0 !important;
     overflow: visible !important;
     margin: 0 !important;
+    padding: 0 !important;
+  }
+
+  body {
+    background-color: white !important;
+    background-image: none !important;
+    color: black !important;
+    height: auto !important;
+    min-height: 0 !important;
+    overflow: visible !important;
+    margin: var(--cv-page-padding, 15mm) !important;
     padding: 0 !important;
   }
 
@@ -101,7 +111,7 @@
   /* Standard printer page setup */
   @page {
     size: A4;
-    margin: 15mm;
+    margin: 0 !important;
   }
 }
 

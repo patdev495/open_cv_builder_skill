@@ -627,7 +627,11 @@ export function EditorWorkspace({ onExit, initialPasscode = '' }: { onExit: () =
                             @media print {
                               @page {
                                 size: A4;
+                                margin: 0 !important;
+                              }
+                              body {
                                 margin: ${cvData.pagePadding ?? 15}mm !important;
+                                padding: 0 !important;
                               }
                             }
                           `}</style>
