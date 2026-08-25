@@ -21,12 +21,6 @@ services:
     container_name: cv-builder-frontend
     restart: always
     ports:
-      - "80:80"
-      - "443:443"
-    volumes:
-      # Map Let's Encrypt SSL certificates from VPS host (For HTTPS)
-      - /etc/letsencrypt:/etc/letsencrypt:ro
-      # Map host certbot Webroot folder for automatic renewals
-      - /var/www/certbot:/var/www/certbot:ro
+      - "127.0.0.1:8030:80"
     depends_on:
       - backend

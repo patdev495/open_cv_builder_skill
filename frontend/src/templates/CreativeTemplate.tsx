@@ -4,7 +4,8 @@ import type { TemplateProps } from './types';
 import CustomSectionRenderer from './CustomSectionRenderer';
 import LayoutSectionRenderer from './LayoutSectionRenderer';
 import SkillsSectionRenderer from './SkillsSectionRenderer';
-import { CustomLinksRenderer } from './TemplateHelpers';
+import { CustomLinksRenderer, parseFormatting } from './TemplateHelpers';
+
 
 export default function CreativeTemplate({ cvData, activeColor, t }: TemplateProps) {
   
@@ -24,7 +25,7 @@ export default function CreativeTemplate({ cvData, activeColor, t }: TemplatePro
             </span>
           )}
           <p className="text-xs leading-relaxed text-slate-600 dark:text-slate-400 font-medium whitespace-pre-line mt-1 print:text-black">
-            {exp.description}
+            {parseFormatting(exp.description)}
           </p>
         </div>
       );
@@ -41,7 +42,7 @@ export default function CreativeTemplate({ cvData, activeColor, t }: TemplatePro
             <span className="text-[10px] font-mono font-bold text-slate-400">{exp.startDate} – {exp.endDate || 'Hiện tại'}</span>
           </div>
           <p className="text-xs leading-relaxed text-slate-600 dark:text-slate-400 font-medium whitespace-pre-line print:text-black mt-0.5">
-            {exp.description}
+            {parseFormatting(exp.description)}
           </p>
         </div>
       );
@@ -64,7 +65,7 @@ export default function CreativeTemplate({ cvData, activeColor, t }: TemplatePro
           <span className="text-[10px] font-mono font-bold bg-slate-100 dark:bg-slate-800/80 text-slate-600 dark:text-slate-400 px-2 py-0.5 rounded print:bg-slate-50 dark:bg-slate-800/50 print:border print:border-slate-200 dark:border-slate-700">{exp.startDate} – {exp.endDate || 'Hiện tại'}</span>
         </div>
         <p className="text-xs leading-relaxed text-slate-600 dark:text-slate-400 font-medium whitespace-pre-line mt-1 print:text-black">
-          {exp.description}
+          {parseFormatting(exp.description)}
         </p>
       </div>
     );
@@ -104,7 +105,7 @@ export default function CreativeTemplate({ cvData, activeColor, t }: TemplatePro
             </div>
           )}
           <p className="text-xs leading-relaxed text-slate-600 dark:text-slate-400 font-medium whitespace-pre-line mt-1 print:text-black">
-            {proj.description}
+            {parseFormatting(proj.description)}
           </p>
           {!hideEmbed && <ProjectEmbed embedUrl={proj.embedUrl} projectName={proj.name} />}
         </div>
@@ -133,7 +134,7 @@ export default function CreativeTemplate({ cvData, activeColor, t }: TemplatePro
             </span>
           )}
           <p className="text-xs leading-relaxed text-slate-600 dark:text-slate-400 font-medium whitespace-pre-line mt-0.5 print:text-black">
-            {proj.description}
+            {parseFormatting(proj.description)}
           </p>
           {!hideEmbed && <ProjectEmbed embedUrl={proj.embedUrl} projectName={proj.name} />}
         </div>
@@ -177,7 +178,7 @@ export default function CreativeTemplate({ cvData, activeColor, t }: TemplatePro
           </div>
         )}
         <p className="text-xs leading-relaxed text-slate-600 dark:text-slate-400 font-medium whitespace-pre-line mt-1 print:text-black">
-          {proj.description}
+          {parseFormatting(proj.description)}
         </p>
         {!hideEmbed && <ProjectEmbed embedUrl={proj.embedUrl} projectName={proj.name} />}
       </div>
@@ -197,7 +198,7 @@ export default function CreativeTemplate({ cvData, activeColor, t }: TemplatePro
           {!hideRole && (
             <div className="text-slate-700 dark:text-slate-300 font-semibold">{edu.degree}</div>
           )}
-          {edu.description && <p className="text-[10px] text-slate-550 dark:text-slate-400 italic mt-1">{edu.description}</p>}
+          {edu.description && <p className="text-[10px] text-slate-550 dark:text-slate-400 italic mt-1">{parseFormatting(edu.description)}</p>}
         </div>
       );
     }
@@ -212,7 +213,7 @@ export default function CreativeTemplate({ cvData, activeColor, t }: TemplatePro
             </span>
             <span className="text-[10px] font-mono text-slate-455 dark:text-slate-500">{edu.startDate} – {edu.endDate || 'Hiện tại'}</span>
           </div>
-          {edu.description && <p className="text-[10px] text-slate-550 dark:text-slate-400 italic mt-0.5">{edu.description}</p>}
+          {edu.description && <p className="text-[10px] text-slate-550 dark:text-slate-400 italic mt-0.5">{parseFormatting(edu.description)}</p>}
         </div>
       );
     }
@@ -228,7 +229,7 @@ export default function CreativeTemplate({ cvData, activeColor, t }: TemplatePro
         {!hideRole && (
           <div className="text-slate-700 dark:text-slate-300 font-semibold print:text-black">{edu.degree}</div>
         )}
-        {edu.description && <p className="text-[10px] text-slate-550 dark:text-slate-400 italic mt-0.5">{edu.description}</p>}
+        {edu.description && <p className="text-[10px] text-slate-550 dark:text-slate-400 italic mt-0.5">{parseFormatting(edu.description)}</p>}
       </div>
     );
   };
@@ -348,7 +349,7 @@ export default function CreativeTemplate({ cvData, activeColor, t }: TemplatePro
                 <User className="h-3.5 w-3.5 stroke-[2.5]" />
                 <span>{cvData.sectionSettings?.summary?.title || t('summaryUpper')}</span>
               </h4>
-              <p className="text-xs leading-relaxed text-slate-755 dark:text-slate-300 font-medium text-justify">{cvData.summary}</p>
+              <p className="text-xs leading-relaxed text-slate-755 dark:text-slate-300 font-medium text-justify">{parseFormatting(cvData.summary)}</p>
             </div>
           );
         }
@@ -413,7 +414,7 @@ export default function CreativeTemplate({ cvData, activeColor, t }: TemplatePro
                           </div>
                         )}
                         <p className="text-xs leading-relaxed text-slate-600 dark:text-slate-400 font-medium whitespace-pre-line mt-1 print:text-black">
-                          {proj.description}
+                          {parseFormatting(proj.description)}
                         </p>
                         {!hideFields.includes('embed') && <ProjectEmbed embedUrl={proj.embedUrl} projectName={proj.name} />}
                       </div>

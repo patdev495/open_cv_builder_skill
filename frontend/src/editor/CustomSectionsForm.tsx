@@ -1,6 +1,7 @@
 import { Plus, Trash2, Sparkles } from 'lucide-react';
 import { useCVEditorContext } from '../context/CVEditorContext';
 import { AIEnhancer } from '../components/AIEnhancer';
+import { FormattedTextarea } from '../components/FormattedTextarea';
 
 export function CustomSectionsForm() {
   const { cvData, dispatch, language } = useCVEditorContext() as any;
@@ -215,13 +216,13 @@ export function CustomSectionsForm() {
                               })}
                             />
                           </div>
-                          <textarea
+                          <FormattedTextarea
                             value={item.description || ''}
-                            onChange={(e) => dispatch({
+                            onChangeValue={(val) => dispatch({
                               type: 'UPDATE_CUSTOM_SECTION_ITEM',
                               sectionId: sec.id,
                               itemId: item.id,
-                              payload: { description: e.target.value }
+                              payload: { description: val }
                             })}
                             placeholder={language === 'vi' ? 'Mô tả chi tiết đóng góp của bạn hoặc gạch đầu dòng...' : 'Describe details or list items...'}
                             rows={3}

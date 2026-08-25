@@ -1,5 +1,7 @@
 import { Sparkles, ExternalLink } from 'lucide-react';
 import type { CustomSection } from '../types';
+import { parseFormatting } from './TemplateHelpers';
+
 
 interface CustomSectionRendererProps {
   section: CustomSection;
@@ -62,7 +64,7 @@ export default function CustomSectionRenderer({ section, activeColor, titleClass
                 </div>
                 {item.description && (
                   <p className="text-xs leading-relaxed text-slate-600 dark:text-slate-400 font-medium whitespace-pre-line mt-1 print:text-slate-950">
-                    {item.description}
+                    {parseFormatting(item.description)}
                   </p>
                 )}
               </div>
@@ -98,7 +100,7 @@ export default function CustomSectionRenderer({ section, activeColor, titleClass
                 )}
                 {item.description && (
                   <p className="text-[11px] leading-relaxed text-slate-600 dark:text-slate-400 mt-1 print:text-slate-950 font-medium">
-                    {item.description}
+                    {parseFormatting(item.description)}
                   </p>
                 )}
               </div>
@@ -117,7 +119,7 @@ export default function CustomSectionRenderer({ section, activeColor, titleClass
               </div>
               {item.description && (
                 <p className="text-xs leading-relaxed text-slate-600 dark:text-slate-400 font-medium whitespace-pre-line print:text-slate-950">
-                  {item.description}
+                  {parseFormatting(item.description)}
                 </p>
               )}
             </div>

@@ -2,6 +2,7 @@ import { Plus, Trash2 } from 'lucide-react';
 import { useCVEditorContext } from '../context/CVEditorContext';
 import { AIEnhancer } from '../components/AIEnhancer';
 import { SectionSettingsControl } from '../components/SectionSettingsControl';
+import { FormattedTextarea } from '../components/FormattedTextarea';
 
 export function ExperienceForm() {
   const { cvData, dispatch, t, addExperience, removeExperience } = useCVEditorContext();
@@ -89,9 +90,9 @@ export function ExperienceForm() {
                                 onAccept={(newValue) => dispatch({ type: 'UPDATE_EXPERIENCE', id: exp.id, payload: { description: newValue } })}
                               />
                             </div>
-                            <textarea
+                            <FormattedTextarea
                               value={exp.description}
-                              onChange={(e) => dispatch({ type: 'UPDATE_EXPERIENCE', id: exp.id, payload: { description: e.target.value } })}
+                              onChangeValue={(val) => dispatch({ type: 'UPDATE_EXPERIENCE', id: exp.id, payload: { description: val } })}
                               placeholder="- Quản lý dự án...\n- Tối ưu hóa API..."
                               rows={3}
                               className="w-full bg-slate-950/60 border border-slate-850 focus:border-purple-500 rounded-lg px-2 py-1.5 text-xs text-slate-200 focus:outline-none font-sans leading-relaxed resize-y"

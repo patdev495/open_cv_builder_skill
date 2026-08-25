@@ -4,7 +4,8 @@ import type { TemplateProps } from './types';
 import CustomSectionRenderer from './CustomSectionRenderer';
 import LayoutSectionRenderer from './LayoutSectionRenderer';
 import SkillsSectionRenderer from './SkillsSectionRenderer';
-import { CustomLinksRenderer } from './TemplateHelpers';
+import { CustomLinksRenderer, parseFormatting } from './TemplateHelpers';
+
 
 export default function ExecutiveTemplate({ cvData, activeColor, t }: TemplateProps) {
   
@@ -21,8 +22,8 @@ export default function ExecutiveTemplate({ cvData, activeColor, t }: TemplatePr
           {!hideRole && (
             <span className={`text-[11px] font-semibold ${activeColor.primary} font-serif`}>{exp.position}</span>
           )}
-          <p className="text-xs leading-relaxed text-slate-650 dark:text-slate-400 whitespace-pre-line mt-1 print:text-black font-sans">
-            {exp.description}
+          <p className="text-xs leading-relaxed text-slate-655 dark:text-slate-400 whitespace-pre-line mt-1 print:text-black font-sans">
+            {parseFormatting(exp.description)}
           </p>
         </div>
       );
@@ -39,7 +40,7 @@ export default function ExecutiveTemplate({ cvData, activeColor, t }: TemplatePr
             <span className="text-[10px] font-mono text-slate-400">{exp.startDate} - {exp.endDate || 'Hiện tại'}</span>
           </div>
           <p className="text-xs leading-relaxed text-slate-600 dark:text-slate-400 whitespace-pre-line mt-0.5 print:text-black font-sans">
-            {exp.description}
+            {parseFormatting(exp.description)}
           </p>
         </div>
       );
@@ -61,7 +62,7 @@ export default function ExecutiveTemplate({ cvData, activeColor, t }: TemplatePr
           <span className="text-[10px] font-mono font-bold text-slate-400 print:text-black">{exp.startDate} - {exp.endDate || 'Hiện tại'}</span>
         </div>
         <p className="text-xs leading-relaxed text-slate-600 dark:text-slate-400 whitespace-pre-line mt-1 print:text-black font-sans">
-          {exp.description}
+          {parseFormatting(exp.description)}
         </p>
       </div>
     );
@@ -95,7 +96,7 @@ export default function ExecutiveTemplate({ cvData, activeColor, t }: TemplatePr
             </span>
           )}
           <p className="text-[11px] leading-relaxed text-slate-600 dark:text-slate-400 mt-1 print:text-slate-950 whitespace-pre-line font-sans">
-            {proj.description}
+            {parseFormatting(proj.description)}
           </p>
           {!hideEmbed && <ProjectEmbed embedUrl={proj.embedUrl} projectName={proj.name} />}
         </div>
@@ -124,7 +125,7 @@ export default function ExecutiveTemplate({ cvData, activeColor, t }: TemplatePr
             </span>
           )}
           <p className="text-xs leading-relaxed text-slate-650 dark:text-slate-400 whitespace-pre-line mt-0.5 print:text-black font-sans">
-            {proj.description}
+            {parseFormatting(proj.description)}
           </p>
           {!hideEmbed && <ProjectEmbed embedUrl={proj.embedUrl} projectName={proj.name} />}
         </div>
@@ -161,7 +162,7 @@ export default function ExecutiveTemplate({ cvData, activeColor, t }: TemplatePr
           <span className="text-[10px] text-slate-500 dark:text-slate-400 font-semibold font-sans">Công nghệ: {proj.technologies.filter(Boolean).join(", ")}</span>
         )}
         <p className="text-xs leading-relaxed text-slate-600 dark:text-slate-400 whitespace-pre-line mt-1 print:text-black font-sans">
-          {proj.description}
+          {parseFormatting(proj.description)}
         </p>
         {!hideEmbed && <ProjectEmbed embedUrl={proj.embedUrl} projectName={proj.name} />}
       </div>
@@ -181,7 +182,7 @@ export default function ExecutiveTemplate({ cvData, activeColor, t }: TemplatePr
           {!hideRole && (
             <div className="text-slate-600 dark:text-slate-400 font-semibold italic font-serif">{edu.degree}</div>
           )}
-          {edu.description && <p className="text-[11px] text-slate-500 dark:text-slate-400 italic mt-1 font-sans">{edu.description}</p>}
+          {edu.description && <p className="text-[11px] text-slate-500 dark:text-slate-400 italic mt-1 font-sans">{parseFormatting(edu.description)}</p>}
         </div>
       );
     }
@@ -196,7 +197,7 @@ export default function ExecutiveTemplate({ cvData, activeColor, t }: TemplatePr
             </span>
             <span className="text-[10px] font-mono text-slate-500 dark:text-slate-400 print:text-black font-normal">{edu.startDate} - {edu.endDate || 'Hiện tại'}</span>
           </div>
-          {edu.description && <p className="text-[11px] text-slate-500 dark:text-slate-400 italic mt-0.5 font-sans">{edu.description}</p>}
+          {edu.description && <p className="text-[11px] text-slate-500 dark:text-slate-400 italic mt-0.5 font-sans">{parseFormatting(edu.description)}</p>}
         </div>
       );
     }
@@ -211,7 +212,7 @@ export default function ExecutiveTemplate({ cvData, activeColor, t }: TemplatePr
         {!hideRole && (
           <div className="text-slate-660 dark:text-slate-400 font-semibold font-serif italic print:text-black">{edu.degree}</div>
         )}
-        {edu.description && <p className="text-[11px] text-slate-505 dark:text-slate-400 italic mt-0.5 font-sans">{edu.description}</p>}
+        {edu.description && <p className="text-[11px] text-slate-505 dark:text-slate-400 italic mt-0.5 font-sans">{parseFormatting(edu.description)}</p>}
       </div>
     );
   };
@@ -264,7 +265,7 @@ export default function ExecutiveTemplate({ cvData, activeColor, t }: TemplatePr
           {/* Summary Boxquote with thick left gold/bronze border */}
           {cvData.summary && (
             <div data-section="summary" className="border-l-4 border-amber-500 bg-slate-50/50 dark:bg-slate-900/30 p-4 italic print:bg-white dark:border-amber-600 break-inside-avoid shadow-sm rounded-r-lg">
-              <p className="text-xs leading-relaxed text-slate-700 dark:text-slate-300 text-justify">{cvData.summary}</p>
+              <p className="text-xs leading-relaxed text-slate-700 dark:text-slate-300 text-justify">{parseFormatting(cvData.summary)}</p>
             </div>
           )}
 

@@ -2,6 +2,7 @@ import { Plus, Trash2 } from 'lucide-react';
 import { useCVEditorContext } from '../context/CVEditorContext';
 import { AIEnhancer } from '../components/AIEnhancer';
 import { SectionSettingsControl } from '../components/SectionSettingsControl';
+import { FormattedTextarea } from '../components/FormattedTextarea';
 
 export function ProjectsForm() {
   const { cvData, dispatch, t, addProject, removeProject } = useCVEditorContext();
@@ -116,9 +117,9 @@ export function ProjectsForm() {
                                 onAccept={(newValue) => dispatch({ type: 'UPDATE_PROJECT', id: proj.id, payload: { description: newValue } })}
                               />
                             </div>
-                            <textarea
+                            <FormattedTextarea
                               value={proj.description}
-                              onChange={(e) => dispatch({ type: 'UPDATE_PROJECT', id: proj.id, payload: { description: e.target.value } })}
+                              onChangeValue={(val) => dispatch({ type: 'UPDATE_PROJECT', id: proj.id, payload: { description: val } })}
                               placeholder="Mô tả các tính năng cốt lõi và kết quả dự án..."
                               rows={2}
                               className="w-full bg-slate-950/60 border border-slate-850 focus:border-purple-500 rounded-lg px-2 py-1.5 text-xs text-slate-200 focus:outline-none font-sans leading-relaxed resize-y"

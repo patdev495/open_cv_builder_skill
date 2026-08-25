@@ -2,7 +2,8 @@ import { ProjectEmbed } from '../components/ProjectEmbed';
 import type { TemplateProps } from './types';
 import CustomSectionRenderer from './CustomSectionRenderer';
 import LayoutSectionRenderer from './LayoutSectionRenderer';
-import { CustomLinksRenderer } from './TemplateHelpers';
+import { CustomLinksRenderer, parseFormatting } from './TemplateHelpers';
+
 
 export default function MinimalTemplate({ cvData, activeColor, t }: TemplateProps) {
   
@@ -27,7 +28,7 @@ export default function MinimalTemplate({ cvData, activeColor, t }: TemplateProp
           </span>
         </div>
         <p className="text-xs leading-relaxed text-slate-600 dark:text-slate-400 text-justify mt-0.5 whitespace-pre-line print:text-black">
-          {exp.description}
+          {parseFormatting(exp.description)}
         </p>
       </div>
     );
@@ -72,7 +73,7 @@ export default function MinimalTemplate({ cvData, activeColor, t }: TemplateProp
           </span>
         )}
         <p className="text-xs leading-relaxed text-slate-600 dark:text-slate-400 text-justify mt-0.5 whitespace-pre-line print:text-black">
-          {proj.description}
+          {parseFormatting(proj.description)}
         </p>
         {!hideEmbed && <ProjectEmbed embedUrl={proj.embedUrl} projectName={proj.name} />}
       </div>
@@ -145,7 +146,7 @@ export default function MinimalTemplate({ cvData, activeColor, t }: TemplateProp
       {cvData.summary && (
         <div data-section="summary" className="flex flex-col gap-2.5 break-inside-avoid max-w-2xl mx-auto">
           <p className="text-xs leading-relaxed text-slate-600 dark:text-slate-350 text-center italic">
-            "{cvData.summary}"
+            "{parseFormatting(cvData.summary)}"
           </p>
         </div>
       )}

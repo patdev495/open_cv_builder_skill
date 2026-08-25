@@ -68,6 +68,10 @@ _Avoid_: Translation split, duplicate CV, localized clone
 Một vùng nội dung linh hoạt được người dùng tự do khởi tạo và đặt tên tiêu đề riêng (ví dụ: Hoạt động ngoại khóa, Người tham chiếu, Ấn phẩm nghiên cứu), hỗ trợ đa dạng cấu trúc hiển thị tùy chọn (Timeline, Card Grid, hoặc Paragraph) để mở rộng khả năng cá nhân hóa của **CV**.
 _Avoid_: Custom block, freeform text, extra fields
 
+**Inline Formatting** (Định dạng Nội dòng):
+Khả năng định dạng in đậm (`**văn bản**`) và in nghiêng (`*văn bản*`) cho các phần chữ được lựa chọn tùy ý trong các trường mô tả của **CV Schema** thông qua phím tắt hoặc thanh công cụ nổi trong bộ chỉnh sửa.
+_Avoid_: Rich text, HTML format, Text style
+
 ## Relationships
 
 - A **CV** is represented by a single **CV Schema**
@@ -86,9 +90,7 @@ _Avoid_: Custom block, freeform text, extra fields
 - An **Interactive Portfolio** anonymously logs viewer behaviors (such as read duration, section focus, click interactions) into **Engagement Analytics** to provide real-time performance feedback to the CV creator
 - An **Interactive Portfolio** supports **Multilingual Sync**, displaying a language toggle next to the theme switcher only if translated data is populated within the **CV Schema**
 - An **Interactive Portfolio** when **Exported** respects the actively toggled language, generating the static PDF document in that exact selected language version
-
-
-
+- A **CV** renders **Inline Formatting** dynamically in all **Templates** and during **Export** to PDF while maintaining safety against code injection.
 
 
 ## Example dialogue

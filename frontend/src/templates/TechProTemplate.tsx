@@ -3,7 +3,8 @@ import { ProjectEmbed } from '../components/ProjectEmbed';
 import type { TemplateProps } from './types';
 import CustomSectionRenderer from './CustomSectionRenderer';
 import LayoutSectionRenderer from './LayoutSectionRenderer';
-import { CustomLinksRenderer } from './TemplateHelpers';
+import { CustomLinksRenderer, parseFormatting } from './TemplateHelpers';
+
 
 export default function TechProTemplate({ cvData, activeColor, t }: TemplateProps) {
   const activeColorName = activeColor.primary.includes('indigo') ? 'indigo'
@@ -43,7 +44,7 @@ export default function TechProTemplate({ cvData, activeColor, t }: TemplateProp
           <span className="text-[10px] font-bold text-slate-400 print:text-slate-850 dark:text-slate-200 shrink-0">{exp.startDate} - {exp.endDate || 'Hiện tại'}</span>
         </div>
         <p className="text-xs leading-relaxed text-slate-600 dark:text-slate-405 whitespace-pre-line mt-0.5 print:text-slate-955 font-sans">
-          {exp.description}
+          {parseFormatting(exp.description)}
         </p>
       </div>
     );
@@ -97,7 +98,7 @@ export default function TechProTemplate({ cvData, activeColor, t }: TemplateProp
             </div>
           )}
           <p className="text-xs leading-relaxed text-slate-600 dark:text-slate-400 whitespace-pre-line mt-1 print:text-slate-955 font-sans">
-            {proj.description}
+            {parseFormatting(proj.description)}
           </p>
           {!hideEmbed && <ProjectEmbed embedUrl={proj.embedUrl} projectName={proj.name} />}
         </div>
@@ -124,8 +125,8 @@ export default function TechProTemplate({ cvData, activeColor, t }: TemplateProp
           </div>
         )}
         {edu.description && (
-          <p className="text-[11px] text-slate-500 dark:text-slate-405 italic pl-3 border-l border-slate-200 dark:border-slate-800 font-sans mt-0.5">
-            {edu.description}
+          <p className="text-[11px] text-slate-505 dark:text-slate-405 italic pl-3 border-l border-slate-200 dark:border-slate-800 font-sans mt-0.5">
+            {parseFormatting(edu.description)}
           </p>
         )}
       </div>
@@ -257,7 +258,7 @@ export default function TechProTemplate({ cvData, activeColor, t }: TemplateProp
                     <div className="rounded-lg border border-dashed border-slate-200 dark:border-slate-800 bg-slate-50/20 dark:bg-slate-950/20 p-3 font-mono text-xs">
                       <span className="text-slate-400 select-none">{"/**"}</span>
                       <p className="text-xs leading-relaxed text-slate-700 dark:text-slate-350 font-medium pl-3 border-l border-slate-250 dark:border-slate-850 my-1 font-sans">
-                        {cvData.summary}
+                        {parseFormatting(cvData.summary)}
                       </p>
                       <span className="text-slate-400 select-none">{" */"}</span>
                     </div>

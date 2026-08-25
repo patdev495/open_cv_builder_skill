@@ -1,4 +1,6 @@
+import React from 'react';
 import * as LucideIcons from 'lucide-react';
+
 
 interface CustomLink {
   id: string;
@@ -117,3 +119,27 @@ export function CustomLinksRenderer({
     </div>
   );
 }
+
+/**
+ * Parses simple inline markdown formatting (**bold** and *italic*) recursively into safe JSX nodes.
+ * @param text The input string containing inline markdown syntax
+ */
+export function parseFormatting(text: string): React.ReactNode[] {
+  if (!text) return [];
+  
+  // Regex to split by bold (**...**) and italic (*...*)
+  const regex = /(\*\*.*?\*\*|\*.*?\*)/g;
+  const parts = text.split(regex);
+
+  return parts.map((part, index) => {
+    if (part.startsWith('**') && part.endsWith('**')) {
+      const inner = part.slice(2, -2);
+      return <strong key={index} className="font-bold">{parseFormatting(inner)}</strong>;
+    } else if (part.startsWith('*') && part.endsWith('*')) {
+      const inner = part.slice(1, -1);
+      return <em key={index} className="italic">{parseFormatting(inner)}</em>;
+    }
+    return part;
+  });
+}
+

@@ -4,7 +4,8 @@ import type { TemplateProps } from './types';
 import CustomSectionRenderer from './CustomSectionRenderer';
 import LayoutSectionRenderer from './LayoutSectionRenderer';
 import SkillsSectionRenderer from './SkillsSectionRenderer';
-import { CustomLinksRenderer } from './TemplateHelpers';
+import { CustomLinksRenderer, parseFormatting } from './TemplateHelpers';
+
 
 export default function ClassicTemplate({ cvData, activeColor, t }: TemplateProps) {
   
@@ -24,7 +25,7 @@ export default function ClassicTemplate({ cvData, activeColor, t }: TemplateProp
             </span>
           )}
           <p className="text-xs leading-relaxed text-slate-700 dark:text-slate-400 whitespace-pre-line mt-1 print:text-black">
-            {exp.description}
+            {parseFormatting(exp.description)}
           </p>
         </div>
       );
@@ -41,7 +42,7 @@ export default function ClassicTemplate({ cvData, activeColor, t }: TemplateProp
             <span className="text-[10px] font-mono text-slate-500 dark:text-slate-400 print:text-black">{exp.startDate} – {exp.endDate || 'Hiện tại'}</span>
           </div>
           <p className="text-xs leading-relaxed text-slate-700 dark:text-slate-400 whitespace-pre-line mt-0.5 print:text-black">
-            {exp.description}
+            {parseFormatting(exp.description)}
           </p>
         </div>
       );
@@ -62,8 +63,8 @@ export default function ClassicTemplate({ cvData, activeColor, t }: TemplateProp
           </span>
           <span className="text-[10px] font-mono text-slate-500 dark:text-slate-400 print:text-black">{exp.startDate} – {exp.endDate || 'Hiện tại'}</span>
         </div>
-        <p className="text-xs leading-relaxed text-slate-705 whitespace-pre-line mt-1 print:text-black">
-          {exp.description}
+        <p className="text-xs leading-relaxed text-slate-750 whitespace-pre-line mt-1 print:text-black">
+          {parseFormatting(exp.description)}
         </p>
       </div>
     );
@@ -99,7 +100,7 @@ export default function ClassicTemplate({ cvData, activeColor, t }: TemplateProp
             </span>
           )}
           <p className="text-[11px] leading-relaxed text-slate-600 dark:text-slate-400 mt-1 print:text-slate-950 whitespace-pre-line">
-            {proj.description}
+            {parseFormatting(proj.description)}
           </p>
           {!hideEmbed && <ProjectEmbed embedUrl={proj.embedUrl} projectName={proj.name} />}
         </div>
@@ -128,7 +129,7 @@ export default function ClassicTemplate({ cvData, activeColor, t }: TemplateProp
             </span>
           )}
           <p className="text-xs leading-relaxed text-slate-700 dark:text-slate-400 whitespace-pre-line mt-0.5 print:text-black">
-            {proj.description}
+            {parseFormatting(proj.description)}
           </p>
           {!hideEmbed && <ProjectEmbed embedUrl={proj.embedUrl} projectName={proj.name} />}
         </div>
@@ -165,7 +166,7 @@ export default function ClassicTemplate({ cvData, activeColor, t }: TemplateProp
           <span className="text-[10px] text-slate-550 dark:text-slate-400 font-semibold">Công nghệ: {proj.technologies.filter(Boolean).join(", ")}</span>
         )}
         <p className="text-xs leading-relaxed text-slate-705 whitespace-pre-line mt-0.5 print:text-black">
-          {proj.description}
+          {parseFormatting(proj.description)}
         </p>
         {!hideEmbed && <ProjectEmbed embedUrl={proj.embedUrl} projectName={proj.name} />}
       </div>
@@ -185,7 +186,7 @@ export default function ClassicTemplate({ cvData, activeColor, t }: TemplateProp
           {!hideRole && (
             <div className="text-slate-600 dark:text-slate-400 italic text-[11px]">{edu.degree}</div>
           )}
-          {edu.description && <p className="text-[10px] text-slate-550 dark:text-slate-400 mt-1">{edu.description}</p>}
+          {edu.description && <p className="text-[10px] text-slate-550 dark:text-slate-400 mt-1">{parseFormatting(edu.description)}</p>}
         </div>
       );
     }
@@ -200,7 +201,7 @@ export default function ClassicTemplate({ cvData, activeColor, t }: TemplateProp
             </span>
             <span className="text-[10px] font-mono text-slate-500 dark:text-slate-400 print:text-black">{edu.startDate} – {edu.endDate || 'Hiện tại'}</span>
           </div>
-          {edu.description && <p className="text-[10px] text-slate-550 dark:text-slate-400 mt-0.5">{edu.description}</p>}
+          {edu.description && <p className="text-[10px] text-slate-550 dark:text-slate-400 mt-0.5">{parseFormatting(edu.description)}</p>}
         </div>
       );
     }
@@ -215,7 +216,7 @@ export default function ClassicTemplate({ cvData, activeColor, t }: TemplateProp
         {!hideRole && (
           <div className="text-slate-660 dark:text-slate-400 italic print:text-black">{edu.degree}</div>
         )}
-        {edu.description && <p className="text-[10px] text-slate-550 dark:text-slate-400 mt-0.5">{edu.description}</p>}
+        {edu.description && <p className="text-[10px] text-slate-550 dark:text-slate-400 mt-0.5">{parseFormatting(edu.description)}</p>}
       </div>
     );
   };
@@ -310,7 +311,7 @@ export default function ClassicTemplate({ cvData, activeColor, t }: TemplateProp
                               <h3 className={sectionTitleClass}>
                                 <span>{summaryTitle}</span>
                               </h3>
-                              <p className="text-xs leading-relaxed text-slate-700 dark:text-slate-300 italic text-justify font-serif">{cvData.summary}</p>
+                              <p className="text-xs leading-relaxed text-slate-700 dark:text-slate-300 italic text-justify font-serif">{parseFormatting(cvData.summary)}</p>
                             </div>
                           );
                         }

@@ -1,6 +1,7 @@
 
 import { useCVEditorContext } from '../context/CVEditorContext';
 import { AIEnhancer } from '../components/AIEnhancer';
+import { FormattedTextarea } from '../components/FormattedTextarea';
 
 export function SummaryForm() {
   const { cvData, dispatch, t } = useCVEditorContext();
@@ -17,9 +18,9 @@ export function SummaryForm() {
                     <p className="text-xs text-slate-400 mb-2 leading-relaxed">
                       {t('summaryDesc')}
                     </p>
-                    <textarea
+                    <FormattedTextarea
                       value={cvData.summary || ""}
-                      onChange={(e) => dispatch({ type: 'SET_SUMMARY', payload: e.target.value })}
+                      onChangeValue={(val) => dispatch({ type: 'SET_SUMMARY', payload: val })}
                       placeholder={t('summaryPlaceholder')}
                       rows={6}
                       className="w-full bg-slate-950/60 border border-slate-800 focus:border-purple-500 rounded-xl px-3 py-2 text-sm text-slate-200 focus:outline-none font-sans leading-relaxed resize-y"
