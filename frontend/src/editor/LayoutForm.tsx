@@ -13,12 +13,13 @@ export function LayoutForm() {
                       </h3>
                       <div className="grid grid-cols-3 gap-2 mt-2">
                         {[
+                          { id: 'jakarta', name: 'Jakarta', desc: 'Modern Pro' },
                           { id: 'inter', name: 'Inter', desc: 'Sans-serif' },
-                           { id: 'outfit', name: 'Outfit', desc: 'Modern' },
-                           { id: 'lora', name: 'Lora', desc: 'Serif Elegant' },
-                           { id: 'playfair', name: 'Playfair', desc: 'Serif Classic' },
-                           { id: 'jetbrains', name: 'JetBrains', desc: 'Monospace' },
-                           { id: 'fira', name: 'Fira Code', desc: 'Code Mono' },
+                          { id: 'outfit', name: 'Outfit', desc: 'Modern' },
+                          { id: 'lora', name: 'Lora', desc: 'Serif Elegant' },
+                          { id: 'playfair', name: 'Playfair', desc: 'Serif Classic' },
+                          { id: 'jetbrains', name: 'JetBrains', desc: 'Monospace' },
+                          { id: 'fira', name: 'Fira Code', desc: 'Code Mono' },
                         ].map((font) => {
                           const isSelected = cvData.fontFamily === font.id || 
                             (font.id === 'inter' && cvData.fontFamily === 'sans') || 

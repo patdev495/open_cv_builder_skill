@@ -182,7 +182,7 @@ export function CustomSectionsForm() {
                           </div>
 
                           <div>
-                            <label className="block text-[9px] font-bold uppercase tracking-wider text-slate-500 mb-1">
+                            <label className="block text-[10px] font-bold uppercase tracking-wider text-slate-400 mb-1">
                               {language === 'vi' ? 'Liên kết (Link)' : 'URL / Link'}
                             </label>
                             <input
@@ -195,14 +195,14 @@ export function CustomSectionsForm() {
                                 payload: { url: e.target.value }
                               })}
                               placeholder="https://example.com/certificate"
-                              className="w-full bg-slate-950/60 border border-slate-850 focus:border-purple-500 rounded-lg px-2.5 py-1.5 text-xs text-slate-200 focus:outline-none"
+                              className="w-full bg-slate-950/70 border border-slate-800 focus:border-purple-500 focus:ring-1 focus:ring-purple-500/20 rounded-xl px-2.5 py-1.5 text-xs text-slate-200 focus:outline-none transition-colors"
                             />
                           </div>
                         </div>
 
                         <div>
-                          <div className="flex items-center justify-between mb-1">
-                            <label className="block text-[9px] font-bold uppercase tracking-wider text-slate-550">
+                          <div className="flex items-center justify-between mb-1.5">
+                            <label className="block text-[10px] font-bold uppercase tracking-wider text-slate-400">
                               {language === 'vi' ? 'Mô tả chi tiết' : 'Description'}
                             </label>
                             <AIEnhancer
@@ -226,7 +226,7 @@ export function CustomSectionsForm() {
                             })}
                             placeholder={language === 'vi' ? 'Mô tả chi tiết đóng góp của bạn hoặc gạch đầu dòng...' : 'Describe details or list items...'}
                             rows={3}
-                            className="w-full bg-slate-950/60 border border-slate-850 focus:border-purple-500 rounded-lg px-2.5 py-1.5 text-xs text-slate-200 focus:outline-none font-sans leading-relaxed resize-y"
+                            className="w-full bg-slate-950/70 border border-slate-800 focus:border-purple-500 focus:ring-1 focus:ring-purple-500/20 rounded-xl p-3 text-xs text-slate-200 focus:outline-none font-sans leading-relaxed resize-y transition-colors"
                           />
                         </div>
                       </div>

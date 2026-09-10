@@ -262,38 +262,38 @@ export function InteractivePortfolio({
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(99,102,241,0.06),transparent_50%)] pointer-events-none print:!hidden"></div>
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_bottom_left,rgba(168,85,247,0.06),transparent_50%)] pointer-events-none print:!hidden"></div>
 
-      {/* Floating Toolbar (Glassmorphism) - Hidden on Print */}
-      <div className="print:hidden fixed top-6 left-1/2 -translate-x-1/2 z-50 flex items-center gap-2 p-2 bg-slate-900/60 backdrop-blur-md rounded-2xl border border-slate-700/50 shadow-2xl">
+      {/* Floating Toolbar (Frosted Glassmorphism) - Hidden on Print */}
+      <div className="print:hidden fixed top-5 left-1/2 -translate-x-1/2 z-50 flex items-center gap-2 p-1.5 bg-slate-900/80 backdrop-blur-xl rounded-2xl border border-slate-700/60 shadow-2xl">
         <button
           onClick={() => setShowVerifyModal(true)}
-          className="flex items-center gap-2 px-4 py-2 bg-purple-600 hover:bg-purple-700 active:scale-95 text-white text-sm font-semibold rounded-xl transition-all shadow-md shadow-purple-600/10 cursor-pointer"
+          className="flex items-center gap-1.5 px-3.5 py-2 bg-purple-600 hover:bg-purple-500 active:scale-95 text-white text-xs font-bold rounded-xl transition-all shadow-md shadow-purple-600/20 cursor-pointer"
         >
-          <Edit3 className="h-4 w-4" />
+          <Edit3 className="h-3.5 w-3.5" />
           <span className="hidden sm:inline">{t('editCV')}</span>
         </button>
 
         <a
           href="/"
-          className="flex items-center gap-2 px-4 py-2 btn-premium-cta active:scale-95 text-white text-sm font-semibold rounded-xl transition-all cursor-pointer"
+          className="flex items-center gap-1.5 px-3.5 py-2 btn-premium-cta active:scale-95 text-white text-xs font-bold rounded-xl transition-all cursor-pointer"
         >
-          <FilePlus2 className="h-4 w-4" />
+          <FilePlus2 className="h-3.5 w-3.5" />
           <span className="hidden sm:inline">{t('buildOwnCV')}</span>
         </a>
 
         {/* Public Display Language Toggle */}
         {translationKey && (
-          <div className="flex bg-slate-800/80 p-1 rounded-xl w-fit print:hidden backdrop-blur-md border border-slate-700/50 shadow-xl mx-auto">
+          <div className="flex bg-slate-800/80 p-0.5 rounded-xl border border-slate-700/50 shadow-inner">
             <button 
               onClick={() => setDisplayMode('original')}
-              className={`px-6 py-2 text-sm font-bold rounded-lg transition-all ${displayMode === 'original' ? 'bg-indigo-600 text-white shadow-md' : 'text-slate-400 hover:text-slate-200'}`}
+              className={`px-3 py-1.5 text-xs font-bold rounded-lg transition-all cursor-pointer ${displayMode === 'original' ? 'bg-indigo-600 text-white shadow-sm' : 'text-slate-400 hover:text-slate-200'}`}
             >
               {t('originalMode')}
             </button>
             <button 
               onClick={() => setDisplayMode('translated')}
-              className={`px-6 py-2 text-sm font-bold rounded-lg transition-all flex items-center gap-2 ${displayMode === 'translated' ? 'bg-rose-600 text-white shadow-md' : 'text-slate-400 hover:text-slate-200'}`}
+              className={`px-3 py-1.5 text-xs font-bold rounded-lg transition-all flex items-center gap-1.5 cursor-pointer ${displayMode === 'translated' ? 'bg-rose-600 text-white shadow-sm' : 'text-slate-400 hover:text-slate-200'}`}
             >
-              <Languages className="w-4 h-4" />
+              <Languages className="w-3.5 h-3.5" />
               {t('translatedMode')}
             </button>
           </div>
@@ -301,18 +301,18 @@ export function InteractivePortfolio({
 
         <button
           onClick={triggerPrint}
-          className="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700 active:scale-95 text-sm font-semibold rounded-xl transition-all shadow-md shadow-emerald-600/10 cursor-pointer text-white"
+          className="flex items-center gap-1.5 px-3.5 py-2 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 active:scale-95 text-xs font-bold rounded-xl transition-all shadow-md shadow-emerald-600/20 cursor-pointer text-white"
         >
-          <Printer className="h-4 w-4" />
+          <Printer className="h-3.5 w-3.5" />
           <span className="hidden sm:inline">{t('exportPDF')}</span>
         </button>
       </div>
 
       {/* Top Right Utilities */}
-      <div className="print:hidden fixed top-6 right-6 z-50 flex items-center gap-2">
+      <div className="print:hidden fixed top-5 right-5 z-50 flex items-center gap-2">
         <button
           onClick={() => setLanguage(language === 'vi' ? 'en' : 'vi')}
-          className="flex items-center justify-center px-3 py-1.5 bg-slate-900/60 backdrop-blur-md hover:bg-slate-800 text-slate-300 hover:text-white rounded-xl border border-slate-700/50 shadow-lg transition-all cursor-pointer font-bold text-xs"
+          className="flex items-center justify-center px-3 py-1.5 bg-slate-900/80 backdrop-blur-xl hover:bg-slate-800 text-slate-300 hover:text-white rounded-xl border border-slate-700/60 shadow-lg transition-all cursor-pointer font-bold text-xs"
         >
           {language === 'vi' ? 'EN' : 'VI'}
         </button>
@@ -322,7 +322,7 @@ export function InteractivePortfolio({
       <div className="pt-24 pb-12 w-full max-w-[210mm] mx-auto print:!p-0 print:!m-0 print:!max-w-none print:!border-0 print:!bg-transparent">
         <div className={`
           mx-auto 
-          ${isDark ? 'dark bg-slate-900 text-slate-100 shadow-[0_0_40px_rgba(0,0,0,0.5)] rounded-xl border border-slate-850' : 'bg-white text-slate-900 shadow-2xl rounded-xl'} 
+          ${isDark ? 'dark bg-slate-900 text-slate-100 shadow-[0_15px_50px_rgba(0,0,0,0.6)] rounded-xl border border-slate-800' : 'bg-white text-slate-900 shadow-[0_15px_45px_rgba(0,0,0,0.12)] rounded-xl'} 
           transition-all duration-500 min-h-[297mm]
           print:!shadow-none print:!w-full print:!bg-white print:!text-black print:!p-0 print:!m-0
           print:!border-0 print:!border-transparent print:!rounded-none print:!outline-none

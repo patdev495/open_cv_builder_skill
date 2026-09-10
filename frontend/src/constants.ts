@@ -161,6 +161,7 @@ export const DENSITY_MAP = {
 };
 
 export const FONT_MAP = {
+  jakarta: "font-jakarta",
   inter: "font-inter",
   outfit: "font-outfit",
   lora: "font-lora",

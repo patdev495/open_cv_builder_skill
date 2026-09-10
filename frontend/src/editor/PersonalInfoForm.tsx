@@ -167,10 +167,10 @@ export function PersonalInfoForm() {
                           {customLinks.map((link) => (
                             <div
                               key={link.id}
-                              className="grid grid-cols-1 sm:grid-cols-4 gap-2 bg-slate-950/40 p-3 rounded-lg border border-slate-850 relative group"
+                              className="grid grid-cols-1 sm:grid-cols-4 gap-2 bg-slate-950/50 p-3.5 rounded-xl border border-slate-800 hover:border-slate-700 transition-all relative group"
                             >
                               <div className="sm:col-span-1">
-                                <label className="block text-[9px] font-bold uppercase tracking-wider text-slate-550 mb-1">
+                                <label className="block text-[10px] font-bold uppercase tracking-wider text-slate-400 mb-1">
                                   {t('linkTitle' as any)}
                                 </label>
                                 <input
@@ -178,12 +178,12 @@ export function PersonalInfoForm() {
                                   value={link.label}
                                   onChange={(e) => handleUpdateLink(link.id, 'label', e.target.value)}
                                   placeholder="e.g. Portfolio"
-                                  className="w-full bg-slate-950/60 border border-slate-850 focus:border-purple-500 rounded px-2 py-1 text-xs text-slate-200 focus:outline-none"
+                                  className="w-full bg-slate-950/70 border border-slate-800 focus:border-purple-500 focus:ring-1 focus:ring-purple-500/20 rounded-lg px-2.5 py-1.5 text-xs text-slate-200 focus:outline-none transition-colors"
                                 />
                               </div>
 
                               <div className="sm:col-span-2">
-                                <label className="block text-[9px] font-bold uppercase tracking-wider text-slate-550 mb-1">
+                                <label className="block text-[10px] font-bold uppercase tracking-wider text-slate-400 mb-1">
                                   {t('linkUrl' as any)}
                                 </label>
                                 <input
@@ -191,19 +191,19 @@ export function PersonalInfoForm() {
                                   value={link.url}
                                   onChange={(e) => handleUpdateLink(link.id, 'url', e.target.value)}
                                   placeholder="https://..."
-                                  className="w-full bg-slate-950/60 border border-slate-850 focus:border-purple-500 rounded px-2 py-1 text-xs text-slate-200 focus:outline-none"
+                                  className="w-full bg-slate-950/70 border border-slate-800 focus:border-purple-500 focus:ring-1 focus:ring-purple-500/20 rounded-lg px-2.5 py-1.5 text-xs text-slate-200 focus:outline-none transition-colors"
                                 />
                               </div>
 
                               <div className="sm:col-span-1 flex gap-2 items-end">
                                 <div className="flex-1">
-                                  <label className="block text-[9px] font-bold uppercase tracking-wider text-slate-550 mb-1">
+                                  <label className="block text-[10px] font-bold uppercase tracking-wider text-slate-400 mb-1">
                                     {t('linkIcon' as any)}
                                   </label>
                                   <select
                                     value={link.icon || ''}
                                     onChange={(e) => handleUpdateLink(link.id, 'icon', e.target.value)}
-                                    className="w-full bg-slate-950/60 border border-slate-850 focus:border-purple-500 rounded px-2 py-1 text-xs text-slate-200 focus:outline-none"
+                                    className="w-full bg-slate-950/70 border border-slate-800 focus:border-purple-500 focus:ring-1 focus:ring-purple-500/20 rounded-lg px-2 py-1.5 text-xs text-slate-200 focus:outline-none transition-colors"
                                   >
                                     <option value="">{t('iconPlaceholder' as any)}</option>
                                     <option value="globe">Globe</option>

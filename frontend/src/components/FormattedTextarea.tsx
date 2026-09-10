@@ -162,7 +162,7 @@ export function FormattedTextarea({
 
       {/* Inline Formatting Hint */}
       {isFocused && (
-        <p className="text-[10px] text-slate-550/80 dark:text-slate-500/80 italic select-none">
+        <p className="text-[10px] text-slate-400 dark:text-slate-400 italic select-none">
           {language === 'vi' 
             ? '💡 Bôi đen văn bản + Ctrl+B để in đậm, Ctrl+I để in nghiêng' 
             : '💡 Select text + Ctrl+B to bold, Ctrl+I to italic'}

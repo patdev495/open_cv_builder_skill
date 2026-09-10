@@ -1,0 +1,5 @@
+ssh root@107.175.144.245
+
+cd /opt/cv-builder
+git pull origin master
+docker compose up -d --build
