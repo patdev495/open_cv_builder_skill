@@ -82,7 +82,7 @@ export function getLinkIcon(iconName?: string) {
 }
 
 interface CustomLinksRendererProps {
-  customLinks?: CustomLink[];
+  customLinks?: CustomLink[] | null;
   className?: string;
   itemClassName?: string;
   showIcon?: boolean;
@@ -94,7 +94,7 @@ export function CustomLinksRenderer({
   itemClassName = "hover:underline flex items-center gap-1",
   showIcon = true
 }: CustomLinksRendererProps) {
-  const validLinks = customLinks.filter(link => link.url && link.url.trim() !== '');
+  const validLinks = (customLinks ?? []).filter(link => link.url && link.url.trim() !== '');
   if (validLinks.length === 0) return null;
 
   return (
@@ -142,4 +142,3 @@ export function parseFormatting(text: string): React.ReactNode[] {
     return part;
   });
 }
-
