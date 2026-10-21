@@ -1,9 +1,10 @@
 import { useState, useEffect } from 'react';
-import { Edit3, Printer, AlertCircle, CheckCircle2, Languages, FilePlus2 } from 'lucide-react';
+import { Edit3, Printer, AlertCircle, CheckCircle2, Languages, FilePlus2, Download } from 'lucide-react';
 import { useCVViewer } from '../hooks/useCVViewer';
 import { usePasscodeVerify } from '../hooks/usePasscodeVerify';
 import TemplateRenderer from '../templates/TemplateRenderer';
 import { API_BASE_URL } from '../services/api';
+import { createCVPackage, downloadCVPackage } from '../services/cvPackage';
 import { COLOR_MAP, FONT_MAP } from '../constants';
 
 export function InteractivePortfolio({ 
@@ -167,6 +168,10 @@ export function InteractivePortfolio({
     window.print();
   };
 
+  const handlePublicPackageExport = () => {
+    downloadCVPackage(createCVPackage(slug, template, cvData));
+  };
+
   const {
     showVerifyModal, setShowVerifyModal,
     verifyPasscodeVal, setVerifyPasscodeVal,
@@ -305,6 +310,15 @@ export function InteractivePortfolio({
         >
           <Printer className="h-4 w-4" />
           <span className="hidden sm:inline">{t('exportPDF')}</span>
+        </button>
+        <button
+          type="button"
+          onClick={handlePublicPackageExport}
+          className="flex items-center gap-2 px-4 py-2 bg-slate-800 hover:bg-slate-700 active:scale-95 text-slate-200 text-sm font-semibold rounded-xl transition-all border border-slate-700 cursor-pointer"
+          title={language === 'vi' ? 'Xuất CV Package JSON' : 'Export CV Package JSON'}
+        >
+          <Download className="h-4 w-4" />
+          <span className="hidden sm:inline">{language === 'vi' ? 'Xuất JSON' : 'Export JSON'}</span>
         </button>
       </div>
 

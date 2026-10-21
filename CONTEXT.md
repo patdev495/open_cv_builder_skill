@@ -32,6 +32,18 @@ _Avoid_: Margin, padding, spacing
 Hành động chuyển đổi **CV** từ giao diện web động thành một định dạng tài liệu tĩnh (ví dụ: PDF) thông qua cơ chế in của trình duyệt để người dùng tải về.
 _Avoid_: Download, print, generate PDF
 
+**CV Package**:
+Tệp JSON di động có mã định dạng và phiên bản, chứa **Slug**, **Template** và **CV Schema** của đúng một **CV**, dùng để trao đổi hoặc chỉnh sửa dữ liệu CV bằng công cụ bên ngoài như AI agent, nhưng không bao gồm **Passcode**.
+_Avoid_: JSON export, CV backup file
+
+**CV Package Import**:
+Hành động thay thế toàn bộ dữ liệu trong bộ chỉnh sửa bằng một **CV Package** hợp lệ mà không tự tạo mới hoặc ghi đè **CV** đang lưu.
+_Avoid_: Restore, auto-publish, overwrite import
+
+**CV Package Export**:
+Hành động tạo một **CV Package** từ trạng thái hiện thời của bộ chỉnh sửa hoặc từ **CV** đã xuất bản trên **Interactive Portfolio**, không yêu cầu **Passcode**.
+_Avoid_: JSON download, public backup
+
 **Slug**:
 Đường dẫn URL tùy chỉnh (ví dụ: `/pat`) do người dùng tự chọn để định danh duy nhất và chia sẻ **CV** của họ.
 _Avoid_: Path, URL, link
@@ -77,6 +89,13 @@ _Avoid_: Rich text, HTML format, Text style
 - A **CV** is represented by a single **CV Schema**
 - A **CV** is rendered using a **Template**
 - A **CV** can be **Exported** as a static document
+- A **CV Package** represents one **CV** for portable data exchange and retains its **Slug** and **Template** without its **Passcode**
+- A **CV Package** preserves all data in the **CV Schema**, including **Avatar** and **Multilingual Sync** data
+- A **CV Package Export** from the editor uses its current state, whether or not that state has been saved to the server
+- An **Interactive Portfolio** allows any visitor to perform a **CV Package Export** of its published **CV** without a **Passcode**
+- A **CV Package Import** loads data into the editor; saving a new or existing **CV** still requires the appropriate **Passcode**
+- A **CV Package Import** requires confirmation before replacing unsaved editor changes
+- A **CV Package Import** makes the package's **Slug** the editor target and clears the active **Passcode**
 - A **CV** is identified by a unique **Slug**
 - A **CV** is protected by a **Passcode** for modification
 - A **Slug** must be globally unique; if a collision occurs, saving is blocked unless the matching **Passcode** is verified

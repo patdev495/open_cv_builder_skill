@@ -6,6 +6,7 @@ import { useTranslation } from '../i18n/useTranslation';
 import { TRANSLATIONS } from '../i18n/translations';
 import { processAvatar } from '../services/avatarProcessor';
 import { cvDataReducer, type CVAction } from './cvDataReducer';
+import { createCVPackage, downloadCVPackage, hydrateCVPackage, MAX_CV_PACKAGE_BYTES, parseCVPackage } from '../services/cvPackage';
 
 export interface CVEditorState {
   slug: string;
@@ -43,6 +44,8 @@ export interface CVEditorState {
   handleAvatarUpload: (e: React.ChangeEvent<HTMLInputElement>) => Promise<void>;
   handleAvatarDelete: () => void;
   handleClearAll: () => void;
+  handleExportPackage: () => void;
+  handleImportPackage: (file: File) => Promise<void>;
   handleAutoFit?: () => void;
 
   addExperience: () => void;
@@ -244,7 +247,7 @@ export function useCVEditor(initialPasscode: string = ''): CVEditorState {
   const handleSave = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!inputSlug.trim()) { setStatusMessage({ type: 'error', text: t('errorNoSlug') }); return; }
-    if (!isViewOnly && !passcode.trim()) { setStatusMessage({ type: 'error', text: t('errorNoPasscode') }); return; }
+    if (!passcode.trim()) { setStatusMessage({ type: 'error', text: t('errorNoPasscode') }); return; }
 
     setIsLoading(true);
     setStatusMessage(null);
@@ -381,6 +384,42 @@ export function useCVEditor(initialPasscode: string = ''): CVEditorState {
   };
 
   const handleAvatarDelete = () => dispatch({ type: 'UPDATE_PERSONAL_INFO', payload: { avatar: '' } });
+
+  const handleExportPackage = () => {
+    const packageSlug = inputSlug.trim() || slug || 'untitled-cv';
+    downloadCVPackage(createCVPackage(packageSlug, template, cvData));
+    setStatusMessage({
+      type: 'success',
+      text: language === 'vi' ? 'Đã xuất CV Package JSON.' : 'CV Package JSON exported.',
+    });
+  };
+
+  const handleImportPackage = async (file: File) => {
+    if (file.size > MAX_CV_PACKAGE_BYTES) {
+      setStatusMessage({ type: 'error', text: language === 'vi' ? 'CV Package vượt quá giới hạn 10 MiB.' : 'CV Package exceeds the 10 MiB limit.' });
+      return;
+    }
+    if (!window.confirm(language === 'vi'
+      ? 'Import sẽ thay thế toàn bộ dữ liệu đang mở và Passcode hiện tại sẽ bị xoá. Bạn có muốn tiếp tục?'
+      : 'Importing will replace all open data and clear the current passcode. Continue?')) {
+      return;
+    }
+
+    try {
+      const packageFile = parseCVPackage(await file.text());
+      const importedCvData = hydrateCVPackage(packageFile);
+      dispatch({ type: 'LOAD_CV', payload: importedCvData });
+      setTemplate(packageFile.template);
+      setSlug(packageFile.slug);
+      setInputSlug(packageFile.slug);
+      setPasscode('');
+      setIsViewOnly(!(await api.checkSlugAvailable(packageFile.slug)));
+      setHasResolvedDraft(true);
+      setStatusMessage({ type: 'success', text: language === 'vi' ? 'Đã nạp CV Package. Nhập Passcode phù hợp rồi lưu để xuất bản hoặc cập nhật.' : 'CV Package loaded. Enter the appropriate passcode, then save to publish or update.' });
+    } catch (error) {
+      setStatusMessage({ type: 'error', text: error instanceof Error ? error.message : (language === 'vi' ? 'Không thể nhập CV Package.' : 'Could not import CV Package.') });
+    }
+  };
   
   const handleClearAll = () => {
     if (window.confirm(t('confirmClear'))) {
@@ -408,6 +447,7 @@ export function useCVEditor(initialPasscode: string = ''): CVEditorState {
     isTranslating, handleTranslateCV,
     handleSave,
     handleAvatarUpload, handleAvatarDelete, handleClearAll,
+    handleExportPackage, handleImportPackage,
     draftToRecover, handleRecoverDraft, handleDiscardDraft,
     addExperience: () => dispatch({ type: 'ADD_EXPERIENCE' }),
     removeExperience: (id: string) => dispatch({ type: 'REMOVE_EXPERIENCE', id }),

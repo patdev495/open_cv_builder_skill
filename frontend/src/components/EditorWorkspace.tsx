@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
-import { FileText, Save, Globe, Sun, Moon, AlertCircle, CheckCircle2, Loader2, Sparkles, User, Briefcase, GraduationCap, FolderGit2, Wrench, Award, Layers, BarChart3, ChevronLeft, Copy, ExternalLink, X, Mail, Phone } from 'lucide-react';
+import { FileText, Save, Globe, Sun, Moon, AlertCircle, CheckCircle2, Loader2, Sparkles, User, Briefcase, GraduationCap, FolderGit2, Wrench, Award, Layers, BarChart3, ChevronLeft, Copy, ExternalLink, X, Mail, Phone, Download, Upload } from 'lucide-react';
 import { useCVEditor } from '../hooks/useCVEditor';
 import { CVEditorContext } from '../context/CVEditorContext';
 import { PersonalInfoForm } from '../editor/PersonalInfoForm';
@@ -27,7 +27,8 @@ export function EditorWorkspace({ onExit, initialPasscode = '' }: { onExit: () =
     editingMode, setEditingMode,
     isTranslating, handleTranslateCV,
     handleSave, handleClearAll, handleTemplateChange,
-    draftToRecover, handleRecoverDraft, handleDiscardDraft
+    draftToRecover, handleRecoverDraft, handleDiscardDraft,
+    handleExportPackage, handleImportPackage
   } = editorState;
 
   const [activeTab, setActiveTab] = useState<string>("personal");
@@ -40,6 +41,7 @@ export function EditorWorkspace({ onExit, initialPasscode = '' }: { onExit: () =
   const containerRef = useRef<HTMLDivElement>(null);
   const innerRef = useRef<HTMLDivElement>(null);
   const contentRef = useRef<HTMLDivElement>(null);
+  const importInputRef = useRef<HTMLInputElement>(null);
   const [scale, setScale] = useState<number>(1);
   const [contentHeight, setContentHeight] = useState<number>(1123);
 
@@ -240,6 +242,36 @@ export function EditorWorkspace({ onExit, initialPasscode = '' }: { onExit: () =
                 </div>
               )}
 
+              <input
+                ref={importInputRef}
+                type="file"
+                accept="application/json,.json"
+                className="hidden"
+                onChange={(event) => {
+                  const file = event.target.files?.[0];
+                  if (file) void handleImportPackage(file);
+                  event.currentTarget.value = '';
+                }}
+              />
+              <button
+                type="button"
+                onClick={() => importInputRef.current?.click()}
+                className="hidden sm:flex items-center gap-1.5 px-3 py-1.5 bg-slate-800/80 hover:bg-slate-700 text-slate-300 hover:text-white rounded-xl border border-slate-700 transition-all cursor-pointer text-xs font-semibold"
+                title={language === 'vi' ? 'Nhập CV Package JSON' : 'Import CV Package JSON'}
+              >
+                <Upload className="h-3.5 w-3.5" />
+                <span>{language === 'vi' ? 'Nhập JSON' : 'Import JSON'}</span>
+              </button>
+              <button
+                type="button"
+                onClick={handleExportPackage}
+                className="hidden sm:flex items-center gap-1.5 px-3 py-1.5 bg-slate-800/80 hover:bg-slate-700 text-slate-300 hover:text-white rounded-xl border border-slate-700 transition-all cursor-pointer text-xs font-semibold"
+                title={language === 'vi' ? 'Xuất CV Package JSON' : 'Export CV Package JSON'}
+              >
+                <Download className="h-3.5 w-3.5" />
+                <span>{language === 'vi' ? 'Xuất JSON' : 'Export JSON'}</span>
+              </button>
+
               <button
                 type="button"
                 onClick={() => setLanguage(language === 'vi' ? 'en' : 'vi')}
@@ -309,7 +341,7 @@ export function EditorWorkspace({ onExit, initialPasscode = '' }: { onExit: () =
                       </p>
                     )}
                   </div>
-                  {!isViewOnly && (
+                  {!passcode.trim() && (
                     <div className="space-y-1.5">
                       <label className="text-xs font-bold text-slate-400 uppercase tracking-wider">{t('passcode')}</label>
                       <input
