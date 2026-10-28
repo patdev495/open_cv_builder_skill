@@ -252,10 +252,10 @@ export default function CreativeTemplate({ cvData, activeColor, t }: TemplatePro
     <div className={`flex flex-col flex-1 gap-6 text-sm ${creativeFontClass}`}>
       
       {/* Creative Asymmetric Slanted/Split Header */}
-      <div className="relative overflow-hidden rounded-2xl border border-slate-200 dark:border-slate-800 shadow-md flex flex-col md:flex-row items-stretch min-h-[150px] print:border-slate-300 print:shadow-none print:rounded-none">
+      <div className="relative overflow-hidden rounded-2xl border border-slate-200 dark:border-slate-800 shadow-md flex flex-col md:flex-row print:flex-row items-stretch min-h-[150px] print:border-slate-300 print:shadow-none print:rounded-2xl">
         
         {/* Left Block: Slanted active color block (60% width on md) */}
-        <div className={`flex-1 md:w-3/5 p-6 flex items-center justify-between gap-4 ${activeColor.bg} text-white relative z-10 print:bg-white print:text-black print:p-0 print:border-b-2 print:border-black`}>
+        <div className={`flex-1 md:w-3/5 print:w-3/5 p-6 flex items-center justify-between gap-4 ${activeColor.bg} text-white relative z-10`}>
           <div className="flex items-center gap-4">
             {cvData.personalInfo.avatar && (
               <img 
@@ -265,10 +265,10 @@ export default function CreativeTemplate({ cvData, activeColor, t }: TemplatePro
               />
             )}
             <div>
-              <h1 className="text-3xl font-black tracking-tight text-white m-0 print:text-black">
+              <h1 className="text-3xl font-black tracking-tight text-white m-0">
                 {cvData.personalInfo.fullName || "HỌ VÀ TÊN"}
               </h1>
-              <div className={`inline-block ${activeColor.lightBg} ${activeColor.primary} px-3 py-0.5 rounded-full text-xs font-bold mt-2 font-mono print:bg-slate-100 dark:bg-slate-800/80 print:text-black print:border-slate-300 dark:border-slate-600`}>
+              <div className={`inline-block ${activeColor.lightBg} ${activeColor.primary} px-3 py-0.5 rounded-full text-xs font-bold mt-2 font-mono dark:bg-slate-800/80 dark:border-slate-600`}>
                 {cvData.personalInfo.title || "VỊ TRÍ ỨNG TUYỂN"}
               </div>
             </div>
@@ -276,7 +276,7 @@ export default function CreativeTemplate({ cvData, activeColor, t }: TemplatePro
         </div>
 
         {/* Right Block: Contrasting Dark Block (40% width on md) */}
-        <div className="hidden md:flex md:w-2/5 p-6 bg-slate-900 dark:bg-slate-950 text-slate-100 flex-col justify-center gap-1 z-10 print:hidden font-mono text-xs">
+        <div className="hidden md:flex md:w-2/5 print:flex print:w-2/5 p-6 bg-slate-900 dark:bg-slate-950 text-slate-100 flex-col justify-center gap-1 z-10 font-mono text-xs">
           {cvData.personalInfo.email && <div className="truncate">Email: {cvData.personalInfo.email}</div>}
           {cvData.personalInfo.phone && <div>Phone: {cvData.personalInfo.phone}</div>}
           {cvData.personalInfo.location && <div>Loc: {cvData.personalInfo.location}</div>}
@@ -291,8 +291,8 @@ export default function CreativeTemplate({ cvData, activeColor, t }: TemplatePro
         <div className={`absolute top-0 right-0 left-0 bottom-0 pointer-events-none z-0 hidden md:block ${activeColor.bg} print:hidden`} style={{ clipPath: 'polygon(0 0, 62% 0, 58% 100%, 0% 100%)' }} />
       </div>
 
-      {/* Mobile/Print fallback contacts (visible when header is printed or on mobile) */}
-      <div className="flex md:hidden print:flex flex-wrap gap-x-4 gap-y-1 text-slate-600 dark:text-slate-400 text-xs font-mono justify-start print:justify-start border-b pb-4 print:border-slate-300">
+      {/* Contact fallback is only for narrow screens; print keeps the full two-column header. */}
+      <div className="flex md:hidden print:hidden flex-wrap gap-x-4 gap-y-1 text-slate-600 dark:text-slate-400 text-xs font-mono justify-start border-b pb-4">
         {cvData.personalInfo.email && <span>{cvData.personalInfo.email}</span>}
         {cvData.personalInfo.phone && <span>• {cvData.personalInfo.phone}</span>}
         {cvData.personalInfo.location && <span>• {cvData.personalInfo.location}</span>}
