@@ -152,6 +152,7 @@ export function FormattedTextarea({
       <textarea
         ref={textareaRef}
         value={value}
+        onChange={(e) => onChangeValue(e.target.value)}
         onFocus={handleFocus}
         onBlur={handleBlur}
         onKeyDown={handleKeyDown}
