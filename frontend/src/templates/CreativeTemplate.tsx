@@ -4,7 +4,7 @@ import type { TemplateProps } from './types';
 import CustomSectionRenderer from './CustomSectionRenderer';
 import LayoutSectionRenderer from './LayoutSectionRenderer';
 import SkillsSectionRenderer from './SkillsSectionRenderer';
-import { CustomLinksRenderer, parseFormatting } from './TemplateHelpers';
+import { ContactLinksRenderer, parseFormatting } from './TemplateHelpers';
 
 
 export default function CreativeTemplate({ cvData, activeColor, t }: TemplateProps) {
@@ -280,23 +280,11 @@ export default function CreativeTemplate({ cvData, activeColor, t }: TemplatePro
           {cvData.personalInfo.email && <div className="truncate">Email: {cvData.personalInfo.email}</div>}
           {cvData.personalInfo.phone && <div>Phone: {cvData.personalInfo.phone}</div>}
           {cvData.personalInfo.location && <div>Loc: {cvData.personalInfo.location}</div>}
-          <div className="flex flex-wrap gap-2 mt-1">
-            {cvData.personalInfo.website && (
-              <a href={cvData.personalInfo.website} target="_blank" rel="noopener noreferrer" className="hover:underline text-[10px] text-purple-300 font-bold">
-                web
-              </a>
-            )}
-            {cvData.personalInfo.github && (
-              <a href={cvData.personalInfo.github} target="_blank" rel="noopener noreferrer" className="hover:underline text-[10px] text-purple-300 font-bold">
-                github
-              </a>
-            )}
-            {cvData.personalInfo.linkedin && (
-              <a href={cvData.personalInfo.linkedin} target="_blank" rel="noopener noreferrer" className="hover:underline text-[10px] text-purple-300 font-bold">
-                linkedin
-              </a>
-            )}
-          </div>
+          <ContactLinksRenderer
+            personalInfo={cvData.personalInfo}
+            className="flex flex-col gap-1.5 mt-1 break-all"
+            itemClassName="flex items-center gap-1.5 hover:underline text-[10px] text-purple-300 font-bold"
+          />
         </div>
 
         {/* Diagonal Slanted background overlay for md layout */}
@@ -308,27 +296,10 @@ export default function CreativeTemplate({ cvData, activeColor, t }: TemplatePro
         {cvData.personalInfo.email && <span>{cvData.personalInfo.email}</span>}
         {cvData.personalInfo.phone && <span>• {cvData.personalInfo.phone}</span>}
         {cvData.personalInfo.location && <span>• {cvData.personalInfo.location}</span>}
-        {cvData.personalInfo.website && (
-          <a href={cvData.personalInfo.website} target="_blank" rel="noopener noreferrer" className="hover:underline">
-            • {cvData.personalInfo.website.replace(/^https?:\/\/(www\.)?/, '')}
-          </a>
-        )}
-        {cvData.personalInfo.github && (
-          <a href={cvData.personalInfo.github} target="_blank" rel="noopener noreferrer" className="hover:underline">
-            • github.com/{cvData.personalInfo.github.split('/').pop()}
-          </a>
-        )}
-        {cvData.personalInfo.linkedin && (
-          <a href={cvData.personalInfo.linkedin} target="_blank" rel="noopener noreferrer" className="hover:underline">
-            • linkedin.com/in/{cvData.personalInfo.linkedin.split('/').pop()}
-          </a>
-        )}
-        
-        <CustomLinksRenderer
-          customLinks={cvData.personalInfo.customLinks}
-          className="flex flex-wrap gap-x-4 gap-y-1 text-slate-600 dark:text-slate-400 text-xs font-mono"
-          itemClassName="hover:underline flex items-center gap-1"
-          showIcon={false}
+        <ContactLinksRenderer
+          personalInfo={cvData.personalInfo}
+          className="flex flex-col gap-1.5 text-slate-600 dark:text-slate-400 text-xs font-mono"
+          itemClassName="flex items-center gap-1.5 hover:underline"
         />
         
 

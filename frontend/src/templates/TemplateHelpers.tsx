@@ -1,13 +1,8 @@
 import React from 'react';
 import * as LucideIcons from 'lucide-react';
+import type { CustomLink, PersonalInfo } from '../types';
 
-
-interface CustomLink {
-  id: string;
-  label: string;
-  url: string;
-  icon?: string;
-}
+const formatLinkUrl = (url: string) => url.replace(/^https?:\/\/(www\.)?/, '');
 
 // Brand SVG Icon Components to bypass missing icons in old lucide-react versions
 const GithubIcon = (props: any) => (
@@ -113,6 +108,42 @@ export function CustomLinksRenderer({
           >
             {showIcon && <Icon className="w-3 h-3 stroke-[2]" />}
             <span>{displayLabel}</span>
+          </a>
+        );
+      })}
+    </div>
+  );
+}
+
+interface ContactLinksRendererProps {
+  personalInfo: Pick<PersonalInfo, 'website' | 'github' | 'linkedin' | 'customLinks'>;
+  className?: string;
+  itemClassName?: string;
+}
+
+/** Renders every web contact as an icon followed by its actual URL. */
+export function ContactLinksRenderer({
+  personalInfo,
+  className = 'flex flex-col gap-1',
+  itemClassName = 'flex items-center gap-1 hover:underline'
+}: ContactLinksRendererProps) {
+  const links = [
+    { id: 'website', url: personalInfo.website, icon: 'globe' },
+    { id: 'github', url: personalInfo.github, icon: 'github' },
+    { id: 'linkedin', url: personalInfo.linkedin, icon: 'linkedin' },
+    ...(personalInfo.customLinks ?? []).map(link => ({ id: link.id, url: link.url, icon: link.icon || 'link' })),
+  ].filter((link): link is { id: string; url: string; icon: string } => Boolean(link.url?.trim()));
+
+  if (links.length === 0) return null;
+
+  return (
+    <div className={className}>
+      {links.map((link) => {
+        const Icon = getLinkIcon(link.icon);
+        return (
+          <a key={link.id} href={link.url} target="_blank" rel="noopener noreferrer" className={itemClassName}>
+            <Icon className="w-3 h-3 shrink-0 stroke-[2]" />
+            <span>{formatLinkUrl(link.url)}</span>
           </a>
         );
       })}
